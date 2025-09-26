@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React from "react";
-import { Footer } from "@/components/layout/Footer";
 
 export default function Home() {
   const featuredProducts = allProducts.slice(0, 8);
@@ -148,7 +147,6 @@ export default function Home() {
           </div>
         </section>
     </main>
-    <Footer />
     </>
   );
 }
