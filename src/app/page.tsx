@@ -17,6 +17,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import React from "react";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 
 export default function Home() {
@@ -151,6 +152,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

@@ -11,6 +11,7 @@ import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
 
 const navLinks = [
+  { href: "/", label: "الرئيسيه" },
   { href: "/products", label: "المنتجات" },
   { href: "/about", label: "من نحن" },
   { href: "/contact", label: "اتصل بنا" },
