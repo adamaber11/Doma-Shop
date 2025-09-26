@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/products/ProductCard";
 import { allProducts, allCategories } from "@/lib/data";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { ArrowRight, ShoppingBag, ShoppingCart, User } from "lucide-react";
+import { ArrowRight, ShoppingBag } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React from "react";
+import { Header } from "@/components/layout/Header";
 
 
 export default function Home() {
@@ -56,18 +57,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-8 bg-secondary">
-          <div className="container mx-auto px-4 flex justify-center gap-8">
-            <Link href="/cart" className="flex flex-col items-center gap-2 text-secondary-foreground hover:text-primary transition-colors">
-              <ShoppingCart className="h-8 w-8" />
-              <span className="font-semibold">عربة التسوق</span>
-            </Link>
-            <Link href="/login" className="flex flex-col items-center gap-2 text-secondary-foreground hover:text-primary transition-colors">
-              <User className="h-8 w-8" />
-              <span className="font-semibold">حسابي</span>
-            </Link>
-          </div>
-        </section>
+        <Header />
 
         <section className="py-12 md:py-20">
           <div className="container mx-auto px-4">
