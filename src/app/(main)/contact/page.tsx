@@ -10,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { Header } from '@/components/layout/Header';
 
 const contactSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
@@ -35,8 +34,6 @@ export default function ContactPage() {
   };
 
   return (
-    <>
-    <Header />
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold font-headline">اتصل بنا</h1>
@@ -104,6 +101,5 @@ export default function ContactPage() {
         </div>
       </div>
     </div>
-    </>
   );
 }

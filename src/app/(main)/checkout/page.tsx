@@ -13,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useEffect } from 'react';
-import { Header } from '@/components/layout/Header';
 
 const shippingSchema = z.object({
   name: z.string().min(2, "الاسم قصير جدًا"),
@@ -53,8 +52,6 @@ export default function CheckoutPage() {
   };
 
   return (
-    <>
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 font-headline">الدفع</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -168,6 +165,5 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-    </>
   );
 }

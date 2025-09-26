@@ -2,12 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, Download } from "lucide-react";
 import Link from "next/link";
-import { Header } from "@/components/layout/Header";
 
 export default function ConfirmationPage({ params }: { params: { orderId: string } }) {
   return (
-    <>
-      <Header />
       <div className="container mx-auto px-4 py-12 flex justify-center">
         <Card className="w-full max-w-2xl">
           <CardHeader className="text-center">
@@ -39,6 +36,5 @@ export default function ConfirmationPage({ params }: { params: { orderId: string
           </CardContent>
         </Card>
       </div>
-    </>
   );
 }

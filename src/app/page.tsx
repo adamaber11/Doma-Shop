@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React from "react";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 
 export default function Home() {
@@ -30,6 +32,8 @@ export default function Home() {
 
   return (
     <>
+        <Header />
+        <main className="flex-1">
         <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200">
            <Image
               src={heroImage.imageUrl}
@@ -146,6 +150,8 @@ export default function Home() {
             </Carousel>
           </div>
         </section>
+    </main>
+    <Footer />
     </>
   );
 }

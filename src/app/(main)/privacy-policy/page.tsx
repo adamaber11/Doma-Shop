@@ -1,10 +1,7 @@
 
-import { Header } from "@/components/layout/Header";
 
 export default function PrivacyPolicyPage() {
   return (
-    <>
-      <Header />
       <div className="container mx-auto px-4 py-12">
         <div className="prose prose-lg max-w-4xl mx-auto text-right" dir="rtl">
           <h1 className="text-4xl font-bold font-headline mb-8">سياسة الخصوصية</h1>
@@ -45,6 +42,5 @@ export default function PrivacyPolicyPage() {
           </p>
         </div>
       </div>
-    </>
   );
 }

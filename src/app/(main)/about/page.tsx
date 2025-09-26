@@ -2,14 +2,11 @@
 import Image from "next/image";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { Building, Target, Users } from "lucide-react";
-import { Header } from "@/components/layout/Header";
 
 export default function AboutPage() {
   const aboutImage = getPlaceholderImage("hero-1");
 
   return (
-    <>
-    <Header />
     <div className="container mx-auto px-4 py-12">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold font-headline">عن دوما</h1>
@@ -60,6 +57,5 @@ export default function AboutPage() {
         </p>
       </div>
     </div>
-    </>
   );
 }

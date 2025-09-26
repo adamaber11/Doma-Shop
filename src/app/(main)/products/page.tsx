@@ -1,4 +1,3 @@
-import { Header } from '@/components/layout/Header';
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { allProducts } from "@/lib/data";
@@ -23,8 +22,6 @@ export default function ProductsPage({
   }
 
   return (
-    <>
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 font-headline">منتجاتنا</h1>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -47,6 +44,5 @@ export default function ProductsPage({
           </main>
         </div>
       </div>
-    </>
   );
 }

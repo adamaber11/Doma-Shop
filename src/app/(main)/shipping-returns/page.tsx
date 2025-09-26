@@ -1,12 +1,9 @@
 
-import { Header } from "@/components/layout/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Truck, PackageReturn } from "lucide-react";
 
 export default function ShippingReturnsPage() {
   return (
-    <>
-      <Header />
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold font-headline">الشحن والإرجاع</h1>
@@ -60,6 +57,5 @@ export default function ShippingReturnsPage() {
           </Card>
         </div>
       </div>
-    </>
   );
 }

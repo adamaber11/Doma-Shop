@@ -1,7 +1,6 @@
 
 "use client";
 
-import { Header } from "@/components/layout/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -41,8 +40,6 @@ export default function TrackOrderPage() {
   };
 
   return (
-    <>
-      <Header />
       <div className="container mx-auto px-4 py-12 flex justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
@@ -86,6 +83,5 @@ export default function TrackOrderPage() {
           </Form>
         </Card>
       </div>
-    </>
   );
 }
