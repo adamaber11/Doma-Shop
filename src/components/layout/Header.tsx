@@ -5,13 +5,13 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Globe, Menu, Search, ShoppingCart, User } from "lucide-react";
+import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 
 const navLinks = [
-  { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
+  { href: "/about", label: "About Us" },
   { href: "/contact", label: "Contact Us" },
 ];
 
@@ -59,19 +59,6 @@ export function Header() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input type="search" placeholder="Search products..." className="pl-10 w-64" />
           </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Globe className="h-5 w-5" />
-                <span className="sr-only">Change language</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>English</DropdownMenuItem>
-              <DropdownMenuItem>العربية</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
