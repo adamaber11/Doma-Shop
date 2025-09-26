@@ -19,7 +19,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const productImage = getPlaceholderImage(product.imageIds[0]);
 
   return (
-    <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
+    <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="p-0">
         <Link href={`/products/${product.id}`} className="block">
           <div className="relative aspect-square w-full">
@@ -31,6 +31,10 @@ export function ProductCard({ product }: ProductCardProps) {
               data-ai-hint={productImage.imageHint}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-center p-4">
+              <p className="text-white text-sm mb-2">{product.description}</p>
+              <p className="text-white font-bold text-lg">{formatCurrency(product.price)}</p>
+            </div>
           </div>
         </Link>
       </CardHeader>
