@@ -99,7 +99,7 @@ export function Header() {
                 )}
                 </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-full max-w-md">
+            <SheetContent side="left" className="w-full max-w-md">
                 <CartSheetContent />
             </SheetContent>
           </Sheet>
