@@ -21,24 +21,49 @@ import React from "react";
 export default function Home() {
   const featuredProducts = allProducts.slice(0, 8);
   const bestOffersProducts = allProducts.slice(4, 8);
-  const heroImage = getPlaceholderImage('hero-1');
+  const heroImages = [
+    getPlaceholderImage('hero-1'),
+    getPlaceholderImage('hero-2'),
+    getPlaceholderImage('hero-3'),
+  ];
+
 
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
+
+  const heroPlugin = React.useRef(
+    Autoplay({ delay: 4000, stopOnInteraction: true })
   );
 
   return (
     <>
       <main className="flex-1">
         <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200">
-           <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            className="object-cover"
-            data-ai-hint={heroImage.imageHint}
-            priority
-          />
+           <Carousel
+            plugins={[heroPlugin.current]}
+            className="w-full h-full"
+            opts={{ loop: true }}
+            onMouseEnter={heroPlugin.current.stop}
+            onMouseLeave={heroPlugin.current.reset}
+          >
+            <CarouselContent>
+              {heroImages.map((img) => (
+                <CarouselItem key={img.id}>
+                  <div className="relative w-full h-[60vh] md:h-[80vh]">
+                    <Image
+                      src={img.imageUrl}
+                      alt={img.description}
+                      fill
+                      className="object-cover"
+                      data-ai-hint={img.imageHint}
+                      priority={heroImages.indexOf(img) === 0}
+                    />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
           <div className="absolute inset-0 bg-black/40" />
           <div className="relative container mx-auto h-full flex flex-col items-start justify-center text-white px-4">
             <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4 text-shadow">
@@ -150,3 +175,5 @@ export default function Home() {
     </>
   );
 }
+
+    

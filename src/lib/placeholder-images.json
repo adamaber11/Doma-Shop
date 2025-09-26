@@ -7,6 +7,18 @@
       "imageHint": "living room"
     },
     {
+      "id": "hero-2",
+      "description": "A stylish woman in a white coat posing outdoors",
+      "imageUrl": "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmYXNoaW9uJTIwbW9kZWx8ZW58MHx8fHwxNzU4ODU2Njk0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fashion model"
+    },
+    {
+      "id": "hero-3",
+      "description": "A collection of modern electronic gadgets on a desk",
+      "imageUrl": "https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsYXB0b3AlMjBkZXNrfGVufDB8fHx8MTc1ODgxOTYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "laptop desk"
+    },
+    {
       "id": "electronics-cat",
       "description": "A collection of modern electronic gadgets on a desk",
       "imageUrl": "https://images.unsplash.com/photo-1698338862815-ddb5bd93df27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnYWRnZXRzJTIwZGVza3xlbnwwfHx8fDE3NTg4OTIyMDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -159,7 +171,7 @@
     {
       "id": "product-17",
       "description": "High-quality yoga mat",
-      "imageUrl": "https://images.unsplash.com/photo-1646239646963-b0b9be56d6b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx5b2dhJTIwbWF0fGVufDB8fHx8MTc1ODgzNjg3MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1646239646963-b0b9be56d6b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx5b2dhJTIwbWF0fGVufDB8fHx8MTc1ODgzNjg3MXww&ixlibrb-4.1.0&q=80&w=1080",
       "imageHint": "yoga mat"
     },
     {
@@ -177,7 +189,7 @@
     {
       "id": "product-20",
       "description": "LEGO creator expert set box",
-      "imageUrl": "https://images.unsplash.com/photo-1591020270735-d4fc1a514a7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdvJTIwc2V0fGVufDB8fHx8MTc1ODkwOTM2OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1591020270735-d4fc1a514a7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdvJTIwc2V0fGVufDB8fHx8MTc1ODkwOTM2OHww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "lego set"
     },
     {
@@ -189,37 +201,37 @@
     {
       "id": "product-22",
       "description": "Hardcover bestseller novel",
-      "imageUrl": "https://images.unsplash.com/photo-1671477511036-c1639c6a4555?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoYXJkY292ZXIlMjBib29rfGVufDB8fHx8MTc1ODg3MTAzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1671477511036-c1639c6a4555?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoYXJkY292ZXIlMjBib29rfGVufDB8fHx8MTc1ODg3MTAzMnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "hardcover book"
     },
     {
       "id": "product-23",
       "description": "Set of colorful gel pens",
-      "imageUrl": "https://images.unsplash.com/photo-1598620617148-c9e8ddee6711?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnZWwlMjBwZW5zfGVufDB8fHx8MTc1ODg3MTc1MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1598620617148-c9e8ddee6711?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnZWwlMjBwZW5zfGVufDB8fHx8MTc1ODg3MTc1MXww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "gel pens"
     },
     {
       "id": "product-24",
       "description": "Leather-bound daily planner",
-      "imageUrl": "https://images.unsplash.com/photo-1541140911322-98afe66ea6da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwbGFubmVyfGVufDB8fHx8MTc1ODgwNzAyM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1541140911322-98afe66ea6da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwbGFubmVyfGVufDB8fHx8MTc1ODgwNzAyM3ww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "planner"
     },
     {
       "id": "product-25",
       "description": "Premium car wax kit",
-      "imageUrl": "https://images.unsplash.com/photo-1755279217102-947755911799?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXIlMjB3YXh8ZW58MHx8fHwxNzU4ODU2NjE2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1755279217102-947755911799?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXIlMjB3YXh8ZW58MHx8fHwxNzU4ODU2NjE2fDA&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "car wax"
     },
     {
       "id": "product-26",
       "description": "Motorcycle helmet",
-      "imageUrl": "https://images.unsplash.com/photo-1623343559257-1f3aef3a77e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb3RvcmN5Y2xlJTIwaGVsbWV0fGVufDB8fHx8MTc1ODkwNTk2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1623343559257-1f3aef3a77e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb3RvcmN5Y2xlJTIwaGVsbWV0fGVufDB8fHx8MTc1ODkwNTk2Mnww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "motorcycle helmet"
     },
     {
       "id": "product-27",
       "description": "GPS navigation system for vehicles",
-      "imageUrl": "https://images.unsplash.com/photo-1648529739495-d4d8a8abce4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxncHMlMjBuYXZpZ2F0aW9ufGVufDB8fHx8MTc1ODg1MDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageUrl": "https://images.unsplash.com/photo-1648529739495-d4d8a8abce4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxncHMlMjBuYXZpZ2F0aW9ufGVufDB8fHx8MTc1ODg1MDA3MHww&ixlib-rb-4.1.0&q=80&w=1080",
       "imageHint": "gps navigation"
     }
   ]
