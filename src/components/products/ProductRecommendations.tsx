@@ -54,8 +54,8 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {[...Array(2)].map((_, i) => (
              <div key={i} className="space-y-2">
                 <Skeleton className="h-64 w-full" />
                 <Skeleton className="h-6 w-3/4" />
@@ -74,8 +74,8 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {recommendations.map(product => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {recommendations.slice(0,2).map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>

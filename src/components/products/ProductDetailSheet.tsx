@@ -45,7 +45,7 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
               alt={product.name}
               fill
               className="object-cover"
-              data-ai-hint={productImages[activeImageImageHint]}
+              data-ai-hint={productImages[activeImageIndex].imageHint}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
