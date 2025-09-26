@@ -61,7 +61,7 @@ export default function SignupPage() {
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center text-sm">
-        <p>Already have an account?&nbsp;<Link href="/login" className="text-primary hover:underline">Log in</Link></p>
+        <p>Already have an account?&nbsp;<Link href="/login" className="text-primary hover:underline relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-right hover:after:scale-x-100">Log in</Link></p>
       </CardFooter>
     </Card>
   );
