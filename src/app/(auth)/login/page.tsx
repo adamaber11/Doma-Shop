@@ -53,7 +53,7 @@ export default function LoginPage() {
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center text-sm">
-        <p>Don't have an account?&nbsp;<Link href="/signup" className="text-primary hover:underline relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-right hover:after:scale-x-100">Sign up</Link></p>
+        <p>Don't have an account?&nbsp;<Link href="/signup" className="text-primary hover:underline relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Sign up</Link></p>
       </CardFooter>
     </Card>
   );

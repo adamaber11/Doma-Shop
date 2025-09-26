@@ -37,7 +37,7 @@ export function Header() {
                 <Logo />
                 <nav className="flex flex-col gap-4">
                   {navLinks.map(({ href, label }) => (
-                    <Link key={href} href={href} className="text-lg font-medium hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-right hover:after:scale-x-100">
+                    <Link key={href} href={href} className="text-lg font-medium hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
                       {label}
                     </Link>
                   ))}
@@ -47,7 +47,7 @@ export function Header() {
           </Sheet>
           <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
             {navLinks.map(({ href, label }) => (
-              <Link key={href} href={href} className="transition-colors hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-right hover:after:scale-x-100">
+              <Link key={href} href={href} className="transition-colors hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
                 {label}
               </Link>
             ))}
