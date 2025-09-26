@@ -1,4 +1,6 @@
 
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -11,15 +13,19 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import React from "react";
 
 
 export default function Home() {
-  const featuredProducts = allProducts.slice(0, 4);
+  const featuredProducts = allProducts.slice(0, 8);
   const bestOffersProducts = allProducts.slice(4, 8);
   const heroImage = getPlaceholderImage('hero-1');
+
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
 
   return (
     <>
@@ -41,7 +47,7 @@ export default function Home() {
             <p className="text-lg md:text-2xl mb-8 max-w-2xl text-shadow">
               استكشف مجموعتنا المنسقة من أجود المنتجات. الجودة والأناقة تصل إلى عتبة داركم.
             </p>
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
+            <Button asChild size="lg">
               <Link href="/products">
                 تسوق الآن <ShoppingBag className="mr-2 h-5 w-5" />
               </Link>
@@ -96,6 +102,9 @@ export default function Home() {
                 loop: true,
                 direction: "rtl",
               }}
+              plugins={[plugin.current]}
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
               className="w-full"
             >
               <CarouselContent>
@@ -107,8 +116,6 @@ export default function Home() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
             </Carousel>
           </div>
         </section>
@@ -122,19 +129,20 @@ export default function Home() {
                 loop: true,
                 direction: "rtl",
               }}
+              plugins={[plugin.current]}
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
               className="w-full"
             >
               <CarouselContent>
                 {bestOffersProducts.map((product) => (
                   <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                     <div className="p-1">
-                      <ProductCard product={product} />
+                       <ProductCard product={product} />
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
             </Carousel>
           </div>
         </section>
