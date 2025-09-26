@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React from "react";
+import { Header } from "@/components/layout/Header";
 
 export default function Home() {
   const featuredProducts = allProducts.slice(0, 8);
@@ -54,6 +55,8 @@ export default function Home() {
             </Button>
           </div>
         </section>
+
+        <Header />
 
         <section className="py-12 md:py-20">
           <div className="container mx-auto px-4">
