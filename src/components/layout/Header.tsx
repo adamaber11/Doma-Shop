@@ -8,6 +8,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
+import { CartSheetContent } from "@/components/cart/CartSheetContent";
 
 const navLinks = [
   { href: "/products", label: "المنتجات" },
@@ -86,17 +87,22 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Link href="/cart">
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">عربة التسوق</span>
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                  {cartCount}
-                </span>
-              )}
-            </Button>
-          </Link>
+          <Sheet>
+            <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="sr-only">عربة التسوق</span>
+                {cartCount > 0 && (
+                    <span className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {cartCount}
+                    </span>
+                )}
+                </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full max-w-md">
+                <CartSheetContent />
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
