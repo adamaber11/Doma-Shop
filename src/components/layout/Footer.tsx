@@ -3,12 +3,6 @@ import { Logo } from "@/components/Logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M22 4s-.7 2.1-2 3.4c1.6 1.4 3.3 4.9 3 7.1 0 .8-.4 1.5-.9 2.2-1.2 1.9-3.9 3.1-6.7 3.6-2.5.5-5.1.4-7.6-.2-2.1-.5-4-1.6-5.5-3.2.1.1 1 .2 1.8.1 1.4-.2 2.7-.8 3.9-1.8-1.5-.1-2.9-1.1-3.4-2.5-.3 1.1.3 1.8 1.1 2-1.5-.3-2.8-1.5-3.1-3 .5.9 1.4 1.4 2.4 1.4-1.2-.8-2.1-2.3-2.1-4.1 0-1.5.7-2.9 1.8-3.9 1.7 2.1 4.2 3.6 7.2 3.7.1-2.8 2.3-5.1 5.1-5.1 1.4 0 2.8.6 3.7 1.7.9-.2 1.8-.5 2.6-1-.3.9-.9 1.7-1.6 2.1.8-.1 1.6-.3 2.3-.6z" />
-  </svg>
-);
-
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
@@ -22,6 +16,15 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
   </svg>
 );
+
+const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12.52 7.04C12.52 6.47 12.99 6 13.56 6C14.13 6 14.6 6.47 14.6 7.04C14.6 7.61 14.13 8.08 13.56 8.08C12.99 8.08 12.52 7.61 12.52 7.04Z" />
+        <path d="M16.92 4.45V13.84C16.92 16.48 14.82 18.58 12.18 18.58C9.54 18.58 7.44 16.48 7.44 13.84V4.45" />
+        <path d="M12.18 18.58C12.18 18.58 12.22 18.58 12.26 18.58C13.88 18.58 15.22 17.5 15.65 16.05" />
+        <path d="M7.44 4.45C7.44 4.45 7.42 4.45 7.4 4.45C6.06 4.45 5 5.51 5 6.85C5 8.19 6.06 9.25 7.4 9.25C7.42 9.25 7.44 9.25 7.44 9.25" />
+    </svg>
+)
 
 
 export function Footer() {
@@ -55,30 +58,30 @@ export function Footer() {
             <h3 className="font-semibold mb-4">الدعم</h3>
             <ul className="space-y-2 text-sm">
               <li><Link href="/contact" className="text-gray-400 hover:text-white">اتصل بنا</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white">الأسئلة الشائعة</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white">الشحن والإرجاع</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white">تتبع الطلب</Link></li>
+              <li><Link href="/faq" className="text-gray-400 hover:text-white">الأسئلة الشائعة</Link></li>
+              <li><Link href="/shipping-returns" className="text-gray-400 hover:text-white">الشحن والإرجاع</Link></li>
+              <li><Link href="/track-order" className="text-gray-400 hover:text-white">تتبع الطلب</Link></li>
             </ul>
           </div>
           <div className="col-span-1">
             <h3 className="font-semibold mb-4">قانوني</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="text-gray-400 hover:text-white">سياسة الخصوصية</Link></li>
-              <li><Link href="#" className="text-gray-400 hover:text-white">شروط الخدمة</Link></li>
+              <li><Link href="/privacy-policy" className="text-gray-400 hover:text-white">سياسة الخصوصية</Link></li>
+              <li><Link href="/terms-of-service" className="text-gray-400 hover:text-white">شروط الخدمة</Link></li>
             </ul>
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center">
           <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} دوما. جميع الحقوق محفوظة.</p>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
-            <Link href="#" aria-label="Twitter">
-              <TwitterIcon className="h-5 w-5 text-gray-400 hover:text-white" />
-            </Link>
             <Link href="#" aria-label="Facebook">
               <FacebookIcon className="h-5 w-5 text-gray-400 hover:text-white" />
             </Link>
             <Link href="#" aria-label="Instagram">
               <InstagramIcon className="h-5 w-5 text-gray-400 hover:text-white" />
+            </Link>
+             <Link href="#" aria-label="TikTok">
+              <TikTokIcon className="h-5 w-5 text-gray-400 hover:text-white" />
             </Link>
           </div>
         </div>
