@@ -14,12 +14,12 @@ import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const shippingSchema = z.object({
-  name: z.string().min(2, "Name is too short"),
-  email: z.string().email("Invalid email address"),
-  address: z.string().min(5, "Address is too short"),
-  city: z.string().min(2, "City is too short"),
-  zip: z.string().regex(/^\d{5}$/, "Invalid ZIP code"),
-  country: z.string().min(2, "Country is required"),
+  name: z.string().min(2, "الاسم قصير جدًا"),
+  email: z.string().email("بريد إلكتروني غير صالح"),
+  address: z.string().min(5, "العنوان قصير جدًا"),
+  city: z.string().min(2, "المدينة قصيرة جدًا"),
+  zip: z.string().regex(/^\d{5}$/, "رمز بريدي غير صالح"),
+  country: z.string().min(2, "الدولة مطلوبة"),
 });
 
 export default function CheckoutPage() {
@@ -49,55 +49,55 @@ export default function CheckoutPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 font-headline">Checkout</h1>
+      <h1 className="text-3xl font-bold mb-8 font-headline">الدفع</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Shipping Information</CardTitle>
+              <CardTitle>معلومات الشحن</CardTitle>
             </CardHeader>
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField control={form.control} name="name" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+                      <FormLabel>الاسم الكامل</FormLabel>
+                      <FormControl><Input placeholder="جون دو" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="email" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>البريد الإلكتروني</FormLabel>
                       <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <FormField control={form.control} name="address" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl><Input placeholder="123 Main St" {...field} /></FormControl>
+                      <FormLabel>العنوان</FormLabel>
+                      <FormControl><Input placeholder="123 الشارع الرئيسي" {...field} /></FormControl>
                       <FormMessage />
                     </FormItem>
                   )} />
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField control={form.control} name="city" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>City</FormLabel>
+                        <FormLabel>المدينة</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={form.control} name="zip" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>ZIP Code</FormLabel>
+                        <FormLabel>الرمز البريدي</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                      <FormField control={form.control} name="country" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Country</FormLabel>
+                        <FormLabel>الدولة</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
                         <FormMessage />
                       </FormItem>
@@ -109,13 +109,13 @@ export default function CheckoutPage() {
           </Card>
           <Card className="mt-8">
             <CardHeader>
-              <CardTitle>Payment</CardTitle>
+              <CardTitle>الدفع</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-muted-foreground">This is a demo store. No real payment will be processed.</p>
+                <p className="text-muted-foreground">هذا متجر تجريبي. لن تتم معالجة أي دفعة حقيقية.</p>
                 <div className="mt-4 p-4 border rounded-md bg-secondary">
-                    <p className="font-semibold">Dummy Payment Gateway</p>
-                    <p className="text-sm">Click "Place Order" to simulate a successful payment.</p>
+                    <p className="font-semibold">بوابة دفع وهمية</p>
+                    <p className="text-sm">انقر على "إتمام الطلب" لمحاكاة عملية دفع ناجحة.</p>
                 </div>
             </CardContent>
           </Card>
@@ -123,7 +123,7 @@ export default function CheckoutPage() {
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle>Your Order</CardTitle>
+              <CardTitle>طلبك</CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-4">
@@ -131,7 +131,7 @@ export default function CheckoutPage() {
                   <li key={item.id} className="flex justify-between items-start">
                     <div>
                       <p className="font-semibold">{item.product.name}</p>
-                      <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
+                      <p className="text-sm text-muted-foreground">الكمية: {item.quantity}</p>
                     </div>
                     <p className="font-medium">{formatCurrency(item.product.price * item.quantity)}</p>
                   </li>
@@ -140,23 +140,23 @@ export default function CheckoutPage() {
               <Separator className="my-4" />
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
+                  <span>المجموع الفرعي</span>
                   <span>{formatCurrency(cartTotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>Free</span>
+                  <span>الشحن</span>
+                  <span>مجاني</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
+                  <span>الإجمالي</span>
                   <span>{formatCurrency(cartTotal)}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
-           <Button onClick={form.handleSubmit(onSubmit)} size="lg" className="w-full mt-6 bg-primary text-primary-foreground hover:bg-primary/90">
-                Place Order
+           <Button onClick={form.handleSubmit(onSubmit)} size="lg" className="w-full mt-6">
+                إتمام الطلب
             </Button>
         </div>
       </div>

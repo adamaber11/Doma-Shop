@@ -23,7 +23,7 @@ export default function ProductsPage({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 font-headline">Our Products</h1>
+      <h1 className="text-3xl font-bold mb-8 font-headline">منتجاتنا</h1>
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <aside className="lg:col-span-1">
           <ProductFilters />
@@ -37,8 +37,8 @@ export default function ProductsPage({
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center py-16">
-              <h2 className="text-2xl font-semibold mb-2">No Products Found</h2>
-              <p className="text-muted-foreground">Try adjusting your filters to find what you're looking for.</p>
+              <h2 className="text-2xl font-semibold mb-2">لم يتم العثور على منتجات</h2>
+              <p className="text-muted-foreground">حاول تعديل الفلاتر للعثور على ما تبحث عنه.</p>
             </div>
           )}
         </main>

@@ -26,59 +26,59 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export function Footer() {
   return (
-    <footer className="bg-foreground text-background">
+    <footer className="bg-black text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-8">
           <div className="col-span-1 md:col-span-4 lg:col-span-2">
             <Logo />
-            <p className="mt-4 text-sm max-w-md text-muted-foreground">
-              Your one-stop shop for everything you need. Quality products, amazing prices, and fast shipping.
+            <p className="mt-4 text-sm max-w-md text-gray-400">
+              متجرك الشامل لكل ما تحتاجه. منتجات عالية الجودة وأسعار مذهلة وشحن سريع.
             </p>
             <div className="mt-6">
-              <h3 className="font-semibold mb-2">Subscribe to our newsletter</h3>
+              <h3 className="font-semibold mb-2">اشترك في نشرتنا الإخبارية</h3>
               <form className="flex gap-2">
-                <Input type="email" placeholder="Your email address" className="bg-background"/>
-                <Button type="submit" variant="primary" className="bg-primary text-primary-foreground hover:bg-primary/90">Subscribe</Button>
+                <Input type="email" placeholder="عنوان بريدك الإلكتروني" className="bg-gray-800 border-gray-700 text-white"/>
+                <Button type="submit">اشترك</Button>
               </form>
             </div>
           </div>
           <div className="col-span-1">
-            <h3 className="font-semibold mb-4">Shop</h3>
+            <h3 className="font-semibold mb-4">تسوق</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/products?category=electronics" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Electronics</Link></li>
-              <li><Link href="/products?category=fashion" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Fashion</Link></li>
-              <li><Link href="/products?category=home-kitchen" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Home & Kitchen</Link></li>
-              <li><Link href="/products" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">All Products</Link></li>
+              <li><Link href="/products?category=electronics" className="text-gray-400 hover:text-white">إلكترونيات</Link></li>
+              <li><Link href="/products?category=fashion" className="text-gray-400 hover:text-white">أزياء</Link></li>
+              <li><Link href="/products?category=home-kitchen" className="text-gray-400 hover:text-white">المنزل والمطبخ</Link></li>
+              <li><Link href="/products" className="text-gray-400 hover:text-white">كل المنتجات</Link></li>
             </ul>
           </div>
           <div className="col-span-1">
-            <h3 className="font-semibold mb-4">Support</h3>
+            <h3 className="font-semibold mb-4">الدعم</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/contact" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Contact Us</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">FAQ</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Shipping & Returns</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Track Order</Link></li>
+              <li><Link href="/contact" className="text-gray-400 hover:text-white">اتصل بنا</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white">الأسئلة الشائعة</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white">الشحن والإرجاع</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white">تتبع الطلب</Link></li>
             </ul>
           </div>
           <div className="col-span-1">
-            <h3 className="font-semibold mb-4">Legal</h3>
+            <h3 className="font-semibold mb-4">قانوني</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="#" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Privacy Policy</Link></li>
-              <li><Link href="#" className="text-muted-foreground hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Terms of Service</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white">سياسة الخصوصية</Link></li>
+              <li><Link href="#" className="text-gray-400 hover:text-white">شروط الخدمة</Link></li>
             </ul>
           </div>
         </div>
-        <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Doma. All rights reserved.</p>
+        <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center">
+          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} دوما. جميع الحقوق محفوظة.</p>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
             <Link href="#" aria-label="Twitter">
-              <TwitterIcon className="h-5 w-5 text-muted-foreground hover:text-primary" />
+              <TwitterIcon className="h-5 w-5 text-gray-400 hover:text-white" />
             </Link>
             <Link href="#" aria-label="Facebook">
-              <FacebookIcon className="h-5 w-5 text-muted-foreground hover:text-primary" />
+              <FacebookIcon className="h-5 w-5 text-gray-400 hover:text-white" />
             </Link>
             <Link href="#" aria-label="Instagram">
-              <InstagramIcon className="h-5 w-5 text-muted-foreground hover:text-primary" />
+              <InstagramIcon className="h-5 w-5 text-gray-400 hover:text-white" />
             </Link>
           </div>
         </div>

@@ -52,18 +52,18 @@ export function ProductFilters() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Filters</CardTitle>
+        <CardTitle>الفلاتر</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <h3 className="font-semibold mb-4">Category</h3>
+          <h3 className="font-semibold mb-4">الفئة</h3>
           <RadioGroup 
             defaultValue={searchParams.get('category') || 'all'}
             onValueChange={handleCategoryChange}
             >
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="all" id="cat-all" />
-              <Label htmlFor="cat-all">All</Label>
+              <Label htmlFor="cat-all">الكل</Label>
             </div>
             {allCategories.map(category => (
               <div key={category.id} className="flex items-center space-x-2">
@@ -74,7 +74,7 @@ export function ProductFilters() {
           </RadioGroup>
         </div>
         <div>
-          <h3 className="font-semibold mb-4">Price Range</h3>
+          <h3 className="font-semibold mb-4">نطاق السعر</h3>
           <Slider
             min={0}
             max={2000}
@@ -87,7 +87,7 @@ export function ProductFilters() {
             <span>{formatCurrency(priceRange[0])}</span>
             <span>{formatCurrency(priceRange[1])}</span>
           </div>
-          <Button onClick={applyPriceFilter} className="w-full mt-4 bg-accent text-accent-foreground hover:bg-accent/90">Apply Price</Button>
+          <Button onClick={applyPriceFilter} className="w-full mt-4">تطبيق السعر</Button>
         </div>
       </CardContent>
     </Card>

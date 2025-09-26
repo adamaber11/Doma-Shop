@@ -44,16 +44,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return [...prevItems, { id: product.id, product, quantity }];
     });
     toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      title: "أضيف إلى السلة",
+      description: `${product.name} تمت إضافته إلى سلة التسوق الخاصة بك.`,
     });
   };
 
   const removeFromCart = (productId: string) => {
     setCartItems(prevItems => prevItems.filter(item => item.product.id !== productId));
     toast({
-      title: "Item removed",
-      description: "The item has been removed from your cart.",
+      title: "تمت إزالة العنصر",
+      description: "تمت إزالة العنصر من سلة التسوق الخاصة بك.",
     });
   };
 

@@ -18,10 +18,10 @@ export default function CartPage() {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <ShoppingBag className="mx-auto h-24 w-24 text-muted-foreground" />
-        <h1 className="mt-4 text-3xl font-bold font-headline">Your Cart is Empty</h1>
-        <p className="mt-2 text-muted-foreground">Looks like you haven't added anything to your cart yet.</p>
-        <Button asChild className="mt-6 bg-primary text-primary-foreground hover:bg-primary/90">
-          <Link href="/products">Start Shopping</Link>
+        <h1 className="mt-4 text-3xl font-bold font-headline">عربة التسوق فارغة</h1>
+        <p className="mt-2 text-muted-foreground">يبدو أنك لم تضف أي شيء إلى سلة التسوق الخاصة بك بعد.</p>
+        <Button asChild className="mt-6">
+          <Link href="/products">ابدأ التسوق</Link>
         </Button>
       </div>
     );
@@ -29,7 +29,7 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 font-headline">Your Cart</h1>
+      <h1 className="text-3xl font-bold mb-8 font-headline">عربة التسوق</h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <Card>
@@ -39,7 +39,7 @@ export default function CartPage() {
                   const itemImage = getPlaceholderImage(item.product.imageIds[0]);
                   return (
                     <li key={item.id} className="flex items-center p-4">
-                      <div className="relative h-24 w-24 rounded-md overflow-hidden mr-4">
+                      <div className="relative h-24 w-24 rounded-md overflow-hidden ml-4">
                         <Image
                           src={itemImage.imageUrl}
                           alt={item.product.name}
@@ -69,7 +69,7 @@ export default function CartPage() {
                       <div className="text-right w-24 font-semibold">
                         {formatCurrency(item.product.price * item.quantity)}
                       </div>
-                      <Button variant="ghost" size="icon" className="ml-4 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.id)}>
+                      <Button variant="ghost" size="icon" className="mr-4 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.id)}>
                         <Trash2 className="h-5 w-5" />
                       </Button>
                     </li>
@@ -82,26 +82,26 @@ export default function CartPage() {
         <div className="lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
+              <CardTitle>ملخص الطلب</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between">
-                <span>Subtotal</span>
+                <span>المجموع الفرعي</span>
                 <span>{formatCurrency(cartTotal)}</span>
               </div>
               <div className="flex justify-between">
-                <span>Shipping</span>
-                <span>Free</span>
+                <span>الشحن</span>
+                <span>مجاني</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-lg">
-                <span>Total</span>
+                <span>الإجمالي</span>
                 <span>{formatCurrency(cartTotal)}</span>
               </div>
             </CardContent>
             <CardFooter>
-              <Button asChild size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-                <Link href="/checkout">Proceed to Checkout</Link>
+              <Button asChild size="lg" className="w-full">
+                <Link href="/checkout">المتابعة للدفع</Link>
               </Button>
             </CardFooter>
           </Card>

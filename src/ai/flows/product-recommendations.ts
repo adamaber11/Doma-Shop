@@ -34,14 +34,14 @@ const productRecommendationsPrompt = ai.definePrompt({
   name: 'productRecommendationsPrompt',
   input: {schema: ProductRecommendationsInputSchema},
   output: {schema: ProductRecommendationsOutputSchema},
-  prompt: `You are an expert product recommendation engine.
+  prompt: `أنت محرك توصية منتجات خبير.
 
-  Based on the user's browsing history and items in their cart, recommend other products that they might be interested in.
+  بناءً على سجل تصفح المستخدم والعناصر الموجودة في عربة التسوق الخاصة به ، أوصي بمنتجات أخرى قد يكون مهتمًا بها.
 
-  Browsing History: {{{browsingHistory}}}
-  Cart Items: {{{cartItems}}}
+  سجل التصفح: {{{browsingHistory}}}
+  عناصر سلة التسوق: {{{cartItems}}}
 
-  Return a list of product identifiers.
+  إرجاع قائمة بمعرفات المنتج.
   `,
 });
 

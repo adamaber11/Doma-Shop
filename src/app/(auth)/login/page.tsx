@@ -10,8 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
+  email: z.string().email("بريد إلكتروني غير صالح"),
+  password: z.string().min(1, "كلمة المرور مطلوبة"),
 });
 
 export default function LoginPage() {
@@ -28,32 +28,32 @@ export default function LoginPage() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Welcome Back!</CardTitle>
-        <CardDescription>Enter your credentials to access your account.</CardDescription>
+        <CardTitle>أهلاً بعودتك!</CardTitle>
+        <CardDescription>أدخل بياناتك للوصول إلى حسابك.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField control={form.control} name="email" render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>البريد الإلكتروني</FormLabel>
                 <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="password" render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>كلمة المرور</FormLabel>
                 <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Login</Button>
+            <Button type="submit" className="w-full">تسجيل الدخول</Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center text-sm">
-        <p>Don't have an account?&nbsp;<Link href="/signup" className="text-primary hover:underline relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Sign up</Link></p>
+        <p>ليس لديك حساب؟&nbsp;<Link href="/signup" className="text-primary hover:underline relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">إنشاء حساب</Link></p>
       </CardFooter>
     </Card>
   );

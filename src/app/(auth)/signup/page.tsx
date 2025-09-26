@@ -10,9 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const signupSchema = z.object({
-  name: z.string().min(2, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  name: z.string().min(2, "الاسم مطلوب"),
+  email: z.string().email("بريد إلكتروني غير صالح"),
+  password: z.string().min(8, "يجب أن لا تقل كلمة المرور عن 8 أحرف"),
 });
 
 export default function SignupPage() {
@@ -29,39 +29,39 @@ export default function SignupPage() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Create an Account</CardTitle>
-        <CardDescription>Join Doma to start shopping.</CardDescription>
+        <CardTitle>إنشاء حساب</CardTitle>
+        <CardDescription>انضم إلى دوما لبدء التسوق.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
              <FormField control={form.control} name="name" render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl><Input placeholder="John Doe" {...field} /></FormControl>
+                <FormLabel>الاسم</FormLabel>
+                <FormControl><Input placeholder="جون دو" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="email" render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>البريد الإلكتروني</FormLabel>
                 <FormControl><Input type="email" placeholder="you@example.com" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
             <FormField control={form.control} name="password" render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>كلمة المرور</FormLabel>
                 <FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl>
                 <FormMessage />
               </FormItem>
             )} />
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Create Account</Button>
+            <Button type="submit" className="w-full">إنشاء حساب</Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex justify-center text-sm">
-        <p>Already have an account?&nbsp;<Link href="/login" className="text-primary hover:underline relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">Log in</Link></p>
+        <p>لديك حساب بالفعل؟&nbsp;<Link href="/login" className="text-primary hover:underline relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">تسجيل الدخول</Link></p>
       </CardFooter>
     </Card>
   );

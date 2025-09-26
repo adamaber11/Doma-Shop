@@ -79,23 +79,23 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <Button size="lg" onClick={handleAddToCart} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90">
-              Add to Cart
+            <Button size="lg" onClick={handleAddToCart} className="flex-1">
+              أضف إلى السلة
             </Button>
           </div>
           
           <div className="flex items-center gap-2 text-sm text-green-600">
             <CheckCircle className="h-5 w-5" />
-            <span>{product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}</span>
+            <span>{product.stock > 0 ? `${product.stock} متوفر في المخزون` : 'غير متوفر'}</span>
           </div>
           
           <Separator className="my-8" />
           
           <div>
-            <h3 className="text-lg font-semibold mb-2">Product Details</h3>
+            <h3 className="text-lg font-semibold mb-2">تفاصيل المنتج</h3>
             <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>Category: {product.categoryId}</li>
-              <li>Product ID: {product.id}</li>
+              <li>الفئة: {product.categoryId}</li>
+              <li>معرف المنتج: {product.id}</li>
             </ul>
           </div>
         </div>
