@@ -25,6 +25,7 @@ export default function RootLayout({
       <body className="font-body antialiased flex flex-col min-h-screen">
         <CartProvider>
             {children}
+            <Footer />
         </CartProvider>
         <Toaster />
       </body>
