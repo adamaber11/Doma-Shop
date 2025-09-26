@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -6,10 +7,11 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { allProducts, allCategories } from "@/lib/data";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ArrowRight, ShoppingBag } from "lucide-react";
-import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
 
 export default function Home() {
   const featuredProducts = allProducts.slice(0, 4);
+  const bestOffersProducts = allProducts.slice(4, 8);
   const heroImage = getPlaceholderImage('hero-1');
 
   return (
@@ -27,14 +29,14 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/40" />
           <div className="relative container mx-auto h-full flex flex-col items-start justify-center text-white px-4">
             <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4 text-shadow">
-              Discover Your Style
+              اكتشف أسلوبك
             </h1>
             <p className="text-lg md:text-2xl mb-8 max-w-2xl text-shadow">
-              Explore our curated collection of the finest products. Quality and style delivered to your doorstep.
+              استكشف مجموعتنا المنسقة من أجود المنتجات. الجودة والأناقة تصل إلى عتبة داركم.
             </p>
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold">
               <Link href="/products">
-                Shop Now <ShoppingBag className="ml-2 h-5 w-5" />
+                تسوق الآن <ShoppingBag className="mr-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
@@ -43,10 +45,10 @@ export default function Home() {
         <section className="py-12 md:py-20">
           <div className="container mx-auto px-4">
             <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold font-headline">Shop by Category</h2>
+              <h2 className="text-2xl md:text-3xl font-bold font-headline">تسوق حسب الفئة</h2>
               <Button variant="ghost" asChild>
-                <Link href="/products">
-                  View All <ArrowRight className="ml-2 h-4 w-4" />
+                <Link href="/products" className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
+                  عرض الكل <ArrowRight className="mr-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -80,7 +82,7 @@ export default function Home() {
 
         <section className="bg-secondary py-12 md:py-20">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">Featured Products</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">المنتجات المميزة</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
               {featuredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
@@ -88,8 +90,19 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <section className="py-12 md:py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">أفضل العروض</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              {bestOffersProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
-      <Footer />
     </>
   );
 }
+
