@@ -75,8 +75,8 @@ export default function Home() {
                  const categoryImage = getPlaceholderImage(category.imageId);
                 return (
                 <Link key={category.id} href={`/products?category=${category.id}`} className="group">
-                  <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                    <CardContent className="p-0">
+                  <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full">
+                    <CardContent className="p-0 flex flex-col flex-grow">
                       <div className="relative aspect-square">
                         <Image
                           src={categoryImage.imageUrl}
@@ -87,7 +87,7 @@ export default function Home() {
                         />
                          <div className="absolute inset-0 bg-black/20" />
                       </div>
-                      <div className="p-4 bg-card">
+                      <div className="p-4 bg-card flex-grow flex flex-col justify-center">
                         <h3 className="font-semibold text-center text-card-foreground">{category.name}</h3>
                       </div>
                     </CardContent>
@@ -156,5 +156,3 @@ export default function Home() {
     </>
   );
 }
-
-    
