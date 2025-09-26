@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { useEffect } from 'react';
 
 const shippingSchema = z.object({
   name: z.string().min(2, "الاسم قصير جدًا"),
@@ -23,7 +24,7 @@ const shippingSchema = z.object({
 });
 
 export default function CheckoutPage() {
-  const { cartItems, cartTotal, clearCart } = useCart();
+  const { cartItems, cartTotal, clearCart, cartCount } = useCart();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof shippingSchema>>({
@@ -33,11 +34,14 @@ export default function CheckoutPage() {
     }
   });
 
-  if (cartItems.length === 0) {
-    if (typeof window !== 'undefined') {
-        router.push('/products');
+  useEffect(() => {
+    if (cartCount === 0) {
+      router.push('/products');
     }
-    return null;
+  }, [cartCount, router]);
+
+  if (cartCount === 0) {
+    return null; // Render nothing while redirecting
   }
 
   const onSubmit = (values: z.infer<typeof shippingSchema>) => {

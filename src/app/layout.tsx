@@ -2,8 +2,6 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { CartProvider } from '@/context/CartContext';
-import { Header } from '@/components/layout/Header';
-import { Footer } from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'Doma',
@@ -25,7 +23,6 @@ export default function RootLayout({
       <body className="font-body antialiased flex flex-col min-h-screen">
         <CartProvider>
             {children}
-            <Footer />
         </CartProvider>
         <Toaster />
       </body>
