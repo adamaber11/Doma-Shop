@@ -1,15 +1,19 @@
 import type { Product, Category } from './types';
 
 export const allCategories: Category[] = [
-  { id: 'electronics', name: 'إلكترونيات', imageId: 'electronics-cat' },
-  { id: 'fashion', name: 'أزياء', imageId: 'fashion-cat' },
-  { id: 'beauty', name: 'الجمال والعناية الشخصية', imageId: 'beauty-cat' },
-  { id: 'home-kitchen', name: 'المنزل والمطبخ', imageId: 'home-kitchen-cat' },
-  { id: 'grocery', name: 'البقالة', imageId: 'grocery-cat' },
-  { id: 'health-sports', name: 'الصحة والرياضة', imageId: 'sports-cat' },
-  { id: 'toys-hobbies', name: 'الألعاب والهوايات', imageId: 'toys-cat' },
-  { id: 'books-stationery', name: 'الكتب والقرطاسية', imageId: 'books-cat' },
-  { id: 'vehicles-accessories', name: 'المركبات والإكسسوارات', imageId: 'vehicles-cat' },
+  { id: 'electronics', name: 'الإلكترونيات و الأجهزة', imageId: 'electronics-cat' },
+  { id: 'fashion', name: 'الموضة و الأزياء', imageId: 'fashion-cat' },
+  { id: 'beauty', name: 'الجمال و العناية الشخصية', imageId: 'beauty-cat' },
+  { id: 'home-kitchen', name: 'المنزل و المطبخ', imageId: 'home-kitchen-cat' },
+  { id: 'grocery', name: 'البقالة و السوبرماركت', imageId: 'grocery-cat' },
+  { id: 'health-sports', name: 'الصحة و الرياضة', imageId: 'sports-cat' },
+  { id: 'mother-child', name: 'الأم و الطفل', imageId: 'toys-cat' },
+  { id: 'toys-hobbies', name: 'الألعاب و الهوايات', imageId: 'toys-cat' },
+  { id: 'vehicles-bikes', name: 'السيارات و الدراجات', imageId: 'vehicles-cat' },
+  { id: 'books-stationery', name: 'الكتب و الأدوات المكتبية', imageId: 'books-cat' },
+  { id: 'jewelry-watches', name: 'المجوهرات و الساعات', imageId: 'product-21' },
+  { id: 'pets', name: 'الحيوانات الأليفة', imageId: 'product-21' },
+  { id: 'large-appliances', name: 'الأجهزة المنزلية الكبيرة', imageId: 'product-12' },
 ];
 
 export const allProducts: Product[] = [
@@ -54,7 +58,7 @@ export const allProducts: Product[] = [
   { id: 'prod-24', name: 'مخطط جلدي 2024', description: 'ابق منظمًا مع هذا المخطط الأنيق المغلف بالجلد. يتميز بعروض يومية وأسبوعية وشهرية.', price: 29.99, categoryId: 'books-stationery', imageIds: ['product-24'], stock: 90 },
 
   // Vehicles & Accessories
-  { id: 'prod-25', name: 'طقم العناية بالسيارة المثالي', description: 'كل ما تحتاجه للحفاظ على مظهر سيارتك جديدًا تمامًا. يشمل الشمع والصابون وملمع الإطارات ومناشف الألياف الدقيقة.', price: 55.00, categoryId: 'vehicles-accessories', imageIds: ['product-25'], stock: 60 },
-  { id: 'prod-26', name: 'خوذة دراجة نارية خفية', description: 'خوذة دراجة نارية كاملة الوجه معتمدة من DOT مع لمسة نهائية سوداء غير لامعة وتهوية متقدمة.', price: 180.00, categoryId: 'vehicles-accessories', imageIds: ['product-26'], stock: 45 },
-  { id: 'prod-27', name: 'ملاح GPS رقمي', description: 'لا تضل طريقك مرة أخرى مع ملاح GPS بشاشة تعمل باللمس مقاس 7 بوصات مع تحديثات خرائط مدى الحياة.', price: 129.99, categoryId: 'vehicles-accessories', imageIds: ['product-27'], stock: 55 },
+  { id: 'prod-25', name: 'طقم العناية بالسيارة المثالي', description: 'كل ما تحتاجه للحفاظ على مظهر سيارتك جديدًا تمامًا. يشمل الشمع والصابون وملمع الإطارات ومناشف الألياف الدقيقة.', price: 55.00, categoryId: 'vehicles-bikes', imageIds: ['product-25'], stock: 60 },
+  { id: 'prod-26', name: 'خوذة دراجة نارية خفية', description: 'خوذة دراجة نارية كاملة الوجه معتمدة من DOT مع لمسة نهائية سوداء غير لامعة وتهوية متقدمة.', price: 180.00, categoryId: 'vehicles-bikes', imageIds: ['product-26'], stock: 45 },
+  { id: 'prod-27', name: 'ملاح GPS رقمي', description: 'لا تضل طريقك مرة أخرى مع ملاح GPS بشاشة تعمل باللمس مقاس 7 بوصات مع تحديثات خرائط مدى الحياة.', price: 129.99, categoryId: 'vehicles-bikes', imageIds: ['product-27'], stock: 55 },
 ];
