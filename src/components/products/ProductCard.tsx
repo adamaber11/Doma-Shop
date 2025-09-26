@@ -24,42 +24,35 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation(); // Prevent sheet from opening
+    e.preventDefault(); // Prevent link navigation
     addToCart(product, 1);
   };
   
-  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // We check if the click target is the add to cart button or one of its children
-    if ((e.target as HTMLElement).closest('.add-to-cart-btn')) {
-        return;
-    }
-    setOpen(true);
-  }
-
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <Card onClick={handleCardClick} className="group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer">
-        <CardHeader className="p-0">
-          <div className="relative aspect-square w-full">
-             <SheetTrigger asChild>
-                <Image
-                    src={productImage.imageUrl}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                    data-ai-hint={productImage.imageHint}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-            </SheetTrigger>
-          </div>
-        </CardHeader>
-        <CardContent className="p-4 flex-grow">
-          <SheetTrigger asChild>
-            <h3 className="font-semibold text-lg hover:text-primary transition-colors">{product.name}</h3>
-          </SheetTrigger>
-          <p className="text-muted-foreground text-sm">{formatCurrency(product.price)}</p>
-        </CardContent>
+      <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer">
+        <SheetTrigger asChild>
+            <Link href={`/products/${product.id}`} className="flex flex-col h-full" onClick={(e) => { e.preventDefault(); setOpen(true);}}>
+                <CardHeader className="p-0">
+                  <div className="relative aspect-square w-full">
+                        <Image
+                            src={productImage.imageUrl}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                            data-ai-hint={productImage.imageHint}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                  </div>
+                </CardHeader>
+                <CardContent className="p-4 flex-grow">
+                    <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{product.name}</h3>
+                  <p className="text-muted-foreground text-sm">{formatCurrency(product.price)}</p>
+                </CardContent>
+            </Link>
+        </SheetTrigger>
         <CardFooter className="p-4 pt-0">
-          <Button onClick={handleAddToCart} className="w-full add-to-cart-btn">
+          <Button onClick={handleAddToCart} className="w-full">
             <ShoppingCart className="ml-2 h-4 w-4" />
             أضف إلى السلة
           </Button>

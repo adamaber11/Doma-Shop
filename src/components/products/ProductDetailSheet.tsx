@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { allProducts } from '@/lib/data';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
 import { Plus, Minus, CheckCircle } from 'lucide-react';
-import { ProductRecommendations } from '@/components/products/ProductRecommendations';
 import type { Product } from '@/lib/types';
 import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
