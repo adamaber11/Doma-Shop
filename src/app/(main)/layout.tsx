@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from 'next/navigation';
-import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { MinimalFooter } from '@/components/layout/MinimalFooter';
 
 export default function MainLayout({
   children,
@@ -14,9 +14,9 @@ export default function MainLayout({
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!isHomePage && <Header />}
+      <Header />
       <main className="flex-1">{children}</main>
-      {isHomePage && <Footer />}
+      {!isHomePage && <MinimalFooter />}
     </div>
   );
 }
