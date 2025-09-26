@@ -6,17 +6,13 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { allProducts, allCategories } from "@/lib/data";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ArrowRight, ShoppingBag } from "lucide-react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 
 export default function Home() {
   const featuredProducts = allProducts.slice(0, 4);
   const heroImage = getPlaceholderImage('hero-1');
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-1">
+    <>
         <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200">
            <Image
             src={heroImage.imageUrl}
@@ -90,8 +86,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </main>
-      <Footer />
-    </div>
+    </>
   );
 }

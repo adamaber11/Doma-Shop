@@ -30,7 +30,7 @@ export default function SignupPage() {
     <Card className="w-full max-w-sm">
       <CardHeader>
         <CardTitle>Create an Account</CardTitle>
-        <CardDescription>Join ShopSphere to start shopping.</CardDescription>
+        <CardDescription>Join Doma to start shopping.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
