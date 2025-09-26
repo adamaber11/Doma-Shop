@@ -38,19 +38,6 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </Link>
       </CardHeader>
-      <CardContent className="p-4 flex-grow">
-        <CardTitle className="text-lg leading-tight mb-2">
-          <Link href={`/products/${product.id}`} className="hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
-            {product.name}
-          </Link>
-        </CardTitle>
-      </CardContent>
-      <CardFooter className="p-4 flex justify-between items-center">
-        <p className="text-xl font-bold text-primary">{formatCurrency(product.price)}</p>
-        <Button size="icon" variant="outline" onClick={() => addToCart(product, 1)} aria-label="Add to cart">
-          <ShoppingCart className="h-5 w-5" />
-        </Button>
-      </CardFooter>
     </Card>
   );
 }
