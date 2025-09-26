@@ -32,7 +32,6 @@ export default function Home() {
 
   return (
     <>
-        <Header />
         <main className="flex-1">
         <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200">
            <Image
@@ -58,6 +57,8 @@ export default function Home() {
             </Button>
           </div>
         </section>
+
+        <Header />
 
         <section className="py-12 md:py-20">
           <div className="container mx-auto px-4">
