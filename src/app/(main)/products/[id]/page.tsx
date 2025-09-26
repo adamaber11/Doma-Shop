@@ -3,14 +3,16 @@
 import { notFound, useRouter } from 'next/navigation';
 import { allProducts } from '@/lib/data';
 import { ProductDetailSheetContent } from '@/components/products/ProductDetailSheet';
-import { useEffect } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { useEffect, useState } from 'react';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
   const product = allProducts.find(p => p.id === params.id);
 
   useEffect(() => {
+    setIsClient(true);
     if (!product) {
       notFound();
     }
@@ -25,6 +27,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         // Use a slight delay to allow the sheet to close before navigating
         setTimeout(() => router.back(), 100);
     }
+  }
+  
+  if (!isClient) {
+    return null;
   }
 
   return (
