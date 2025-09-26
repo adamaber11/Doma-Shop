@@ -52,7 +52,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
 
   if (loading) {
     return (
-      <div className="py-12">
+      <div>
         <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
@@ -72,7 +72,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
   }
 
   return (
-    <div className="py-12">
+    <div>
       <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {recommendations.map(product => (
