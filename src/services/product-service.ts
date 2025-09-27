@@ -2,7 +2,7 @@
 "use server";
 import { db } from "@/lib/firebase";
 import type { Product, Category } from "@/lib/types";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc } from "firebase/firestore";
 
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
@@ -94,7 +94,7 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
 export async function addProduct(product: Omit<Product, 'id'>): Promise<Product> {
     const docRef = await addDoc(productsCollection, product);
     await fetchDataIfNeeded(true); // Force cache refresh
-    const newProduct = { id: docRef.id, ...product };
+    const newProduct = { id: docRef.id, ...product } as Product;
     if (allProducts) {
         allProducts.push(newProduct);
     }
