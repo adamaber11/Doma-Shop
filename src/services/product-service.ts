@@ -94,7 +94,24 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
 export async function addProduct(product: Omit<Product, 'id'>): Promise<Product> {
     const docRef = await addDoc(productsCollection, product);
     await fetchDataIfNeeded(true); // Force cache refresh
-    return { id: docRef.id, ...product };
+    const newProduct = { id: docRef.id, ...product };
+    if (allProducts) {
+        allProducts.push(newProduct);
+    }
+    return newProduct;
+}
+
+export async function addCategory(category: Omit<Category, 'id'>): Promise<Category> {
+    // Generate an ID from the name
+    const id = category.name.toLowerCase().replace(/\s+/g, '-');
+    const categoryRef = doc(db, 'categories', id);
+    await setDoc(categoryRef, category);
+    await fetchDataIfNeeded(true);
+    const newCategory = { id, ...category };
+    if(allCategories) {
+        allCategories.push(newCategory);
+    }
+    return newCategory;
 }
 
 export async function updateProduct(productId: string, productUpdate: Partial<Product>): Promise<void> {

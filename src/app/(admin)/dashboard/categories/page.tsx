@@ -7,7 +7,7 @@ import { getCategories } from '@/services/product-service';
 import type { Category } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -40,6 +40,12 @@ export default function DashboardCategoriesPage() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">الفئات</h1>
+        <Button asChild>
+          <Link href="/dashboard/categories/new">
+            <PlusCircle className="ml-2 h-4 w-4" />
+            إضافة فئة
+          </Link>
+        </Button>
       </div>
 
       {loading ? (
@@ -115,7 +121,7 @@ export default function DashboardCategoriesPage() {
        { !loading && categories.length === 0 && (
          <div className="text-center py-16 border rounded-lg">
             <h2 className="text-2xl font-semibold">لم يتم العثور على فئات</h2>
-            <p className="text-muted-foreground mt-2">لا توجد فئات لعرضها.</p>
+            <p className="text-muted-foreground mt-2">ابدأ بإضافة فئة جديدة.</p>
          </div>
         )}
     </div>
