@@ -38,10 +38,7 @@ export function Header() {
   return (
     <header className={headerClasses}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-        <div className="flex items-center gap-4">
-          <div className="hidden lg:block">
-            <Logo />
-          </div>
+        <div className="flex items-center gap-2">
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="lg:hidden">
@@ -62,7 +59,10 @@ export function Header() {
               </div>
             </SheetContent>
           </Sheet>
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
+          <div className="flex-shrink-0">
+             <Logo />
+          </div>
+          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium ml-6">
             {navLinks.map(({ href, label }) => (
               <Link key={href} href={href} className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
                 {label}
@@ -71,10 +71,10 @@ export function Header() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <div className="relative hidden md:block">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-64" />
+            <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-48 md:w-64" />
           </div>
 
           <UserAuth />
