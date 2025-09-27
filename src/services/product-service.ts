@@ -105,34 +105,30 @@ export async function getProducts(forceRefresh: boolean = false): Promise<Produc
 }
 
 export async function getProductById(productId: string): Promise<Product | null> {
-    await fetchDataIfNeeded();
-    const productFromCache = allProducts?.find(p => p.id === productId);
-    if (productFromCache) {
-        if (productFromCache.reviews) {
-            productFromCache.reviews = productFromCache.reviews.map(review => ({
-                ...review,
-                createdAt: new Date(review.createdAt)
-            }));
-        }
-        return productFromCache;
-    }
-    
-    const productDoc = await getDoc(doc(db, 'products', productId));
+    const productDocRef = doc(db, 'products', productId);
+    const productDoc = await getDoc(productDocRef);
+
     if (productDoc.exists()) {
         const data = productDoc.data();
+        // Ensure reviews have Date objects
         if (data.reviews) {
-             data.reviews = data.reviews.map((review: any) => ({
+            data.reviews = data.reviews.map((review: any) => ({
                 ...review,
-                createdAt: review.createdAt.toDate()
+                createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : new Date(review.createdAt)
             }));
         }
-        const newProduct = { id: productDoc.id, ...data } as Product;
+        const product = { id: productDoc.id, ...data } as Product;
+        
+        // Update cache if it exists
         if (allProducts) {
             const index = allProducts.findIndex(p => p.id === productId);
-            if(index !== -1) allProducts[index] = newProduct;
-            else allProducts.push(newProduct);
+            if (index !== -1) {
+                allProducts[index] = product;
+            } else {
+                allProducts.push(product);
+            }
         }
-        return newProduct;
+        return product;
     }
     
     return null;
@@ -189,30 +185,21 @@ export async function getCategories(forceRefresh: boolean = false): Promise<Cate
 }
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
-    await fetchDataIfNeeded(); // Ensures cache is populated if not already
-    let category = allCategories?.find(c => c.id === categoryId) || null;
-
-    if (!category) {
-        // If not in cache, fetch directly from Firestore
-        console.log(`Category ${categoryId} not in cache, fetching from DB...`);
-        const catDoc = await getDoc(doc(db, 'categories', categoryId));
-        if (catDoc.exists()) {
-            category = { id: catDoc.id, ...catDoc.data() } as Category;
-            // Optionally update the cache
-            if (allCategories) {
-                const index = allCategories.findIndex(c => c.id === categoryId);
-                if (index > -1) {
-                    allCategories[index] = category;
-                } else {
-                    allCategories.push(category);
-                }
+    const catDoc = await getDoc(doc(db, 'categories', categoryId));
+    if (catDoc.exists()) {
+        const category = { id: catDoc.id, ...catDoc.data() } as Category;
+        // Optionally update the cache
+        if (allCategories) {
+            const index = allCategories.findIndex(c => c.id === categoryId);
+            if (index > -1) {
+                allCategories[index] = category;
             } else {
-                allCategories = [category];
+                allCategories.push(category);
             }
         }
+        return category;
     }
-
-    return category;
+    return null;
 }
 
 
@@ -248,14 +235,14 @@ export async function getAds(forceRefresh: boolean = false): Promise<Ad[]> {
 }
 
 export async function getAdById(adId: string): Promise<Ad | null> {
-    await fetchDataIfNeeded();
-    const adFromCache = allAds?.find(ad => ad.id === adId);
-    if (adFromCache) return adFromCache;
-
     const adDoc = await getDoc(doc(db, 'advertisements', adId));
      if (adDoc.exists()) {
         const newAd = { id: adDoc.id, ...adDoc.data() } as Ad;
-        if(allAds) allAds.push(newAd);
+        if(allAds){
+             const index = allAds.findIndex(ad => ad.id === adId);
+            if(index !== -1) allAds[index] = newAd;
+            else allAds.push(newAd);
+        }
         return newAd;
     }
     return null;
@@ -290,14 +277,14 @@ export async function getPopupAds(forceRefresh: boolean = false): Promise<Ad[]> 
 }
 
 export async function getPopupAdById(adId: string): Promise<Ad | null> {
-    await fetchDataIfNeeded();
-    const adFromCache = allPopupAds?.find(ad => ad.id === adId);
-    if (adFromCache) return adFromCache;
-
     const adDoc = await getDoc(doc(db, 'popupAds', adId));
      if (adDoc.exists()) {
         const newAd = { id: adDoc.id, ...adDoc.data() } as Ad;
-        if(allPopupAds) allPopupAds.push(newAd);
+        if(allPopupAds) {
+            const index = allPopupAds.findIndex(ad => ad.id === adId);
+            if(index !== -1) allPopupAds[index] = newAd;
+            else allPopupAds.push(newAd);
+        }
         return newAd;
     }
     return null;
