@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getProducts, deleteProduct } from '@/services/product-service';
 import type { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getPlaceholderImage } from '@/lib/placeholder-images';
 
 export default function DashboardProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -98,6 +100,7 @@ export default function DashboardProductsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[80px] hidden sm:table-cell">الصورة</TableHead>
                 <TableHead>الاسم</TableHead>
                 <TableHead className="hidden md:table-cell">الحالة</TableHead>
                 <TableHead className="hidden md:table-cell">السعر</TableHead>
@@ -106,8 +109,21 @@ export default function DashboardProductsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {products.map((product) => (
+              {products.map((product) => {
+                const imageUrl = product.imageUrls && product.imageUrls.length > 0 
+                  ? product.imageUrls[0] 
+                  : getPlaceholderImage('product-1').imageUrl;
+                return (
                 <TableRow key={product.id}>
+                  <TableCell className="hidden sm:table-cell">
+                      <Image
+                          alt={product.name}
+                          className="aspect-square rounded-md object-cover"
+                          height="64"
+                          src={imageUrl}
+                          width="64"
+                      />
+                  </TableCell>
                   <TableCell className="font-medium">{product.name}</TableCell>
                   <TableCell className="hidden md:table-cell">{getStockStatus(product.stock)}</TableCell>
                   <TableCell className="hidden md:table-cell">{formatCurrency(product.price)}</TableCell>
@@ -144,7 +160,7 @@ export default function DashboardProductsPage() {
                     </AlertDialog>
                   </TableCell>
                 </TableRow>
-              ))}
+              )})}
             </TableBody>
           </Table>
         </div>

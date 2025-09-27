@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { updateProduct, getProductById, getCategories } from '@/services/product-service';
@@ -16,9 +16,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, PlusCircle, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ImageUpload } from '@/components/shared/ImageUpload';
 
 const productSchema = z.object({
   name: z.string().min(3, "يجب أن يكون اسم المنتج 3 أحرف على الأقل"),
@@ -26,8 +25,10 @@ const productSchema = z.object({
   price: z.coerce.number().min(0.01, "السعر مطلوب"),
   categoryId: z.string({ required_error: "الفئة مطلوبة" }),
   stock: z.coerce.number().min(0, "المخزون مطلوب"),
-  imageIds: z.array(z.string()).min(1, "صورة واحدة على الأقل مطلوبة"),
+  imageUrls: z.array(z.object({ value: z.string().url("يجب أن يكون رابطًا صالحًا") })).min(1, "رابط صورة واحد على الأقل مطلوب"),
 });
+
+type ProductFormValues = z.infer<typeof productSchema>;
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -40,8 +41,13 @@ export default function EditProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const form = useForm<z.infer<typeof productSchema>>({
+  const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
+  });
+  
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "imageUrls"
   });
 
   useEffect(() => {
@@ -56,7 +62,11 @@ export default function EditProductPage() {
 
         if (fetchedProduct) {
           setProduct(fetchedProduct);
-          form.reset(fetchedProduct);
+          const defaultValues = {
+            ...fetchedProduct,
+            imageUrls: fetchedProduct.imageUrls.map(url => ({ value: url }))
+          };
+          form.reset(defaultValues);
         } else {
             toast({ title: "خطأ", description: "لم يتم العثور على المنتج.", variant: "destructive" });
             router.push('/dashboard/products');
@@ -73,9 +83,13 @@ export default function EditProductPage() {
     }
   }, [productId, form, router, toast]);
 
-  const onSubmit = async (values: z.infer<typeof productSchema>) => {
+  const onSubmit = async (values: ProductFormValues) => {
+     const productData = {
+      ...values,
+      imageUrls: values.imageUrls.map(url => url.value)
+    };
     try {
-      await updateProduct(productId, values);
+      await updateProduct(productId, productData);
       toast({ title: "نجاح", description: "تم تحديث المنتج بنجاح." });
       router.push('/dashboard/products');
     } catch (error) {
@@ -151,22 +165,42 @@ export default function EditProductPage() {
                     </FormItem>
                     )} />
                     
-                     <FormField
-                        control={form.control}
-                        name="imageIds"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>صور المنتج</FormLabel>
-                                <FormControl>
-                                    <ImageUpload
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                    />
-                                </FormControl>
+                    <div>
+                      <FormLabel>روابط صور المنتج</FormLabel>
+                      <div className="space-y-4 mt-2">
+                        {fields.map((field, index) => (
+                          <FormField
+                            key={field.id}
+                            control={form.control}
+                            name={`imageUrls.${index}.value`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <div className="flex items-center gap-2">
+                                  <FormControl>
+                                    <Input placeholder="https://example.com/image.png" {...field} />
+                                  </FormControl>
+                                  {fields.length > 1 && (
+                                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
+                                </div>
                                 <FormMessage />
-                            </FormItem>
-                        )}
-                        />
+                              </FormItem>
+                            )}
+                          />
+                        ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => append({ value: "" })}
+                        >
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          إضافة رابط صورة
+                        </Button>
+                      </div>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField control={form.control} name="price" render={({ field }) => (

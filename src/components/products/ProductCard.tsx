@@ -6,20 +6,23 @@ import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/lib/types";
-import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ProductDetailSheetContent } from "./ProductDetailSheet";
 import { Button } from "../ui/button";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import Link from "next/link";
+import { getPlaceholderImage } from "@/lib/placeholder-images";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const imageUrl = getCloudinaryImageUrl(product.imageIds[0]);
+  const imageUrl = product.imageUrls && product.imageUrls.length > 0 
+    ? product.imageUrls[0] 
+    : getPlaceholderImage('product-1').imageUrl;
+  
   const [open, setOpen] = useState(false);
   const { addToCart } = useCart();
 

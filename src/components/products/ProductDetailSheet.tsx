@@ -3,7 +3,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { getCloudinaryImageUrl } from '@/lib/cloudinary';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +11,7 @@ import { useCart } from '@/hooks/use-cart';
 import { Plus, Minus, CheckCircle } from 'lucide-react';
 import type { Product } from '@/lib/types';
 import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { getPlaceholderImage } from '@/lib/placeholder-images';
 
 interface ProductDetailSheetContentProps {
     product: Product;
@@ -26,7 +26,9 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
     return null; // Or some fallback UI
   }
 
-  const productImages = product.imageIds.map(id => getCloudinaryImageUrl(id));
+  const productImages = product.imageUrls && product.imageUrls.length > 0 
+    ? product.imageUrls 
+    : [getPlaceholderImage('product-1').imageUrl];
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
@@ -48,11 +50,11 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
             />
           </div>
           {productImages.length > 1 && (
-            <div className="flex gap-2 mb-4">
+            <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
               {productImages.map((imageUrl, index) => (
                 <button
-                  key={product.imageIds[index]}
-                  className={`relative w-20 h-20 rounded-md overflow-hidden border-2 ${index === activeImageIndex ? 'border-primary' : 'border-transparent'}`}
+                  key={index}
+                  className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 ${index === activeImageIndex ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setActiveImageIndex(index)}
                 >
                   <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
