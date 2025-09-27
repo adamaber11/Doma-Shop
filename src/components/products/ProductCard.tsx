@@ -35,7 +35,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <div className="bg-white text-black h-full flex flex-col group border border-gray-200">
+      <div className="bg-white text-black h-full flex flex-col group">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <div className="relative w-full aspect-square bg-white p-4">
                 <Image
