@@ -114,17 +114,17 @@ export default function ProductsPage() {
           </aside>
           <main className="lg:col-span-3">
             {loading ? (
-               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1.5">
+               <div className="flex flex-wrap justify-center gap-1.5">
                 {[...Array(9)].map((_, i) => (
                    <div key={i} className="space-y-2">
-                      <Skeleton className="aspect-[4/3] w-full" />
+                      <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
                       <Skeleton className="h-5 w-3/4" />
                       <Skeleton className="h-5 w-1/4" />
                    </div>
                 ))}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1.5">
+              <div className="flex flex-wrap justify-center gap-1.5">
                 {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}

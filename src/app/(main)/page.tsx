@@ -99,16 +99,16 @@ export default function Home() {
             </Button>
           </div>
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-1.5">
-              {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-48 w-full" />)}
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-48 w-full max-w-[180px]" />)}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-1.5">
+            <div className="flex flex-wrap justify-center gap-1.5">
               {categories.map((category) => {
                 const categoryImage = getPlaceholderImage(category.imageId);
                 return (
                 <Link key={category.id} href={`/products?category=${category.id}`} className="group">
-                  <div className="overflow-hidden flex flex-col h-full bg-card">
+                  <div className="overflow-hidden flex flex-col h-full bg-card max-w-[180px]">
                     <div className="p-0 flex flex-col flex-grow">
                       <div className="relative aspect-square">
                         <Image
@@ -136,10 +136,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">المنتجات المميزة</h2>
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1.5">
+            <div className="flex justify-center gap-1.5">
                {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
-                      <Skeleton className="aspect-[4/3] w-full" />
+                      <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
                       <Skeleton className="h-5 w-3/4" />
                       <Skeleton className="h-5 w-1/4" />
                   </div>
@@ -159,7 +159,7 @@ export default function Home() {
             >
               <CarouselContent className="-ml-1.5">
                 {featuredProducts.map((product) => (
-                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-1.5">
+                  <CarouselItem key={product.id} className="basis-auto pl-1.5">
                     <div className="p-1">
                       <ProductCard product={product} />
                     </div>
@@ -179,10 +179,10 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">أفضل العروض</h2>
            {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1.5">
+            <div className="flex justify-center gap-1.5">
                {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
-                      <Skeleton className="aspect-[4/3] w-full" />
+                      <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
                       <Skeleton className="h-5 w-3/4" />
                       <Skeleton className="h-5 w-1/4" />
                   </div>
@@ -202,7 +202,7 @@ export default function Home() {
             >
               <CarouselContent className="-ml-1.5">
                 {bestOffersProducts.map((product) => (
-                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-1.5">
+                  <CarouselItem key={product.id} className="basis-auto pl-1.5">
                     <div className="p-1">
                       <ProductCard product={product} />
                     </div>

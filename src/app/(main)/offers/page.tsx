@@ -38,7 +38,7 @@ export default function OffersPage() {
         </div>
         <main>
           {loading ? (
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
+             <div className="flex flex-wrap justify-center gap-1.5">
               {[...Array(8)].map((_, i) => (
                  <div key={i} className="space-y-2">
                     <Skeleton className="h-64 w-full" />
@@ -48,7 +48,7 @@ export default function OffersPage() {
               ))}
             </div>
           ) : offerProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
+            <div className="flex flex-wrap justify-center gap-1.5">
               {offerProducts.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
