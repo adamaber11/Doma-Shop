@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getCategories } from '@/services/product-service';
+import { getCategories, deleteCategory } from '@/services/product-service';
 import type { Category } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -13,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import Image from 'next/image';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+
 
 export default function DashboardCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -35,6 +37,17 @@ export default function DashboardCategoriesPage() {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  const handleDelete = async (categoryId: string) => {
+    try {
+      await deleteCategory(categoryId);
+      toast({ title: "نجاح", description: "تم حذف الفئة بنجاح." });
+      fetchCategories(); // Refresh the list
+    } catch (error) {
+      console.error('Failed to delete category:', error);
+      toast({ title: "خطأ", description: "فشل في حذف الفئة.", variant: "destructive" });
+    }
+  };
 
   return (
     <div>
@@ -99,18 +112,35 @@ export default function DashboardCategoriesPage() {
                   <TableCell className="font-medium">{category.name}</TableCell>
                   <TableCell>{category.imageId}</TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">فتح القائمة</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
-                        <DropdownMenuItem asChild><Link href={`/dashboard/categories/edit/${category.id}`}>تعديل</Link></DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <AlertDialog>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">فتح القائمة</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
+                          <DropdownMenuItem asChild><Link href={`/dashboard/categories/edit/${category.id}`}>تعديل</Link></DropdownMenuItem>
+                          <AlertDialogTrigger asChild>
+                               <DropdownMenuItem className="text-destructive focus:text-destructive">حذف</DropdownMenuItem>
+                          </AlertDialogTrigger>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف الفئة نهائيًا. قد تبقى المنتجات المرتبطة بهذه الفئة بدون فئة.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(category.id)}>متابعة</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               )})}

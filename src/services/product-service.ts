@@ -141,3 +141,9 @@ export async function deleteProducts(productIds: string[]): Promise<void> {
     await batch.commit();
     await fetchDataIfNeeded(true); // Force cache refresh
 }
+
+export async function deleteCategory(categoryId: string): Promise<void> {
+    const categoryRef = doc(db, 'categories', categoryId);
+    await deleteDoc(categoryRef);
+    await fetchDataIfNeeded(true); // Force cache refresh
+}
