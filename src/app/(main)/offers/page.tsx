@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ProductCard } from "@/components/products/ProductCard";
+import { OfferProductCard } from "@/components/products/OfferProductCard";
 import { getProducts } from "@/services/product-service";
 import type { Product } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,7 +50,7 @@ export default function OffersPage() {
           ) : offerProducts.length > 0 ? (
             <div className="flex flex-wrap justify-center gap-1.5">
               {offerProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <OfferProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (
