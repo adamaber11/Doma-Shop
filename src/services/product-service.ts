@@ -189,25 +189,30 @@ export async function getCategories(forceRefresh: boolean = false): Promise<Cate
 }
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
-    await fetchDataIfNeeded();
-    const categoryFromCache = allCategories?.find(c => c.id === categoryId);
-    if (categoryFromCache) {
-        return categoryFromCache;
-    }
-    
-    const catDoc = await getDoc(doc(db, 'categories', categoryId));
-    if (catDoc.exists()) {
-        const newCat = { id: catDoc.id, ...catDoc.data() } as Category;
-        if (allCategories) {
-            // If another process populated the cache in the meantime, update it.
-            const index = allCategories.findIndex(c => c.id === categoryId);
-            if(index !== -1) allCategories[index] = newCat;
-            else allCategories.push(newCat);
+    await fetchDataIfNeeded(); // Ensures cache is populated if not already
+    let category = allCategories?.find(c => c.id === categoryId) || null;
+
+    if (!category) {
+        // If not in cache, fetch directly from Firestore
+        console.log(`Category ${categoryId} not in cache, fetching from DB...`);
+        const catDoc = await getDoc(doc(db, 'categories', categoryId));
+        if (catDoc.exists()) {
+            category = { id: catDoc.id, ...catDoc.data() } as Category;
+            // Optionally update the cache
+            if (allCategories) {
+                const index = allCategories.findIndex(c => c.id === categoryId);
+                if (index > -1) {
+                    allCategories[index] = category;
+                } else {
+                    allCategories.push(category);
+                }
+            } else {
+                allCategories = [category];
+            }
         }
-        return newCat;
     }
 
-    return null;
+    return category;
 }
 
 
