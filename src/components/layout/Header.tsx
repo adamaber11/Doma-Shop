@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -29,21 +30,8 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
-  const [scrolled, setScrolled] = useState(false);
-  const isHomePage = pathname === '/';
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Call on mount to set initial state
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
+  
+  const isDashboard = pathname.startsWith('/dashboard');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -65,6 +53,10 @@ export function Header() {
       });
     }
   };
+  
+  if (isDashboard) {
+    return null;
+  }
   
   const headerClasses = cn(
     "sticky top-0 z-50 w-full transition-colors duration-300 border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60"

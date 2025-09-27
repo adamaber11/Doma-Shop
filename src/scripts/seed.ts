@@ -1,22 +1,17 @@
-import { initializeApp, cert } from 'firebase-admin/app';
+import { initializeApp, applicationDefault } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { allProducts, allCategories } from '../lib/data';
 
 async function seedDatabase() {
   try {
-    // Check for existing service account credentials
-    if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-      console.error('GOOGLE_APPLICATION_CREDENTIALS environment variable not set.');
-      console.log('Please download your service account key from Firebase Console > Project Settings > Service accounts and set the path in your environment.');
-      process.exit(1);
-    }
-    
-    // Initialize Firebase Admin SDK
-    initializeApp();
+    // Initialize Firebase Admin SDK باستخدام Project Credentials مباشرة
+    initializeApp({
+      credential: applicationDefault(),
+      projectId: 'studio-5671039815', // غيره للـ Project ID بتاعك
+    });
 
     const db = getFirestore();
     db.settings({ ignoreUndefinedProperties: true });
-
 
     console.log('Starting to seed database...');
 
