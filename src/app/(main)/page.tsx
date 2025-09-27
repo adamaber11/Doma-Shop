@@ -10,6 +10,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React, { useEffect, useState } from "react";
@@ -18,25 +20,29 @@ import { getHomepageSettings } from "@/services/settings-service";
 import type { Product, Category, HomepageSettings, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
+import { ProductCard } from "@/components/products/ProductCard";
 
 export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [bannerAds, setBannerAds] = useState<Ad[]>([]);
+  const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [fetchedCategories, settings, ads] = await Promise.all([
+        const [fetchedCategories, settings, ads, allProducts] = await Promise.all([
           getCategories(),
           getHomepageSettings(),
-          getAds()
+          getAds(),
+          getProducts(),
         ]);
         setCategories(fetchedCategories.slice(0, 8));
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
+        setBestOfferProducts(allProducts.filter(p => p.isBestOffer));
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -168,6 +174,49 @@ export default function Home() {
                 )}
               </CarouselContent>
             </Carousel>
+        </div>
+      </section>
+      
+       <section className="py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold font-headline">أفضل العروض</h2>
+            <Button variant="ghost" asChild>
+              <Link href="/offers" className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
+                عرض الكل <ArrowRight className="mr-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+           {loading ? (
+             <div className="flex space-x-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="min-w-0 flex-shrink-0" style={{flexBasis: 'calc(25% - 12px)'}}>
+                    <Skeleton className="h-96 w-full" />
+                  </div>
+                ))}
+             </div>
+           ) : (
+             <Carousel
+                opts={{
+                    align: "start",
+                    loop: bestOfferProducts.length > 4,
+                    direction: 'rtl',
+                }}
+                className="w-full"
+                >
+                <CarouselContent>
+                    {bestOfferProducts.map((product) => (
+                    <CarouselItem key={product.id} className="md:basis-1/3 lg:basis-1/5">
+                         <div className="p-1 h-full">
+                            <ProductCard product={product} />
+                        </div>
+                    </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 z-10" />
+                <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-10" />
+             </Carousel>
+            )}
         </div>
       </section>
     </>
