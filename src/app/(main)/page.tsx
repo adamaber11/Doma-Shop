@@ -34,8 +34,8 @@ export default function Home() {
           getProducts(),
           getCategories()
         ]);
-        setFeaturedProducts(products.slice(0, 8));
-        setBestOffersProducts(products.slice(4, 8));
+        setFeaturedProducts(products.filter(p => p.isFeatured).slice(0, 8));
+        setBestOffersProducts(products.filter(p => p.isBestOffer).slice(0, 8));
         setCategories(fetchedCategories.slice(0, 5));
       } catch (error) {
         console.error("Failed to fetch data:", error);
@@ -135,7 +135,7 @@ export default function Home() {
                   </div>
               ))}
             </div>
-          ) : (
+          ) : featuredProducts.length > 0 ? (
             <Carousel
               opts={{
                 align: "start",
@@ -157,6 +157,10 @@ export default function Home() {
                 ))}
               </CarouselContent>
             </Carousel>
+          ) : (
+             <div className="text-center py-10">
+                <p className="text-muted-foreground">لا توجد منتجات مميزة حاليًا.</p>
+             </div>
           )}
         </div>
       </section>
@@ -174,7 +178,7 @@ export default function Home() {
                   </div>
               ))}
             </div>
-          ) : (
+          ) : bestOffersProducts.length > 0 ? (
             <Carousel
               opts={{
                 align: "start",
@@ -196,6 +200,10 @@ export default function Home() {
                 ))}
               </CarouselContent>
             </Carousel>
+          ): (
+             <div className="text-center py-10">
+                <p className="text-muted-foreground">لا توجد عروض خاصة حاليًا.</p>
+             </div>
           )}
         </div>
       </section>

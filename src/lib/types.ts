@@ -13,6 +13,8 @@ export type Product = {
   categoryId: string;
   imageUrls: string[];
   stock: number;
+  isFeatured?: boolean;
+  isBestOffer?: boolean;
 };
 
 export type CartItem = {

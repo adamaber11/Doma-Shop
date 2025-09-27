@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, PlusCircle, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const productSchema = z.object({
   name: z.string().min(3, "يجب أن يكون اسم المنتج 3 أحرف على الأقل"),
@@ -26,6 +27,8 @@ const productSchema = z.object({
   categoryId: z.string({ required_error: "الفئة مطلوبة" }),
   stock: z.coerce.number().min(0, "المخزون مطلوب"),
   imageUrls: z.array(z.object({ value: z.string().url("يجب أن يكون رابطًا صالحًا") })).min(1, "رابط صورة واحد على الأقل مطلوب"),
+  isFeatured: z.boolean().default(false),
+  isBestOffer: z.boolean().default(false),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -43,6 +46,10 @@ export default function EditProductPage() {
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
+    defaultValues: {
+      isFeatured: false,
+      isBestOffer: false,
+    }
   });
   
   const { fields, append, remove } = useFieldArray({
@@ -64,7 +71,9 @@ export default function EditProductPage() {
           setProduct(fetchedProduct);
           const defaultValues = {
             ...fetchedProduct,
-            imageUrls: fetchedProduct.imageUrls.map(url => ({ value: url }))
+            imageUrls: fetchedProduct.imageUrls.map(url => ({ value: url })),
+            isFeatured: fetchedProduct.isFeatured || false,
+            isBestOffer: fetchedProduct.isBestOffer || false,
           };
           form.reset(defaultValues);
         } else {
@@ -118,6 +127,10 @@ export default function EditProductPage() {
                     <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                 </div>
                  <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
+                 <div className="space-y-4">
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                 </div>
             </CardContent>
             <CardFooter className='justify-end'>
                 <Skeleton className='h-10 w-32' />
@@ -238,6 +251,43 @@ export default function EditProductPage() {
                         <FormMessage />
                     </FormItem>
                     )} />
+
+                     <div className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="isFeatured"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>منتج مميز</FormLabel>
+                                        <FormDescription>
+                                            سيظهر هذا المنتج في قسم "المنتجات المميزة" في الصفحة الرئيسية.
+                                        </FormDescription>
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="isBestOffer"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>أفضل العروض</FormLabel>
+                                        <FormDescription>
+                                            سيظهر هذا المنتج في قسم "أفضل العروض" في الصفحة الرئيسية.
+                                        </FormDescription>
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
 
                 </CardContent>
                 <CardFooter className='justify-end'>
