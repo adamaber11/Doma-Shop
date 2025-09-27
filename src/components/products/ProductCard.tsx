@@ -47,9 +47,9 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
             <div className="p-4 flex-grow flex flex-col bg-white">
                 {hasSale && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-red-600 text-white text-xs font-bold px-2 py-1">خصم {discountPercentage}%</span>
-                    <span className="text-red-600 text-xs font-bold">عرض لمدة محدودة</span>
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-1">خصم {discountPercentage}%</span>
+                    <span className="text-red-600 text-[10px] font-bold">عرض لمدة محدودة</span>
                   </div>
                 )}
                 <h3 className="text-sm font-normal line-clamp-2 mb-2 flex-grow">{product.name}</h3>
