@@ -13,12 +13,14 @@ import { auth } from "@/lib/firebase";
 
 export function UserAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -46,7 +48,11 @@ export function UserAuth() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {user ? (
+        {loading ? (
+           <>
+            <DropdownMenuLabel>جاري التحميل...</DropdownMenuLabel>
+          </>
+        ) : user ? (
           <>
             <DropdownMenuLabel>حسابي</DropdownMenuLabel>
             <DropdownMenuSeparator />
