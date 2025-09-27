@@ -50,10 +50,10 @@ export default function DashboardLayout({
     { href: "/dashboard/categories", label: "الفئات", icon: Tags, active: pathname.startsWith('/dashboard/categories') },
     { href: "/dashboard/advertisements", label: "البنرات", icon: Megaphone, active: pathname.startsWith('/dashboard/advertisements') },
     { href: "/dashboard/popup-ads", label: "الإعلانات المنبثقة", icon: Annoyed, active: pathname.startsWith('/dashboard/popup-ads') },
-    { href: "/dashboard/messages", label: "الرسائل", icon: MessageSquare, active: pathname.startsWith('/dashboard/messages') },
-    { href: "/dashboard/settings", label: "الإعدادات", icon: Settings, active: pathname.startsWith('/dashboard/settings') },
     { href: "/dashboard/orders", label: "الطلبات", icon: ShoppingCart, active: pathname.startsWith('/dashboard/orders') },
     { href: "/dashboard/customers", label: "العملاء", icon: Users, active: pathname.startsWith('/dashboard/customers') },
+    { href: "/dashboard/messages", label: "الرسائل", icon: MessageSquare, active: pathname.startsWith('/dashboard/messages') },
+    { href: "/dashboard/settings", label: "الإعدادات", icon: Settings, active: pathname.startsWith('/dashboard/settings') },
   ]
 
   if (loading) {

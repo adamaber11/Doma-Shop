@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -14,6 +15,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useEffect } from 'react';
+import { addOrder } from '@/services/product-service';
+import { useToast } from '@/hooks/use-toast';
 
 const shippingSchema = z.object({
   name: z.string().min(2, "الاسم قصير جدًا"),
@@ -27,6 +30,7 @@ const shippingSchema = z.object({
 export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart, cartCount } = useCart();
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof shippingSchema>>({
     resolver: zodResolver(shippingSchema),
@@ -45,11 +49,29 @@ export default function CheckoutPage() {
     return null; // Render nothing while redirecting
   }
 
-  const onSubmit = (values: z.infer<typeof shippingSchema>) => {
-    console.log("Order placed:", { values, cartItems, cartTotal });
-    const orderId = `order_${new Date().getTime()}`;
-    clearCart();
-    router.push(`/confirmation/${orderId}`);
+  const onSubmit = async (values: z.infer<typeof shippingSchema>) => {
+    try {
+        const orderData = {
+            customerName: values.name,
+            customerEmail: values.email,
+            items: cartItems.map(item => ({
+                productName: item.product.name,
+                quantity: item.quantity,
+                price: item.product.salePrice ?? item.product.price,
+            })),
+            total: cartTotal,
+        };
+        const newOrder = await addOrder(orderData);
+        clearCart();
+        router.push(`/confirmation/${newOrder.id}`);
+    } catch (error) {
+        console.error("Failed to create order", error);
+        toast({
+            title: "خطأ",
+            description: "فشل في إنشاء الطلب. يرجى المحاولة مرة أخرى.",
+            variant: "destructive"
+        });
+    }
   };
 
   return (
@@ -163,8 +185,8 @@ export default function CheckoutPage() {
                 </div>
               </CardContent>
             </Card>
-            <Button onClick={form.handleSubmit(onSubmit)} size="lg" className="w-full mt-6">
-                  إتمام الطلب
+            <Button onClick={form.handleSubmit(onSubmit)} size="lg" className="w-full mt-6" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? 'جاري إتمام الطلب...' : 'إتمام الطلب'}
               </Button>
           </div>
         </div>

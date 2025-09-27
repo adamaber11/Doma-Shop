@@ -185,7 +185,8 @@ export async function getCategories(forceRefresh: boolean = false): Promise<Cate
 }
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
-    const catDoc = await getDoc(doc(db, 'categories', categoryId));
+    const catDocRef = doc(db, 'categories', categoryId);
+    const catDoc = await getDoc(catDocRef);
     if (catDoc.exists()) {
         const category = { id: catDoc.id, ...catDoc.data() } as Category;
         // Optionally update the cache
@@ -342,6 +343,26 @@ export async function deleteContactMessage(messageId: string): Promise<void> {
 export async function getOrders(forceRefresh: boolean = false): Promise<Order[]> {
     await fetchDataIfNeeded(forceRefresh);
     return allOrders || [];
+}
+
+export async function addOrder(order: Omit<Order, 'id' | 'createdAt' | 'status'>): Promise<Order> {
+    const orderData = {
+        ...order,
+        status: 'pending' as const,
+        createdAt: Timestamp.now(),
+    };
+    const docRef = await addDoc(ordersCollection, orderData);
+    await fetchDataIfNeeded(true); // Force refresh of orders
+    const newOrder: Order = {
+        id: docRef.id,
+        ...order,
+        status: 'pending',
+        createdAt: orderData.createdAt.toDate()
+    };
+    if (allOrders) {
+        allOrders.unshift(newOrder); // Add to the top of the list
+    }
+    return newOrder;
 }
 
 export async function updateOrderStatus(orderId: string, status: Order['status']): Promise<void> {
