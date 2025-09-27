@@ -4,9 +4,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/products/ProductCard";
-import { ArrowRight, ShoppingBag, Search } from "lucide-react";
+import { ArrowRight, ShoppingBag } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -19,10 +18,8 @@ import { getHomepageSettings } from "@/services/settings-service";
 import type { Product, Category, HomepageSettings } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { Input } from "@/components/ui/input";
 
 export default function Home() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestOffersProducts, setBestOffersProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -36,7 +33,6 @@ export default function Home() {
           getCategories(),
           getHomepageSettings()
         ]);
-        setFeaturedProducts(products.filter(p => p.isFeatured).slice(0, 8));
         setBestOffersProducts(products.filter(p => p.isBestOffer).slice(0, 8));
         setCategories(fetchedCategories.slice(0, 5));
         setHomepageSettings(settings);
@@ -58,8 +54,18 @@ export default function Home() {
 
 
   const plugin = React.useRef(
-    Autoplay({ delay: 1500, stopOnInteraction: true })
+    Autoplay({ delay: 2000, stopOnInteraction: true })
   );
+  
+  const bannerPlugin = React.useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true })
+  );
+
+  const bannerImages = [
+      getPlaceholderImage('banner-1'),
+      getPlaceholderImage('banner-2'),
+      getPlaceholderImage('banner-3'),
+  ];
 
   return (
     <>
@@ -137,44 +143,33 @@ export default function Home() {
 
       <section className="py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">المنتجات المميزة</h2>
-          {loading ? (
-            <div className="flex justify-center gap-1.5">
-               {[...Array(4)].map((_, i) => (
-                  <div key={i} className="space-y-2">
-                      <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
-                      <Skeleton className="h-5 w-3/4" />
-                      <Skeleton className="h-5 w-1/4" />
-                  </div>
-              ))}
-            </div>
-          ) : featuredProducts.length > 0 ? (
-            <Carousel
+          <Carousel
               opts={{
                 align: "start",
                 loop: true,
                 direction: "rtl",
               }}
-              plugins={[plugin.current]}
-              onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.play}
+              plugins={[bannerPlugin.current]}
+              onMouseEnter={bannerPlugin.current.stop}
+              onMouseLeave={bannerPlugin.current.play}
               className="w-full"
             >
-              <CarouselContent className="-ml-1.5">
-                {featuredProducts.map((product) => (
-                  <CarouselItem key={product.id} className="basis-auto pl-1.5">
-                    <div className="p-1">
-                      <ProductCard product={product} />
+              <CarouselContent>
+                {bannerImages.map((img) => (
+                  <CarouselItem key={img.id}>
+                    <div className="relative aspect-[16/6] w-full rounded-lg overflow-hidden">
+                       <Image
+                          src={img.imageUrl}
+                          alt={img.description}
+                          fill
+                          className="object-cover"
+                          data-ai-hint={img.imageHint}
+                        />
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
             </Carousel>
-          ) : (
-             <div className="text-center py-10">
-                <p className="text-muted-foreground">لا توجد منتجات مميزة حاليًا.</p>
-             </div>
-          )}
         </div>
       </section>
 
