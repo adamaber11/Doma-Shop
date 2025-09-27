@@ -45,10 +45,10 @@ export function ProductCard({ product }: ProductCardProps) {
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                 />
             </div>
-            <div className="p-4 flex-grow flex flex-col bg-white">
+            <div className="p-2 flex-grow flex flex-col bg-white">
                 {hasSale && (
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-1">خصم {discountPercentage}%</span>
+                  <div className="flex items-center gap-1 mb-2 flex-wrap">
+                    <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5">خصم {discountPercentage}%</span>
                     <span className="text-red-600 text-[10px] font-bold">عرض لمدة محدودة</span>
                   </div>
                 )}
