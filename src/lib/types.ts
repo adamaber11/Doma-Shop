@@ -48,16 +48,25 @@ export type CartItem = {
 
 export type Order = {
   id: string;
-  items: CartItem[];
+  customerName: string;
+  customerEmail: string;
+  items: {
+    productName: string;
+    quantity: number;
+    price: number;
+  }[];
   total: number;
-  customerInfo: {
+  status: 'pending' | 'shipped' | 'delivered' | 'cancelled';
+  createdAt: Date;
+};
+
+export type Customer = {
+    id: string;
     name: string;
     email: string;
-    address: string;
-  };
-  createdAt: Date;
-  status: 'pending' | 'shipped' | 'delivered';
-};
+    photoURL: string;
+    joinedAt: Date;
+}
 
 export type HomepageSettings = {
     heroTitle: string;
@@ -99,4 +108,3 @@ export type ContactInfoSettings = {
     phone: string;
     address: string;
 };
-

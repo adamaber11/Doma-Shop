@@ -2,7 +2,7 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category, Review, Ad, ContactMessage } from "@/lib/types";
+import type { Product, Category, Review, Ad, ContactMessage, Order, Customer } from "@/lib/types";
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query } from "firebase/firestore";
 
 const productsCollection = collection(db, 'products');
@@ -10,7 +10,8 @@ const categoriesCollection = collection(db, 'categories');
 const adsCollection = collection(db, 'advertisements');
 const popupAdsCollection = collection(db, 'popupAds');
 const messagesCollection = collection(db, 'contactMessages');
-
+const ordersCollection = collection(db, 'orders');
+const customersCollection = collection(db, 'customers');
 
 // Cache variables
 let allProducts: Product[] | null = null;
@@ -18,6 +19,9 @@ let allCategories: Category[] | null = null;
 let allAds: Ad[] | null = null;
 let allPopupAds: Ad[] | null = null;
 let allMessages: ContactMessage[] | null = null;
+let allOrders: Order[] | null = null;
+let allCustomers: Customer[] | null = null;
+
 let lastFetchTime: number = 0;
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
@@ -29,6 +33,8 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         allAds = null;
         allPopupAds = null;
         allMessages = null;
+        allOrders = null;
+        allCustomers = null;
         console.log('Cache cleared, fetching new data...');
     }
 
@@ -36,11 +42,10 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         const productSnapshot = await getDocs(productsCollection);
         allProducts = productSnapshot.docs.map(doc => {
             const data = doc.data();
-            // Convert Firestore Timestamps to JS Dates
             if (data.reviews) {
                 data.reviews = data.reviews.map((review: any) => ({
                     ...review,
-                    createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : review.createdAt
+                    createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : new Date(review.createdAt)
                 }));
             }
             return { id: doc.id, ...data } as Product;
@@ -75,6 +80,19 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         });
     }
 
+    if (!allOrders) {
+        const q = query(ordersCollection, orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        allOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), createdAt: doc.data().createdAt.toDate() } as Order));
+    }
+
+    if (!allCustomers) {
+        const q = query(customersCollection, orderBy("joinedAt", "desc"));
+        const snapshot = await getDocs(q);
+        allCustomers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), joinedAt: doc.data().joinedAt.toDate() } as Customer));
+    }
+
+
     if (forceRefresh || !lastFetchTime) {
       lastFetchTime = now;
     }
@@ -90,7 +108,6 @@ export async function getProductById(productId: string): Promise<Product | null>
     await fetchDataIfNeeded();
     const productFromCache = allProducts?.find(p => p.id === productId);
     if (productFromCache) {
-        // Ensure reviews are properly formatted
         if (productFromCache.reviews) {
             productFromCache.reviews = productFromCache.reviews.map(review => ({
                 ...review,
@@ -100,11 +117,9 @@ export async function getProductById(productId: string): Promise<Product | null>
         return productFromCache;
     }
     
-    // Fallback to direct fetch if not in cache
     const productDoc = await getDoc(doc(db, 'products', productId));
     if (productDoc.exists()) {
         const data = productDoc.data();
-        // Convert Firestore Timestamps to JS Dates
         if (data.reviews) {
              data.reviews = data.reviews.map((review: any) => ({
                 ...review,
@@ -112,7 +127,6 @@ export async function getProductById(productId: string): Promise<Product | null>
             }));
         }
         const newProduct = { id: productDoc.id, ...data } as Product;
-        // update cache
         if (allProducts) {
             const index = allProducts.findIndex(p => p.id === productId);
             if(index !== -1) allProducts[index] = newProduct;
@@ -130,7 +144,7 @@ export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Prom
         reviews: []
     };
     const docRef = await addDoc(productsCollection, productWithDefaults);
-    await fetchDataIfNeeded(true); // Force cache refresh
+    await fetchDataIfNeeded(true);
     const newProduct = { id: docRef.id, ...productWithDefaults } as Product;
     if (allProducts) {
         allProducts.push(newProduct);
@@ -141,13 +155,13 @@ export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Prom
 export async function updateProduct(productId: string, productUpdate: Partial<Product>): Promise<void> {
     const productRef = doc(db, 'products', productId);
     await updateDoc(productRef, productUpdate);
-    await fetchDataIfNeeded(true); // Force cache refresh
+    await fetchDataIfNeeded(true); 
 }
 
 export async function deleteProduct(productId: string): Promise<void> {
     const productRef = doc(db, 'products', productId);
     await deleteDoc(productRef);
-    await fetchDataIfNeeded(true); // Force cache refresh
+    await fetchDataIfNeeded(true); 
 }
 
 export async function addReview(productId: string, review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
@@ -180,11 +194,9 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
      if (category) {
         return category;
     }
-    // Fallback to direct fetch if not in cache
     const catDoc = await getDoc(doc(db, 'categories', categoryId));
     if (catDoc.exists()) {
         const newCat = { id: catDoc.id, ...catDoc.data() } as Category;
-        // update cache
         if (allCategories) {
             const index = allCategories.findIndex(c => c.id === categoryId);
             if(index !== -1) allCategories[index] = newCat;
@@ -197,7 +209,6 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
 }
 
 export async function addCategory(category: Omit<Category, 'id'>): Promise<Category> {
-    // Generate an ID from the name
     const id = category.name.toLowerCase().replace(/\s+/g, '-');
     const categoryRef = doc(db, 'categories', id);
     await setDoc(categoryRef, category);
@@ -212,13 +223,13 @@ export async function addCategory(category: Omit<Category, 'id'>): Promise<Categ
 export async function updateCategory(categoryId: string, categoryUpdate: Partial<Category>): Promise<void> {
     const categoryRef = doc(db, 'categories', categoryId);
     await updateDoc(categoryRef, categoryUpdate);
-    await fetchDataIfNeeded(true); // Force cache refresh
+    await fetchDataIfNeeded(true);
 }
 
 export async function deleteCategory(categoryId: string): Promise<void> {
     const categoryRef = doc(db, 'categories', categoryId);
     await deleteDoc(categoryRef);
-    await fetchDataIfNeeded(true); // Force cache refresh
+    await fetchDataIfNeeded(true);
 }
 
 
@@ -330,4 +341,22 @@ export async function deleteContactMessage(messageId: string): Promise<void> {
     const messageRef = doc(db, 'contactMessages', messageId);
     await deleteDoc(messageRef);
     await fetchDataIfNeeded(true);
+}
+
+// Order Functions
+export async function getOrders(forceRefresh: boolean = false): Promise<Order[]> {
+    await fetchDataIfNeeded(forceRefresh);
+    return allOrders || [];
+}
+
+export async function updateOrderStatus(orderId: string, status: Order['status']): Promise<void> {
+    const orderRef = doc(db, 'orders', orderId);
+    await updateDoc(orderRef, { status });
+    await fetchDataIfNeeded(true);
+}
+
+// Customer Functions
+export async function getCustomers(forceRefresh: boolean = false): Promise<Customer[]> {
+    await fetchDataIfNeeded(forceRefresh);
+    return allCustomers || [];
 }

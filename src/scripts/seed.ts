@@ -1,13 +1,12 @@
 import { initializeApp, applicationDefault } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-import { allProducts, allCategories } from '../lib/data';
+import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { allProducts, allCategories, allOrders, allCustomers } from '../lib/data';
 
 async function seedDatabase() {
   try {
-    // Initialize Firebase Admin SDK باستخدام Project Credentials مباشرة
     initializeApp({
       credential: applicationDefault(),
-      projectId: 'studio-5671039815', // غيره للـ Project ID بتاعك
+      projectId: 'studio-5671039815', 
     });
 
     const db = getFirestore();
@@ -30,10 +29,45 @@ async function seedDatabase() {
     const productCollection = db.collection('products');
     for (const product of allProducts) {
       const { id, ...productData } = product;
-      await productCollection.doc(id).set(productData);
+      const dataToSet: any = { ...productData };
+      if (productData.reviews) {
+          dataToSet.reviews = productData.reviews.map(review => ({
+              ...review,
+              createdAt: Timestamp.fromDate(review.createdAt)
+          }))
+      }
+      await productCollection.doc(id).set(dataToSet);
       console.log(`- Seeded product: ${product.name}`);
     }
     console.log('✅ Products seeded successfully.');
+
+     // Seed Orders
+    console.log('\nSeeding orders...');
+    const orderCollection = db.collection('orders');
+    for (const order of allOrders) {
+      const { id, ...orderData } = order;
+      const dataToSet = {
+        ...orderData,
+        createdAt: Timestamp.fromDate(orderData.createdAt),
+      };
+      await orderCollection.doc(id).set(dataToSet);
+      console.log(`- Seeded order: ${order.id}`);
+    }
+    console.log('✅ Orders seeded successfully.');
+
+    // Seed Customers
+    console.log('\nSeeding customers...');
+    const customerCollection = db.collection('customers');
+    for (const customer of allCustomers) {
+      const { id, ...customerData } = customer;
+       const dataToSet = {
+        ...customerData,
+        joinedAt: Timestamp.fromDate(customerData.joinedAt),
+      };
+      await customerCollection.doc(id).set(dataToSet);
+      console.log(`- Seeded customer: ${customer.name}`);
+    }
+    console.log('✅ Customers seeded successfully.');
 
     console.log('\nDatabase seeding completed!');
     process.exit(0);
