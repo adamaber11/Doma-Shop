@@ -38,6 +38,15 @@ export function UserAuth() {
       });
     }
   };
+  
+  if (loading) {
+      return (
+        <Button variant="ghost" size="icon">
+          <User className="h-5 w-5" />
+          <span className="sr-only">قائمة المستخدم</span>
+        </Button>
+      )
+  }
 
   return (
     <DropdownMenu>
@@ -48,13 +57,9 @@ export function UserAuth() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {loading ? (
-           <>
-            <DropdownMenuLabel>جاري التحميل...</DropdownMenuLabel>
-          </>
-        ) : user ? (
+        {user ? (
           <>
-            <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+            <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {user.email === 'adamaber50@gmail.com' && (
               <DropdownMenuItem asChild>
@@ -89,4 +94,3 @@ export function UserAuth() {
     </DropdownMenu>
   );
 }
-
