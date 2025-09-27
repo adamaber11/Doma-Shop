@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
-import { Plus, Minus, CheckCircle, Star, ShoppingBag, LinkIcon } from 'lucide-react';
+import { Plus, Minus, CheckCircle, Star, ShoppingBag, LinkIcon, PackageReturn, Truck, ShieldCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { ProductRecommendations } from '@/components/products/ProductRecommendations';
@@ -133,33 +133,51 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   const hasSale = product.salePrice && product.salePrice < product.price;
 
+  const features = [
+      { icon: PackageReturn, text: "استرجاع خلال 14 يوم" },
+      { icon: Truck, text: "توصيل سريع وموثوق" },
+      { icon: ShieldCheck, text: "دفع آمن 100%" },
+  ];
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 items-start">
-          <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center order-2 md:order-first">
-              {productImages.length > 1 && productImages.map((imageUrl, index) => (
-                <button
-                  key={index}
-                  className={cn(
-                      "relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all",
-                      index === activeImageIndex ? 'border-primary' : 'border-transparent'
-                  )}
-                  onClick={() => setActiveImageIndex(index)}
-                >
-                  <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
-                </button>
-              ))}
-          </div>
-          <div className="aspect-square relative rounded-lg overflow-hidden border order-1 md:order-last">
-            <Image
-              src={productImages[activeImageIndex]}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </div>
+        <div>
+            <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 items-start">
+              <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center order-2 md:order-first">
+                  {productImages.length > 1 && productImages.map((imageUrl, index) => (
+                    <button
+                      key={index}
+                      className={cn(
+                          "relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all",
+                          index === activeImageIndex ? 'border-primary' : 'border-transparent'
+                      )}
+                      onClick={() => setActiveImageIndex(index)}
+                    >
+                      <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
+                    </button>
+                  ))}
+              </div>
+              <div className="aspect-square relative rounded-lg overflow-hidden border order-1 md:order-last">
+                <Image
+                  src={productImages[activeImageIndex]}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+            </div>
+            <div className="mt-6 border rounded-lg p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {features.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-3">
+                            <feature.icon className="h-8 w-8 text-muted-foreground" />
+                            <span className="text-sm font-medium text-muted-foreground">{feature.text}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
 
 
@@ -277,3 +295,5 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
+
+    
