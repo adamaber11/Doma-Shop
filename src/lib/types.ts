@@ -65,6 +65,20 @@ export type HomepageSettings = {
     heroImageUrl: string;
 };
 
+export type AboutPageSettings = {
+    aboutTitle: string;
+    aboutSubtitle: string;
+    aboutHeroUrl: string;
+    storyTitle: string;
+    storyContent: string;
+    missionTitle: string;
+    missionContent: string;
+    teamTitle: string;
+    teamContent: string;
+    journeyTitle: string;
+    journeyContent: string;
+};
+
 export type Ad = {
   id: string;
   imageUrl: string;
