@@ -66,7 +66,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
-        <div className="flex flex-wrap justify-center gap-1.5">
+        <div className="flex flex-wrap justify-center gap-1">
           {[...Array(4)].map((_, i) => (
              <div key={i} className="space-y-2">
                 <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
@@ -86,7 +86,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
-      <div className="flex flex-wrap justify-center gap-1.5">
+      <div className="flex flex-wrap justify-center gap-1">
         {recommendations.map(product => (
           <ProductCard key={product.id} product={product} />
         ))}
