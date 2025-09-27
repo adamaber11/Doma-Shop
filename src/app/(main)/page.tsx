@@ -132,7 +132,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-secondary py-12 md:py-20">
+      <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">المنتجات المميزة</h2>
           {loading ? (
