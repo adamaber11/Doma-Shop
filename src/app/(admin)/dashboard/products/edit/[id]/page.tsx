@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useParams } from 'next/navigation';
-import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
+import { useForm, useFieldArray, FormProvider, Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { updateProduct, getProductById, getCategories } from '@/services/product-service';
@@ -220,7 +220,7 @@ export default function EditProductPage() {
                                     </FormItem>
                                   )}
                                 />
-                                <ImageUrlsFieldArray variantIndex={variantIndex} />
+                                <ImageUrlsFieldArray variantIndex={variantIndex} control={form.control} />
                               </div>
                                {variantFields.length > 1 && (
                                 <Button
@@ -363,8 +363,7 @@ export default function EditProductPage() {
   );
 }
 
-function ImageUrlsFieldArray({ variantIndex }: { variantIndex: number }) {
-    const { control, register } = useForm<ProductFormValues>();
+function ImageUrlsFieldArray({ variantIndex, control }: { variantIndex: number; control: Control<ProductFormValues> }) {
     const { fields, append, remove } = useFieldArray({
       control,
       name: `variants.${variantIndex}.imageUrls`,
@@ -402,5 +401,7 @@ function ImageUrlsFieldArray({ variantIndex }: { variantIndex: number }) {
       </div>
     );
   }
+
+    
 
     
