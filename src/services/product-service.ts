@@ -190,14 +190,16 @@ export async function getCategories(forceRefresh: boolean = false): Promise<Cate
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
     await fetchDataIfNeeded();
-    const category = allCategories?.find(c => c.id === categoryId);
-     if (category) {
-        return category;
+    const categoryFromCache = allCategories?.find(c => c.id === categoryId);
+    if (categoryFromCache) {
+        return categoryFromCache;
     }
+    
     const catDoc = await getDoc(doc(db, 'categories', categoryId));
     if (catDoc.exists()) {
         const newCat = { id: catDoc.id, ...catDoc.data() } as Category;
         if (allCategories) {
+            // If another process populated the cache in the meantime, update it.
             const index = allCategories.findIndex(c => c.id === categoryId);
             if(index !== -1) allCategories[index] = newCat;
             else allCategories.push(newCat);
@@ -207,6 +209,7 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
 
     return null;
 }
+
 
 export async function addCategory(category: Omit<Category, 'id'>): Promise<Category> {
     const id = category.name.toLowerCase().replace(/\s+/g, '-');
