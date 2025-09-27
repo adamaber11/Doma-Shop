@@ -33,7 +33,7 @@ export function ProductCard({ product }: ProductCardProps) {
     if ((product.variants && product.variants.length > 1) || (product.sizes && product.sizes.length > 0)) {
         setOpen(true);
     } else {
-        addToCart(product, 1, product.variants[0].color, product.sizes?.[0]);
+        addToCart(product, 1, product.variants?.[0]?.color, product.sizes?.[0]);
     }
   };
   
@@ -58,8 +58,8 @@ export function ProductCard({ product }: ProductCardProps) {
                      )}
               </div>
             </CardHeader>
-            <CardContent className="p-4 flex-grow">
-                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{product.name}</h3>
+            <CardContent className="p-4 flex-grow flex flex-col">
+                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors flex-grow">{product.name}</h3>
                  <div className="flex items-center gap-2 mt-1">
                     {hasSale ? (
                         <>
