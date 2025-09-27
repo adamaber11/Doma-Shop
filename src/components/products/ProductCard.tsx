@@ -34,7 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <div className="bg-white text-black h-full flex flex-col max-w-xs mx-auto">
+      <div className="bg-white text-black h-full flex flex-col max-w-[180px] mx-auto">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <div className="relative w-full aspect-[4/5] bg-white p-4">
                 <Image
