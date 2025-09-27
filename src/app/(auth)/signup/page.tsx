@@ -9,10 +9,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
-import { FacebookIcon } from "@/components/icons/FacebookIcon";
 
 const signupSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
@@ -44,17 +43,17 @@ export default function SignupPage() {
     }
   };
 
-  const handleSocialLogin = async (provider: GoogleAuthProvider | FacebookAuthProvider) => {
+  const handleGoogleLogin = async () => {
     try {
         const auth = getAuth();
-        await signInWithPopup(auth, provider);
+        await signInWithPopup(auth, new GoogleAuthProvider());
         toast({ title: "تم تسجيل الدخول بنجاح!" });
         router.push('/');
     } catch (error) {
         console.error("Social login error", error);
         toast({
             title: "حدث خطأ",
-            description: "لم نتمكن من تسجيل دخولك باستخدام الخدمة الاجتماعية.",
+            description: "لم نتمكن من تسجيل دخولك باستخدام جوجل.",
             variant: "destructive",
         });
     }
@@ -105,14 +104,10 @@ export default function SignupPage() {
             </span>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={() => handleSocialLogin(new GoogleAuthProvider())}>
+        <div className="grid grid-cols-1 gap-4">
+            <Button variant="outline" onClick={handleGoogleLogin}>
                 <GoogleIcon className="mr-2 h-4 w-4" />
                 Google
-            </Button>
-            <Button variant="outline" onClick={() => handleSocialLogin(new FacebookAuthProvider())}>
-                <FacebookIcon className="mr-2 h-4 w-4" />
-                Facebook
             </Button>
         </div>
       </CardContent>
