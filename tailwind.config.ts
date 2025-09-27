@@ -9,6 +9,10 @@ export default {
   ],
   theme: {
     extend: {
+      textShadow: {
+        DEFAULT: '0 2px 4px rgba(0, 0, 0, 0.5)',
+        md: '0 4px 8px rgba(0, 0, 0, 0.5)',
+      },
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Inter', 'sans-serif'],
@@ -95,5 +99,25 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    function ({ addUtilities }: { addUtilities: any }) {
+      addUtilities({
+        '.text-shadow': {
+          textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+        },
+        '.text-shadow-md': {
+          textShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
+        },
+        '.text-shadow-lg': {
+          textShadow: '0 10px 15px rgba(0, 0, 0, 0.5)',
+        },
+        '.text-shadow-none': {
+          textShadow: 'none',
+        },
+      });
+    },
+  ],
 } satisfies Config;
+
+    
