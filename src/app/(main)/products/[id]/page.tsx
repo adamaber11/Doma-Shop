@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
-import { Plus, Minus, CheckCircle, Star, ShoppingBag } from 'lucide-react';
+import { Plus, Minus, CheckCircle, Star, ShoppingBag, LinkIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { ProductRecommendations } from '@/components/products/ProductRecommendations';
@@ -90,14 +90,22 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const handleBuyNow = () => {
     handleAction(true);
   }
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "تم نسخ الرابط",
+      description: "تم نسخ رابط المنتج إلى الحافظة.",
+    });
+  };
   
   if (loading) {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                 <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
-                    <Skeleton className="aspect-square w-full rounded-lg" />
-                     <div className="flex flex-row md:flex-col gap-2 justify-center">
+                 <div className="grid grid-cols-1 md:grid-cols-1 gap-4 items-start">
+                     <Skeleton className="aspect-square w-full rounded-lg order-1" />
+                     <div className="flex flex-row md:flex-col gap-2 justify-center order-2 md:order-first">
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
@@ -128,17 +136,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
-          <div className="aspect-square relative rounded-lg overflow-hidden border">
-            <Image
-              src={productImages[activeImageIndex]}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </div>
-           <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 items-start">
+          <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center order-2 md:order-first">
               {productImages.length > 1 && productImages.map((imageUrl, index) => (
                 <button
                   key={index}
@@ -151,12 +150,26 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
                 </button>
               ))}
-            </div>
+          </div>
+          <div className="aspect-square relative rounded-lg overflow-hidden border order-1 md:order-last">
+            <Image
+              src={productImages[activeImageIndex]}
+              alt={product.name}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
         </div>
 
 
         <div className="flex flex-col">
-          <h1 className="text-3xl lg:text-4xl font-bold font-headline mb-2">{product.name}</h1>
+           <div className="flex items-start justify-between gap-4 mb-2">
+                <h1 className="text-3xl lg:text-4xl font-bold font-headline">{product.name}</h1>
+                <Button variant="ghost" size="icon" onClick={handleCopyLink} aria-label="نسخ رابط المنتج">
+                    <LinkIcon className="h-6 w-6" />
+                </Button>
+            </div>
           
            <div className="flex items-center gap-4 mb-2">
               {hasSale ? (
