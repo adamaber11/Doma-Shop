@@ -8,7 +8,7 @@ import type { Product } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { formatCurrency }s from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
@@ -102,7 +102,7 @@ export default function DashboardProductsPage() {
                 <TableHead className="hidden md:table-cell">الحالة</TableHead>
                 <TableHead className="hidden md:table-cell">السعر</TableHead>
                 <TableHead className="hidden lg:table-cell">المخزون</TableHead>
-                <TableHead><span className="sr-only">الإجراءات</span></na>
+                <TableHead><span className="sr-only">الإجراءات</span></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -158,5 +158,3 @@ export default function DashboardProductsPage() {
     </div>
   );
 }
-
-    
