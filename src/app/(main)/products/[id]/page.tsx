@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
-import { Plus, Minus, CheckCircle } from 'lucide-react';
+import { Plus, Minus, CheckCircle, Star } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { ProductRecommendations } from '@/components/products/ProductRecommendations';
@@ -106,6 +106,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return notFound();
   }
 
+  const reviews = product.reviews || [];
+  const averageRating = reviews.length > 0
+    ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+    : 0;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -137,7 +142,19 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
         <div className="flex flex-col">
           <h1 className="text-3xl lg:text-4xl font-bold font-headline mb-2">{product.name}</h1>
-          <p className="text-3xl font-semibold text-primary mb-4">{formatCurrency(product.price)}</p>
+          <p className="text-3xl font-semibold text-primary mb-2">{formatCurrency(product.price)}</p>
+
+          {reviews.length > 0 && (
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} className={cn("h-5 w-5", averageRating >= star ? "text-yellow-400 fill-yellow-400" : "text-gray-300")} />
+                ))}
+              </div>
+              <span className="text-sm text-muted-foreground">({reviews.length} تقييمات)</span>
+            </div>
+          )}
+
           <p className="text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
           
           <Separator className="my-4" />
