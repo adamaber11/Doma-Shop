@@ -24,7 +24,7 @@ export type Product = {
   name: string;
   description: string;
   price: number;
-  salePrice?: number;
+  salePrice?: number | null;
   categoryId: string;
   stock: number;
   variants: ProductVariant[];
@@ -42,7 +42,7 @@ export type CartItem = {
   id: string;
   product: Product;
   quantity: number;
-  selectedColor: string;
+  selectedColor?: string;
   selectedSize?: string;
 };
 

@@ -29,7 +29,7 @@ const productSchema = z.object({
   name: z.string().min(3, "يجب أن يكون اسم المنتج 3 أحرف على الأقل"),
   description: z.string().min(10, "يجب أن يكون الوصف 10 أحرف على الأقل"),
   price: z.coerce.number().min(0.01, "السعر مطلوب"),
-  salePrice: z.coerce.number().optional(),
+  salePrice: z.coerce.number().optional().nullable(),
   categoryId: z.string({ required_error: "الفئة مطلوبة" }),
   stock: z.coerce.number().min(0, "المخزون مطلوب"),
   variants: z.array(variantSchema).min(1, "متغير واحد على الأقل مطلوب (لون وصور)"),
@@ -86,7 +86,7 @@ export default function EditProductPage() {
               name: fetchedProduct.name,
               description: fetchedProduct.description,
               price: fetchedProduct.price,
-              salePrice: fetchedProduct.salePrice || undefined,
+              salePrice: fetchedProduct.salePrice || null,
               categoryId: fetchedProduct.categoryId,
               stock: fetchedProduct.stock,
               variants: (fetchedProduct.variants || []).map(v => ({
@@ -119,7 +119,7 @@ export default function EditProductPage() {
   }, [productId, form, router, toast]);
 
   const onSubmit = async (values: ProductFormValues) => {
-     const productData = {
+     const productData: Partial<Product> = {
       ...values,
         salePrice: values.salePrice || null,
         variants: values.variants.map(variant => ({
@@ -298,7 +298,7 @@ export default function EditProductPage() {
                         <FormField control={form.control} name="salePrice" render={({ field }) => (
                         <FormItem>
                             <FormLabel>سعر العرض (اختياري)</FormLabel>
-                            <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
+                            <FormControl><Input type="number" step="0.01" {...field} value={field.value ?? ''} onChange={e => field.onChange(e.target.value === '' ? null : e.target.value)} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )} />

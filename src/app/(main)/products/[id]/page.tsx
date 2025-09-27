@@ -66,21 +66,20 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   }, [productImages]);
 
   const handleAction = (buyNow: boolean = false) => {
-    if (!product) return false;
-    if (product.variants && product.variants.length > 0 && !selectedColor) {
-        toast({ title: "خطأ", description: "الرجاء اختيار لون.", variant: "destructive" });
-        return false;
-    }
-    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
-        toast({ title: "خطأ", description: "الرجاء اختيار مقاس.", variant: "destructive" });
-        return false;
-    }
+    if (!product) return;
+
     addToCart(product, quantity, selectedColor, selectedSize);
+
+    // addToCart now has its own validation, but we can check if we should redirect
+    const hasVariants = product.variants && product.variants.length > 0;
+    const hasSizes = product.sizes && product.sizes.length > 0;
+
+    if (hasVariants && !selectedColor) return;
+    if (hasSizes && !selectedSize) return;
 
     if (buyNow) {
         router.push('/checkout');
     }
-    return true;
   };
 
   const handleAddToCart = () => {
@@ -168,25 +167,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 />
               </div>
             </div>
-            <div className="mt-6 border rounded-lg p-4 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {features.map((feature, index) => (
-                        <div key={index} className="flex items-center gap-3">
-                            <feature.icon className="h-8 w-8 text-muted-foreground" />
-                            <span className="text-sm font-medium text-muted-foreground">{feature.text}</span>
-                        </div>
-                    ))}
-                </div>
-                {(product.brand || product.type || product.material || product.madeIn) && <Separator />}
-                <div>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                        {product.brand && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brand}</li>}
-                        {product.type && <li><span className="font-semibold text-foreground">النوع:</span> {product.type}</li>}
-                        {product.material && <li><span className="font-semibold text-foreground">الخامة:</span> {product.material}</li>}
-                        {product.madeIn && <li><span className="font-semibold text-foreground">بلد الصنع:</span> {product.madeIn}</li>}
-                    </ul>
-                </div>
-            </div>
         </div>
 
 
@@ -221,6 +201,26 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           )}
 
           <p className="text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
+          
+          <div className="mt-6 border rounded-lg p-4 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  {features.map((feature, index) => (
+                      <div key={index} className="flex items-center gap-3">
+                          <feature.icon className="h-8 w-8 text-muted-foreground" />
+                          <span className="text-sm font-medium text-muted-foreground">{feature.text}</span>
+                      </div>
+                  ))}
+              </div>
+              {(product.brand || product.type || product.material || product.madeIn) && <Separator />}
+              <div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                      {product.brand && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brand}</li>}
+                      {product.type && <li><span className="font-semibold text-foreground">النوع:</span> {product.type}</li>}
+                      {product.material && <li><span className="font-semibold text-foreground">الخامة:</span> {product.material}</li>}
+                      {product.madeIn && <li><span className="font-semibold text-foreground">بلد الصنع:</span> {product.madeIn}</li>}
+                  </ul>
+              </div>
+          </div>
           
           <Separator className="my-4" />
 

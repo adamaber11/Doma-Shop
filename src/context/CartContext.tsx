@@ -33,10 +33,21 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems]);
 
   const addToCart = (product: Product, quantity: number, selectedColor?: string, selectedSize?: string) => {
-    if (!selectedColor && product.variants.length > 0) {
+    const hasVariants = product.variants && product.variants.length > 0;
+    const hasSizes = product.sizes && product.sizes.length > 0;
+
+    if (hasVariants && !selectedColor) {
         toast({
             title: "خطأ",
             description: "الرجاء تحديد لون للمنتج.",
+            variant: "destructive"
+        });
+        return;
+    }
+     if (hasSizes && !selectedSize) {
+        toast({
+            title: "خطأ",
+            description: "الرجاء تحديد مقاس للمنتج.",
             variant: "destructive"
         });
         return;
@@ -48,17 +59,34 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       const existingItem = prevItems.find(item => item.id === cartItemId);
 
       if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        if(newQuantity > product.stock) {
+            toast({
+                title: "الكمية غير متوفرة",
+                description: `الكمية المتاحة في المخزون هي ${product.stock} فقط.`,
+                variant: "destructive"
+            });
+            return prevItems;
+        }
         return prevItems.map(item =>
           item.id === cartItemId
-            ? { ...item, quantity: item.quantity + quantity }
+            ? { ...item, quantity: newQuantity }
             : item
         );
+      }
+      if(quantity > product.stock) {
+        toast({
+            title: "الكمية غير متوفرة",
+            description: `الكمية المتاحة في المخزون هي ${product.stock} فقط.`,
+            variant: "destructive"
+        });
+        return prevItems;
       }
       const newItem: CartItem = { 
         id: cartItemId, 
         product, 
         quantity,
-        selectedColor: selectedColor!,
+        selectedColor,
         selectedSize
       };
       return [...prevItems, newItem];
@@ -78,10 +106,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const updateQuantity = (cartItemId: string, quantity: number) => {
+    const itemToUpdate = cartItems.find(item => item.id === cartItemId);
+    if (!itemToUpdate) return;
+
+    if (quantity > itemToUpdate.product.stock) {
+        toast({
+            title: "الكمية غير متوفرة",
+            description: `الكمية القصوى المتاحة هي ${itemToUpdate.product.stock}.`,
+            variant: "destructive"
+        });
+        quantity = itemToUpdate.product.stock;
+    }
+
     if (quantity <= 0) {
       removeFromCart(cartItemId);
       return;
     }
+
     setCartItems(prevItems =>
       prevItems.map(item =>
         item.id === cartItemId ? { ...item, quantity } : item
@@ -95,7 +136,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const cartTotal = cartItems.reduce((total, item) => {
     const price = item.product.salePrice ?? item.product.price;
-    return total + price * item.quantity;
+    return total + price! * item.quantity;
   }, 0);
 
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
