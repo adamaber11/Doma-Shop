@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -97,36 +98,39 @@ export default function ProductsPage() {
                 </DialogContent>
             </Dialog>
         )}
+        
+        <div className="space-y-6">
+            <div>
+                <h1 className="text-3xl font-bold font-headline">منتجاتنا</h1>
+                <ProductFilters />
+            </div>
 
-        <h1 className="text-3xl font-bold mb-8 font-headline">منتجاتنا</h1>
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <aside className="lg:col-span-1">
-            <ProductFilters />
-          </aside>
-          <main className="lg:col-span-3">
-            {loading ? (
-               <div className="flex flex-wrap justify-center gap-1.5">
-                {[...Array(9)].map((_, i) => (
-                   <div key={i} className="space-y-2">
-                      <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
-                      <Skeleton className="h-5 w-3/4" />
-                      <Skeleton className="h-5 w-1/4" />
-                   </div>
-                ))}
-              </div>
-            ) : filteredProducts.length > 0 ? (
-              <div className="flex flex-wrap justify-center gap-1.5">
-                {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-center py-16">
-                <h2 className="text-2xl font-semibold mb-2">لم يتم العثور على منتجات</h2>
-                <p className="text-muted-foreground">حاول تعديل الفلاتر للعثور على ما تبحث عنه.</p>
-              </div>
-            )}
-          </main>
+            <Separator />
+            
+            <main>
+                {loading ? (
+                <div className="flex flex-wrap justify-center gap-1.5">
+                    {[...Array(9)].map((_, i) => (
+                    <div key={i} className="space-y-2">
+                        <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-5 w-1/4" />
+                    </div>
+                    ))}
+                </div>
+                ) : filteredProducts.length > 0 ? (
+                <div className="flex flex-wrap justify-center gap-1.5">
+                    {filteredProducts.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
+                ) : (
+                <div className="flex flex-col items-center justify-center h-full text-center py-16">
+                    <h2 className="text-2xl font-semibold mb-2">لم يتم العثور على منتجات</h2>
+                    <p className="text-muted-foreground">حاول تعديل الفلاتر للعثور على ما تبحث عنه.</p>
+                </div>
+                )}
+            </main>
         </div>
       </div>
   );

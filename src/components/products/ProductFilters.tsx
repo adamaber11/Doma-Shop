@@ -2,13 +2,13 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState, useEffect } from 'react';
 import { getCategories } from '@/services/product-service';
 import type { Category } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
+import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import { Button } from '../ui/button';
+import { cn } from '@/lib/utils';
 
 export function ProductFilters() {
   const router = useRouter();
@@ -42,41 +42,40 @@ export function ProductFilters() {
     }
     router.push(`${pathname}?${params.toString()}`);
   };
+  
+  const selectedCategory = searchParams.get('category') || 'all';
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>الفلاتر</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div>
-          <h3 className="font-semibold mb-4">الفئة</h3>
-          {loading ? (
-            <div className='space-y-2'>
-              <Skeleton className="h-5 w-20" />
-              <Skeleton className="h-5 w-24" />
-              <Skeleton className="h-5 w-20" />
-              <Skeleton className="h-5 w-28" />
-            </div>
-          ) : (
-            <RadioGroup 
-              defaultValue={searchParams.get('category') || 'all'}
-              onValueChange={handleCategoryChange}
-              >
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="all" id="cat-all" />
-                <Label htmlFor="cat-all">الكل</Label>
-              </div>
-              {categories.map(category => (
-                <div key={category.id} className="flex items-center space-x-2">
-                  <RadioGroupItem value={category.id} id={`cat-${category.id}`} />
-                  <Label htmlFor={`cat-${category.id}`}>{category.name}</Label>
-                </div>
-              ))}
-            </RadioGroup>
-          )}
+    <div className="py-4">
+        <h3 className="font-semibold mb-3 sr-only">الفئة</h3>
+        {loading ? (
+        <div className='flex items-center gap-2'>
+            {[...Array(6)].map((_, i) => (
+                <Skeleton key={i} className="h-9 w-24" />
+            ))}
         </div>
-      </CardContent>
-    </Card>
+        ) : (
+            <ScrollArea className="w-full whitespace-nowrap">
+                <div className="flex w-max space-x-2 space-x-reverse pb-2">
+                     <Button
+                        variant={selectedCategory === 'all' ? 'default' : 'outline'}
+                        onClick={() => handleCategoryChange('all')}
+                        >
+                        الكل
+                    </Button>
+                    {categories.map(category => (
+                         <Button
+                            key={category.id}
+                            variant={selectedCategory === category.id ? 'default' : 'outline'}
+                            onClick={() => handleCategoryChange(category.id)}
+                            >
+                            {category.name}
+                        </Button>
+                    ))}
+                </div>
+                <ScrollBar orientation="horizontal" />
+            </ScrollArea>
+        )}
+    </div>
   );
 }
