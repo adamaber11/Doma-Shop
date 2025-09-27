@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -8,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useToast } from "@/hooks/use-toast";
 
 const signupSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
@@ -16,14 +19,27 @@ const signupSchema = z.object({
 });
 
 export default function SignupPage() {
+  const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof signupSchema>>({
     resolver: zodResolver(signupSchema),
     defaultValues: { name: "", email: "", password: "" }
   });
 
-  const onSubmit = (values: z.infer<typeof signupSchema>) => {
-    console.log("Signup submitted:", values);
-    // Handle signup logic here
+  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
+    try {
+      const auth = getAuth();
+      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      toast({ title: "تم إنشاء الحساب بنجاح!" });
+      router.push('/');
+    } catch (error) {
+      console.error("Signup error", error);
+      toast({
+        title: "حدث خطأ",
+        description: "هذا البريد الإلكتروني مستخدم بالفعل.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -56,7 +72,9 @@ export default function SignupPage() {
                 <FormMessage />
               </FormItem>
             )} />
-            <Button type="submit" className="w-full">إنشاء حساب</Button>
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+               {form.formState.isSubmitting ? 'جاري الإنشاء...' : 'إنشاء حساب'}
+            </Button>
           </form>
         </Form>
       </CardContent>

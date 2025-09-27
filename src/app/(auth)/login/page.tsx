@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -8,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
   email: z.string().email("بريد إلكتروني غير صالح"),
@@ -15,14 +18,27 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" }
   });
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    console.log("Login submitted:", values);
-    // Handle login logic here
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    try {
+      const auth = getAuth();
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({ title: "تم تسجيل الدخول بنجاح!" });
+      router.push('/');
+    } catch (error) {
+      console.error("Login error", error);
+      toast({
+        title: "حدث خطأ",
+        description: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -48,7 +64,9 @@ export default function LoginPage() {
                 <FormMessage />
               </FormItem>
             )} />
-            <Button type="submit" className="w-full">تسجيل الدخول</Button>
+            <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? 'جاري تسجيل الدخول...' : 'تسجيل الدخول'}
+            </Button>
           </form>
         </Form>
       </CardContent>
