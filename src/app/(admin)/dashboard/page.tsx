@@ -3,25 +3,40 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getProducts, getCategories } from '@/services/product-service';
+import { getProducts, getCategories, getOrders, getCustomers } from '@/services/product-service';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Package, Tags } from 'lucide-react';
+import { Package, Tags, Users, DollarSign } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
+import type { Order } from '@/lib/types';
 
 export default function DashboardPage() {
   const [productCount, setProductCount] = useState(0);
   const [categoryCount, setCategoryCount] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [customerCount, setCustomerCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        const [products, categories] = await Promise.all([
-          getProducts(true), // Force refresh for latest data
+        const [products, categories, orders, customers] = await Promise.all([
+          getProducts(true),
           getCategories(true),
+          getOrders(true),
+          getCustomers(true),
         ]);
+        
         setProductCount(products.length);
         setCategoryCount(categories.length);
+        
+        const revenue = orders
+            .filter(order => order.status === 'delivered')
+            .reduce((sum, order) => sum + order.total, 0);
+        setTotalRevenue(revenue);
+        
+        setCustomerCount(customers.length);
+
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -38,49 +53,32 @@ export default function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">إجمالي الإيرادات</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$45,231.89</div>
+            {loading ? (
+                <Skeleton className="h-8 w-24" />
+            ) : (
+                <div className="text-2xl font-bold">{formatCurrency(totalRevenue)}</div>
+            )}
             <p className="text-xs text-muted-foreground">
-              +20.1% من الشهر الماضي
+              إجمالي الإيرادات من الطلبات المكتملة
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">المبيعات</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+            <CardTitle className="text-sm font-medium">العملاء</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+2350</div>
+            {loading ? (
+                <Skeleton className="h-8 w-16" />
+            ) : (
+                <div className="text-2xl font-bold">+{customerCount}</div>
+            )}
             <p className="text-xs text-muted-foreground">
-              +180.1% من الشهر الماضي
+              إجمالي العملاء المسجلين في المتجر
             </p>
           </CardContent>
         </Card>
