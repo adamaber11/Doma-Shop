@@ -101,4 +101,3 @@ export async function deleteProducts(productIds: string[]): Promise<void> {
     await batch.commit();
     await fetchDataIfNeeded(true); // Force cache refresh
 }
-
