@@ -59,7 +59,7 @@ export function OfferProductCard({ product }: OfferProductCardProps) {
                   {hasSale ? (
                       <div className="flex items-baseline gap-2">
                           <p className="text-lg font-bold">{formatCurrency(product.salePrice!)}</p>
-                          <p className="text-xs text-gray-500 line-through">{formatCurrency(product.price)}</p>
+                          <p className="text-xs text-red-500 line-through">{formatCurrency(product.price)}</p>
                       </div>
                   ) : (
                       <p className="text-lg font-bold">{formatCurrency(product.price)}</p>

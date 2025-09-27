@@ -175,7 +175,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               {hasSale ? (
                   <>
                       <p className="text-3xl font-semibold text-primary">{formatCurrency(product.salePrice!)}</p>
-                      <p className="text-xl text-muted-foreground line-through">{formatCurrency(product.price)}</p>
+                      <p className="text-xl text-red-500 line-through">{formatCurrency(product.price)}</p>
                   </>
               ) : (
                   <p className="text-3xl font-semibold text-primary">{formatCurrency(product.price)}</p>
