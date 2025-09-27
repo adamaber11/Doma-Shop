@@ -57,3 +57,9 @@ export type Order = {
   createdAt: Date;
   status: 'pending' | 'shipped' | 'delivered';
 };
+
+export type HomepageSettings = {
+    heroTitle: string;
+    heroSubtitle: string;
+    heroImagePublicId: string;
+};

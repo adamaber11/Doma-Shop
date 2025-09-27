@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/products/ProductCard";
-import { getPlaceholderImage } from "@/lib/placeholder-images";
+import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import {
   Carousel,
@@ -16,27 +16,30 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import React, { useEffect, useState } from "react";
 import { getProducts, getCategories } from "@/services/product-service";
-import type { Product, Category } from "@/lib/types";
+import { getHomepageSettings } from "@/services/settings-service";
+import type { Product, Category, HomepageSettings } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getPlaceholderImage } from "@/lib/placeholder-images";
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestOffersProducts, setBestOffersProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const heroImage = getPlaceholderImage('hero-1');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [products, fetchedCategories] = await Promise.all([
+        const [products, fetchedCategories, settings] = await Promise.all([
           getProducts(),
-          getCategories()
+          getCategories(),
+          getHomepageSettings()
         ]);
         setFeaturedProducts(products.filter(p => p.isFeatured).slice(0, 8));
         setBestOffersProducts(products.filter(p => p.isBestOffer).slice(0, 8));
         setCategories(fetchedCategories.slice(0, 5));
+        setHomepageSettings(settings);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -46,6 +49,13 @@ export default function Home() {
     fetchData();
   }, []);
 
+  const heroImage = homepageSettings?.heroImagePublicId 
+    ? getCloudinaryImageUrl(homepageSettings.heroImagePublicId) 
+    : getPlaceholderImage('hero-1').imageUrl;
+  
+  const heroTitle = homepageSettings?.heroTitle || "اكتشف أسلوبك";
+  const heroSubtitle = homepageSettings?.heroSubtitle || "استكشف مجموعتنا المنسقة من أجود المنتجات. الجودة والأناقة تصل إلى عتبة داركم.";
+
 
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
@@ -54,21 +64,22 @@ export default function Home() {
   return (
     <>
       <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200">
-        <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            className="object-cover"
-            data-ai-hint={heroImage.imageHint}
-            priority
-          />
+        {loading ? <Skeleton className="h-full w-full" /> : (
+            <Image
+                src={heroImage}
+                alt="Hero image"
+                fill
+                className="object-cover"
+                priority
+            />
+        )}
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative container mx-auto h-full flex flex-col items-start justify-center text-white px-4">
           <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4 text-shadow">
-            اكتشف أسلوبك
+            {heroTitle}
           </h1>
           <p className="text-lg md:text-2xl mb-8 max-w-2xl text-shadow">
-            استكشف مجموعتنا المنسقة من أجود المنتجات. الجودة والأناقة تصل إلى عتبة داركم.
+            {heroSubtitle}
           </p>
           <Button asChild size="lg">
             <Link href="/products">
