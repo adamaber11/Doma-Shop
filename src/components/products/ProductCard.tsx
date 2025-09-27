@@ -24,18 +24,9 @@ export function ProductCard({ product }: ProductCardProps) {
   const [open, setOpen] = useState(false);
   const { addToCart } = useCart();
   const { toast } = useToast();
-
-  const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation(); 
-    e.preventDefault();
-    if ((product.variants && product.variants.length > 1) || (product.sizes && product.sizes.length > 0)) {
-        setOpen(true);
-    } else {
-        addToCart(product, 1, product.variants?.[0]?.color, product.sizes?.[0]);
-    }
-  };
   
   const hasSale = product.salePrice && product.salePrice < product.price;
+  const discountPercentage = hasSale ? Math.round(((product.price - product.salePrice!) / product.price) * 100) : 0;
 
   const reviews = product.reviews || [];
   const averageRating = reviews.length > 0
@@ -44,9 +35,9 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <div className="bg-white text-black h-full flex flex-col group">
+      <div className="bg-white text-black h-full flex flex-col group border border-gray-200">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
-            <div className="relative w-full aspect-[4/3] bg-gray-100">
+            <div className="relative w-full aspect-square bg-white p-4">
                 <Image
                     src={imageUrl}
                     alt={product.name}
@@ -55,7 +46,13 @@ export function ProductCard({ product }: ProductCardProps) {
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                 />
             </div>
-            <div className="p-4 flex-grow flex flex-col">
+            <div className="p-4 flex-grow flex flex-col bg-white">
+                {hasSale && (
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-red-600 text-white text-xs font-bold px-2 py-1">خصم {discountPercentage}%</span>
+                    <span className="text-red-600 text-xs font-bold">عرض لمدة محدودة</span>
+                  </div>
+                )}
                 <h3 className="text-sm font-normal line-clamp-2 mb-2 flex-grow">{product.name}</h3>
                 
                 {reviews.length > 0 && (
@@ -72,14 +69,13 @@ export function ProductCard({ product }: ProductCardProps) {
                 <div className="mb-3">
                     {hasSale ? (
                         <div className="flex items-baseline gap-2">
-                            <p className="text-xl font-bold">{formatCurrency(product.salePrice!)}</p>
+                            <p className="text-lg font-bold">{formatCurrency(product.salePrice!)}</p>
                             <p className="text-xs text-gray-500 line-through">{formatCurrency(product.price)}</p>
                         </div>
                     ) : (
-                        <p className="text-xl font-bold">{formatCurrency(product.price)}</p>
+                        <p className="text-lg font-bold">{formatCurrency(product.price)}</p>
                     )}
                 </div>
-
             </div>
         </Link>
       </div>
