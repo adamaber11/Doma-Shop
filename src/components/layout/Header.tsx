@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Menu, Search, ShoppingCart, User } from "lucide-react";
+import { Menu, Search, ShoppingCart, User, LayoutDashboard } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
@@ -90,6 +90,15 @@ export function Header() {
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-64" />
           </div>
+
+          {user && user.email === 'adamaber50@gmail.com' && (
+            <Link href="/dashboard">
+              <Button variant="ghost" size="icon">
+                  <LayoutDashboard className="h-5 w-5" />
+                  <span className="sr-only">الداشبورد</span>
+              </Button>
+            </Link>
+          )}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
