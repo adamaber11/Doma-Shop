@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
-import { Plus, Minus, CheckCircle, Star, ShoppingBag, LinkIcon, PackageReturn, Truck, ShieldCheck } from 'lucide-react';
+import { Plus, Minus, CheckCircle, Star, ShoppingBag, LinkIcon, Undo2, Truck, ShieldCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { ProductRecommendations } from '@/components/products/ProductRecommendations';
@@ -134,7 +134,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const hasSale = product.salePrice && product.salePrice < product.price;
 
   const features = [
-      { icon: PackageReturn, text: "استرجاع خلال 14 يوم" },
+      { icon: Undo2, text: "استرجاع خلال 14 يوم" },
       { icon: Truck, text: "توصيل سريع وموثوق" },
       { icon: ShieldCheck, text: "دفع آمن 100%" },
   ];
@@ -295,5 +295,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
+
+    
 
     
