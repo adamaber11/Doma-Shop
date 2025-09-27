@@ -11,22 +11,9 @@ import type { Product, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
-
-const AdCard = ({ ad }: { ad: Ad }) => (
-  <Card className="overflow-hidden group">
-    <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer">
-      <div className="relative aspect-video">
-        <Image
-          src={ad.imageUrl}
-          alt="Advertisement"
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-      </div>
-    </Link>
-  </Card>
-);
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -34,7 +21,8 @@ export default function ProductsPage() {
   const [ads, setAds] = useState<Ad[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  
+  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
+
   const randomAd = useMemo(() => {
     const activeAds = ads.filter(ad => ad.isActive);
     if (activeAds.length === 0) return null;
@@ -51,6 +39,13 @@ export default function ProductsPage() {
         ]);
         setProducts(fetchedProducts);
         setAds(fetchedAds);
+        
+        const adShown = sessionStorage.getItem('adShown');
+        if (!adShown && fetchedAds.filter(ad => ad.isActive).length > 0) {
+            setIsAdModalOpen(true);
+            sessionStorage.setItem('adShown', 'true');
+        }
+
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -80,21 +75,38 @@ export default function ProductsPage() {
     setFilteredProducts(tempProducts);
   }, [searchParams, products]);
 
-  const productsWithAd = useMemo(() => {
-    if (!randomAd) return filteredProducts.map(p => ({ type: 'product', data: p }));
-    
-    const items: ( {type: 'product', data: Product} | {type: 'ad', data: Ad} )[] = filteredProducts.map(p => ({ type: 'product', data: p }));
-    const middleIndex = Math.floor(items.length / 2);
-    
-    if (items.length > 3) {
-      items.splice(middleIndex, 0, { type: 'ad', data: randomAd });
-    }
-    return items;
-  }, [filteredProducts, randomAd]);
-
 
   return (
       <div className="container mx-auto px-4 py-8">
+
+        {randomAd && (
+            <Dialog open={isAdModalOpen} onOpenChange={setIsAdModalOpen}>
+                <DialogContent className="p-0 border-0 max-w-lg">
+                     <DialogHeader className="p-4 flex flex-row items-center justify-between">
+                        <DialogTitle>عرض خاص!</DialogTitle>
+                         <DialogClose asChild>
+                            <Button variant="ghost" size="icon">
+                                <X className="h-5 w-5" />
+                                <span className="sr-only">إغلاق</span>
+                            </Button>
+                        </DialogClose>
+                    </DialogHeader>
+                    <div className="relative group">
+                         <Link href={randomAd.linkUrl} target="_blank" rel="noopener noreferrer" onClick={() => setIsAdModalOpen(false)}>
+                            <div className="relative aspect-video w-full overflow-hidden">
+                                <Image
+                                src={randomAd.imageUrl}
+                                alt="Advertisement"
+                                fill
+                                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                            </div>
+                        </Link>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        )}
+
         <h1 className="text-3xl font-bold mb-8 font-headline">منتجاتنا</h1>
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <aside className="lg:col-span-1">
@@ -111,17 +123,11 @@ export default function ProductsPage() {
                    </div>
                 ))}
               </div>
-            ) : productsWithAd.length > 0 ? (
+            ) : filteredProducts.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {productsWithAd.map((item, index) => {
-                  if (item.type === 'product') {
-                    return <ProductCard key={item.data.id} product={item.data} />;
-                  }
-                  if (item.type === 'ad') {
-                    return <div key={`ad-${index}`} className="sm:col-span-2 xl:col-span-1"><AdCard ad={item.data} /></div>;
-                  }
-                  return null;
-                })}
+                {filteredProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center py-16">
