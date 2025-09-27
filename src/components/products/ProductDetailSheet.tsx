@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -12,6 +12,7 @@ import { Plus, Minus, CheckCircle } from 'lucide-react';
 import type { Product } from '@/lib/types';
 import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductDetailSheetContentProps {
     product: Product;
@@ -20,10 +21,14 @@ interface ProductDetailSheetContentProps {
 export function ProductDetailSheetContent({ product }: ProductDetailSheetContentProps) {
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(product.colors?.[0]);
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(product.sizes?.[0]);
+
   const { addToCart } = useCart();
+  const { toast } = useToast();
 
   if (!product) {
-    return null; // Or some fallback UI
+    return null;
   }
 
   const productImages = product.imageUrls && product.imageUrls.length > 0 
@@ -31,7 +36,15 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
     : [getPlaceholderImage('product-1').imageUrl];
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
+        toast({ title: "خطأ", description: "الرجاء اختيار لون.", variant: "destructive" });
+        return;
+    }
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+        toast({ title: "خطأ", description: "الرجاء اختيار مقاس.", variant: "destructive" });
+        return;
+    }
+    addToCart(product, quantity, selectedColor, selectedSize);
   };
 
   return (
@@ -65,6 +78,30 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
           
           <p className="text-muted-foreground mb-6">{product.description}</p>
           
+          {product.colors && product.colors.length > 0 && (
+            <div className="mb-6">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">اللون</h3>
+                <div className="flex flex-wrap gap-2">
+                    {product.colors.map(color => (
+                        <button key={color} onClick={() => setSelectedColor(color)} className={cn("h-8 w-8 rounded-full border-2 transition-all", selectedColor === color ? 'border-primary scale-110' : 'border-border')} style={{ backgroundColor: color }} />
+                    ))}
+                </div>
+            </div>
+          )}
+
+          {product.sizes && product.sizes.length > 0 && (
+            <div className="mb-6">
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">المقاس</h3>
+                <div className="flex flex-wrap gap-2">
+                    {product.sizes.map(size => (
+                        <Button key={size} variant={selectedSize === size ? 'default' : 'outline'} onClick={() => setSelectedSize(size)}>
+                            {size}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+          )}
+
           <div className="flex items-center gap-4 mb-6">
             <div className="flex items-center border rounded-md">
               <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))}>

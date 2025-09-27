@@ -29,6 +29,8 @@ const productSchema = z.object({
   imageUrls: z.array(z.object({ value: z.string().url("يجب أن يكون رابطًا صالحًا") })).min(1, "رابط صورة واحد على الأقل مطلوب"),
   isFeatured: z.boolean().default(false),
   isBestOffer: z.boolean().default(false),
+  colors: z.array(z.object({ value: z.string().regex(/^#[0-9a-fA-F]{6}$/, "يجب أن يكون اللون صالحًا (hex code)") })).optional(),
+  sizes: z.array(z.object({ value: z.string().min(1, "المقاس مطلوب") })).optional(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -52,10 +54,9 @@ export default function EditProductPage() {
     }
   });
   
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "imageUrls"
-  });
+  const { fields: imageUrlFields, append: appendImageUrl, remove: removeImageUrl } = useFieldArray({ control: form.control, name: "imageUrls" });
+  const { fields: colorFields, append: appendColor, remove: removeColor } = useFieldArray({ control: form.control, name: "colors" });
+  const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({ control: form.control, name: "sizes" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,6 +73,8 @@ export default function EditProductPage() {
           const defaultValues = {
             ...fetchedProduct,
             imageUrls: fetchedProduct.imageUrls.map(url => ({ value: url })),
+            colors: fetchedProduct.colors?.map(c => ({ value: c })) || [],
+            sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
             isFeatured: fetchedProduct.isFeatured || false,
             isBestOffer: fetchedProduct.isBestOffer || false,
           };
@@ -95,7 +98,9 @@ export default function EditProductPage() {
   const onSubmit = async (values: ProductFormValues) => {
      const productData = {
       ...values,
-      imageUrls: values.imageUrls.map(url => url.value)
+      imageUrls: values.imageUrls.map(url => url.value),
+      colors: values.colors?.map(c => c.value),
+      sizes: values.sizes?.map(s => s.value),
     };
     try {
       await updateProduct(productId, productData);
@@ -181,7 +186,7 @@ export default function EditProductPage() {
                     <div>
                       <FormLabel>روابط صور المنتج</FormLabel>
                       <div className="space-y-4 mt-2">
-                        {fields.map((field, index) => (
+                        {imageUrlFields.map((field, index) => (
                           <FormField
                             key={field.id}
                             control={form.control}
@@ -192,8 +197,8 @@ export default function EditProductPage() {
                                   <FormControl>
                                     <Input placeholder="https://example.com/image.png" {...field} />
                                   </FormControl>
-                                  {fields.length > 1 && (
-                                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
+                                  {imageUrlFields.length > 1 && (
+                                    <Button type="button" variant="destructive" size="icon" onClick={() => removeImageUrl(index)}>
                                       <Trash2 className="h-4 w-4" />
                                     </Button>
                                   )}
@@ -203,16 +208,76 @@ export default function EditProductPage() {
                             )}
                           />
                         ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => append({ value: "" })}
-                        >
+                        <Button type="button" variant="outline" size="sm" onClick={() => appendImageUrl({ value: "" })}>
                           <PlusCircle className="mr-2 h-4 w-4" />
                           إضافة رابط صورة
                         </Button>
                       </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div>
+                          <FormLabel>ألوان المنتج</FormLabel>
+                          <div className="space-y-4 mt-2">
+                            {colorFields.map((field, index) => (
+                              <FormField
+                                key={field.id}
+                                control={form.control}
+                                name={`colors.${index}.value`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <div className="flex items-center gap-2">
+                                      <FormControl>
+                                        <div className='relative'>
+                                            <Input placeholder="#FFFFFF" className='pl-10' {...field} />
+                                            <Input type="color" className='absolute top-1/2 left-2 -translate-y-1/2 h-6 w-6 p-0 border-none' value={field.value || '#000000'} onChange={(e) => field.onChange(e.target.value)} />
+                                        </div>
+                                      </FormControl>
+                                      <Button type="button" variant="destructive" size="icon" onClick={() => removeColor(index)}>
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            ))}
+                            <Button type="button" variant="outline" size="sm" onClick={() => appendColor({ value: "#000000" })}>
+                              <PlusCircle className="mr-2 h-4 w-4" />
+                              إضافة لون
+                            </Button>
+                          </div>
+                        </div>
+
+                        <div>
+                          <FormLabel>مقاسات المنتج</FormLabel>
+                          <div className="space-y-4 mt-2">
+                            {sizeFields.map((field, index) => (
+                              <FormField
+                                key={field.id}
+                                control={form.control}
+                                name={`sizes.${index}.value`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <div className="flex items-center gap-2">
+                                      <FormControl>
+                                        <Input placeholder="M" {...field} />
+                                      </FormControl>
+                                      <Button type="button" variant="destructive" size="icon" onClick={() => removeSize(index)}>
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </div>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            ))}
+                            <Button type="button" variant="outline" size="sm" onClick={() => appendSize({ value: "" })}>
+                              <PlusCircle className="mr-2 h-4 w-4" />
+                              إضافة مقاس
+                            </Button>
+                          </div>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

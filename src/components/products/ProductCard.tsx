@@ -9,10 +9,11 @@ import type { Product } from "@/lib/types";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ProductDetailSheetContent } from "./ProductDetailSheet";
 import { Button } from "../ui/button";
-import { ShoppingCart } from "lucide-react";
+import { Eye, ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import Link from "next/link";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   product: Product;
@@ -25,11 +26,21 @@ export function ProductCard({ product }: ProductCardProps) {
   
   const [open, setOpen] = useState(false);
   const { addToCart } = useCart();
+  const { toast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation(); // Prevent sheet from opening
-    e.preventDefault(); // Prevent link navigation
-    addToCart(product, 1);
+    e.stopPropagation(); 
+    e.preventDefault();
+    if ((product.colors && product.colors.length > 0) || (product.sizes && product.sizes.length > 0)) {
+        setOpen(true);
+        toast({
+            title: "التخصيص مطلوب",
+            description: "الرجاء اختيار اللون والمقاس من صفحة تفاصيل المنتج.",
+            variant: "default"
+        });
+    } else {
+        addToCart(product, 1);
+    }
   };
   
   return (
@@ -46,6 +57,9 @@ export function ProductCard({ product }: ProductCardProps) {
                             className="object-cover"
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
+                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                            <Eye className="h-10 w-10 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 flex-grow">

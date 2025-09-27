@@ -15,12 +15,16 @@ export type Product = {
   stock: number;
   isFeatured?: boolean;
   isBestOffer?: boolean;
+  colors?: string[];
+  sizes?: string[];
 };
 
 export type CartItem = {
   id: string;
   product: Product;
   quantity: number;
+  selectedColor?: string;
+  selectedSize?: string;
 };
 
 export type Order = {

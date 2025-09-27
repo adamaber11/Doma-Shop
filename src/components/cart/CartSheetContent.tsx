@@ -44,7 +44,7 @@ export function CartSheetContent() {
                       ? item.product.imageUrls[0] 
                       : getPlaceholderImage('product-1').imageUrl;
                     return (
-                        <li key={item.id} className="flex items-center py-4">
+                        <li key={item.id} className="flex items-start py-4">
                             <div className="relative h-20 w-20 rounded-md overflow-hidden ml-4 flex-shrink-0">
                                 <Image
                                 src={itemImage}
@@ -57,7 +57,15 @@ export function CartSheetContent() {
                                 <SheetClose asChild>
                                     <Link href={`/products/${item.product.id}`} className="font-semibold hover:text-primary text-sm leading-tight">{item.product.name}</Link>
                                 </SheetClose>
-                                <p className="text-xs text-muted-foreground mt-1">{formatCurrency(item.product.price)}</p>
+                                <div className="text-xs text-muted-foreground mt-1 space-y-1">
+                                    {item.selectedColor && (
+                                        <div className="flex items-center gap-1.5">
+                                            <span>اللون:</span>
+                                            <span className="h-3 w-3 rounded-full border" style={{backgroundColor: item.selectedColor}}></span>
+                                        </div>
+                                    )}
+                                    {item.selectedSize && <p>المقاس: {item.selectedSize}</p>}
+                                </div>
                                 <div className="flex items-center gap-2 mt-2">
                                     <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => updateQuantity(item.id, item.quantity - 1)}>
                                     <Minus className="h-3 w-3" />
@@ -65,8 +73,8 @@ export function CartSheetContent() {
                                     <Input
                                     type="number"
                                     value={item.quantity}
-                                    onChange={(e) => updateQuantity(item.id, parseInt(e.target.value, 10) || 1)}
-                                    className="w-12 h-7 text-center"
+                                    readOnly
+                                    className="w-12 h-7 text-center border-0 focus-visible:ring-0"
                                     />
                                     <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => updateQuantity(item.id, item.quantity + 1)}>
                                     <Plus className="h-3 w-3" />
