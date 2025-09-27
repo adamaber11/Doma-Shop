@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React, { useEffect, useState } from "react";
-import { getProducts, getCategories } from "@/services/product-service";
+import { getProducts, getCategories, getAds } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
-import type { Product, Category, HomepageSettings } from "@/lib/types";
+import type { Product, Category, HomepageSettings, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 
@@ -24,18 +24,22 @@ export default function Home() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [bannerAds, setBannerAds] = useState<Ad[]>([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [products, fetchedCategories, settings] = await Promise.all([
+        const [products, fetchedCategories, settings, ads] = await Promise.all([
           getProducts(),
           getCategories(),
-          getHomepageSettings()
+          getHomepageSettings(),
+          getAds()
         ]);
         setBestOffersProducts(products.filter(p => p.isBestOffer).slice(0, 8));
         setCategories(fetchedCategories.slice(0, 5));
         setHomepageSettings(settings);
+        setBannerAds(ads.filter(ad => ad.isActive));
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -60,12 +64,6 @@ export default function Home() {
   const bannerPlugin = React.useRef(
     Autoplay({ delay: 3000, stopOnInteraction: true })
   );
-
-  const bannerImages = [
-      getPlaceholderImage('banner-1'),
-      getPlaceholderImage('banner-2'),
-      getPlaceholderImage('banner-3'),
-  ];
 
   return (
     <>
@@ -155,19 +153,32 @@ export default function Home() {
               className="w-full"
             >
               <CarouselContent>
-                {bannerImages.map((img) => (
-                  <CarouselItem key={img.id}>
-                    <div className="relative aspect-[16/6] w-full rounded-lg overflow-hidden">
-                       <Image
-                          src={img.imageUrl}
-                          alt={img.description}
-                          fill
-                          className="object-cover"
-                          data-ai-hint={img.imageHint}
-                        />
-                    </div>
+                {loading ? (
+                  <CarouselItem>
+                    <Skeleton className="aspect-[16/6] w-full" />
                   </CarouselItem>
-                ))}
+                ) : bannerAds.length > 0 ? (
+                    bannerAds.map((ad) => (
+                    <CarouselItem key={ad.id}>
+                      <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer">
+                        <div className="relative aspect-[16/6] w-full rounded-lg overflow-hidden">
+                          <Image
+                              src={ad.imageUrl}
+                              alt="Advertisement"
+                              fill
+                              className="object-cover"
+                            />
+                        </div>
+                      </Link>
+                    </CarouselItem>
+                  ))
+                ) : (
+                   <CarouselItem>
+                      <div className="relative aspect-[16/6] w-full rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+                         <p className="text-muted-foreground">لا توجد بنرات لعرضها حاليًا</p>
+                      </div>
+                    </CarouselItem>
+                )}
               </CarouselContent>
             </Carousel>
         </div>
