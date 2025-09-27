@@ -177,7 +177,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                         </div>
                     ))}
                 </div>
-                 {(product.brand || product.type || product.material || product.madeIn) && <Separator />}
+                {(product.brand || product.type || product.material || product.madeIn) && <Separator />}
                 <div>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                         {product.brand && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brand}</li>}

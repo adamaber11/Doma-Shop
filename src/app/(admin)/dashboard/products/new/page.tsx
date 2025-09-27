@@ -257,7 +257,7 @@ export default function NewProductPage() {
                         <FormField control={form.control} name="brand" render={({ field }) => (
                         <FormItem>
                             <FormLabel>الماركة (اختياري)</FormLabel>
-                            <FormControl><Input {...field} /></FormControl>
+                            <FormControl><Input placeholder="مثال: Nike" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )} />
@@ -265,7 +265,7 @@ export default function NewProductPage() {
                         <FormField control={form.control} name="type" render={({ field }) => (
                         <FormItem>
                             <FormLabel>النوع (اختياري)</FormLabel>
-                            <FormControl><Input {...field} /></FormControl>
+                            <FormControl><Input placeholder="مثال: حقيبة حريمي" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )} />
@@ -274,7 +274,7 @@ export default function NewProductPage() {
                         <FormField control={form.control} name="material" render={({ field }) => (
                         <FormItem>
                             <FormLabel>الخامة (اختياري)</FormLabel>
-                            <FormControl><Input {...field} /></FormControl>
+                            <FormControl><Input placeholder="مثال: خرز" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )} />
@@ -282,7 +282,7 @@ export default function NewProductPage() {
                         <FormField control={form.control} name="madeIn" render={({ field }) => (
                         <FormItem>
                             <FormLabel>بلد الصنع (اختياري)</FormLabel>
-                            <FormControl><Input {...field} /></FormControl>
+                            <FormControl><Input placeholder="مثال: مصر" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )} />
