@@ -95,13 +95,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                 <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
-                    <div className="md:order-2 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
+                 <div className="grid grid-cols-[80px_1fr] md:grid-cols-1 lg:grid-cols-[80px_1fr] gap-4 items-start">
+                    <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
                         <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
                         <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
                         <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
                     </div>
-                    <Skeleton className="md:order-1 aspect-square w-full rounded-lg" />
+                    <Skeleton className="aspect-square w-full rounded-lg" />
                 </div>
                 <div className="space-y-6">
                     <Skeleton className="h-10 w-3/4" />
@@ -126,8 +126,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-         <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
-           <div className="md:order-2 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
+        <div className="grid grid-cols-1 gap-4 items-start md:grid-cols-[80px_1fr]">
+           <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center order-2 md:order-1">
               {productImages.length > 1 && productImages.map((imageUrl, index) => (
                 <button
                   key={index}
@@ -141,7 +141,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </button>
               ))}
             </div>
-          <div className="md:order-1 aspect-square relative rounded-lg overflow-hidden border">
+          <div className="aspect-square relative rounded-lg overflow-hidden border order-1 md:order-2">
             <Image
               src={productImages[activeImageIndex]}
               alt={product.name}
@@ -151,6 +151,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             />
           </div>
         </div>
+
 
         <div className="flex flex-col">
           <h1 className="text-3xl lg:text-4xl font-bold font-headline mb-2">{product.name}</h1>
@@ -221,7 +222,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   readOnly
                   className="w-16 h-10 text-center border-0 focus-visible:ring-0"
                 />
-                <Button variant="ghost" size="icon" onClick={() => setQuantity(q => q + 1)}>
+                <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.min(q + 1, product.stock))}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -251,5 +252,3 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
-
-    

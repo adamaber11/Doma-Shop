@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
 import { Plus, Minus, CheckCircle } from 'lucide-react';
 import type { Product } from '@/lib/types';
-import { SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { SheetHeader, SheetTitle, SheetDescription, SheetClose } from '@/components/ui/sheet';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { useToast } from '@/hooks/use-toast';
 
@@ -116,17 +116,19 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
               <Input
                 type="number"
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
+                readOnly
                 className="w-16 h-10 text-center border-0 focus-visible:ring-0"
                 min="1"
               />
-              <Button variant="ghost" size="icon" onClick={() => setQuantity(q => q + 1)}>
+              <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.min(q + 1, product.stock))}>
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <Button size="lg" onClick={handleAddToCart} className="flex-1" disabled={!selectedColor && product.variants.length > 0}>
-              أضف إلى السلة
-            </Button>
+            <SheetClose asChild>
+                <Button size="lg" onClick={handleAddToCart} className="flex-1" disabled={!selectedColor && product.variants.length > 0}>
+                أضف إلى السلة
+                </Button>
+            </SheetClose>
           </div>
           
           <div className="flex items-center gap-2 text-sm text-green-600">
