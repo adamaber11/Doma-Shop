@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/placeholder-images';
+import { getCloudinaryImageUrl } from '@/lib/cloudinary';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,7 +26,7 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
     return null; // Or some fallback UI
   }
 
-  const productImages = product.imageIds.map(id => getPlaceholderImage(id));
+  const productImages = product.imageIds.map(id => getCloudinaryImageUrl(id));
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
@@ -39,23 +40,22 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
         </SheetHeader>
         <div className="aspect-square relative mb-4 rounded-lg overflow-hidden border">
             <Image
-              src={productImages[activeImageIndex].imageUrl}
+              src={productImages[activeImageIndex]}
               alt={product.name}
               fill
               className="object-cover"
-              data-ai-hint={productImages[activeImageIndex].imageHint}
               sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
           {productImages.length > 1 && (
             <div className="flex gap-2 mb-4">
-              {productImages.map((image, index) => (
+              {productImages.map((imageUrl, index) => (
                 <button
-                  key={image.id}
+                  key={product.imageIds[index]}
                   className={`relative w-20 h-20 rounded-md overflow-hidden border-2 ${index === activeImageIndex ? 'border-primary' : 'border-transparent'}`}
                   onClick={() => setActiveImageIndex(index)}
                 >
-                  <Image src={image.imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
+                  <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
                 </button>
               ))}
             </div>

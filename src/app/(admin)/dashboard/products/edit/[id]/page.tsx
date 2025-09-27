@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ImageUpload } from '@/components/shared/ImageUpload';
 
 const productSchema = z.object({
   name: z.string().min(3, "يجب أن يكون اسم المنتج 3 أحرف على الأقل"),
@@ -25,7 +26,7 @@ const productSchema = z.object({
   price: z.coerce.number().min(0.01, "السعر مطلوب"),
   categoryId: z.string({ required_error: "الفئة مطلوبة" }),
   stock: z.coerce.number().min(0, "المخزون مطلوب"),
-  imageIds: z.string().min(1, "معرف صورة واحد على الأقل مطلوب"),
+  imageIds: z.array(z.string()).min(1, "صورة واحدة على الأقل مطلوبة"),
 });
 
 export default function EditProductPage() {
@@ -55,10 +56,7 @@ export default function EditProductPage() {
 
         if (fetchedProduct) {
           setProduct(fetchedProduct);
-          form.reset({
-            ...fetchedProduct,
-            imageIds: fetchedProduct.imageIds.join(', '),
-          });
+          form.reset(fetchedProduct);
         } else {
             toast({ title: "خطأ", description: "لم يتم العثور على المنتج.", variant: "destructive" });
             router.push('/dashboard/products');
@@ -77,13 +75,7 @@ export default function EditProductPage() {
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     try {
-      const imageIdsArray = values.imageIds.split(',').map(id => id.trim()).filter(id => id);
-       if (imageIdsArray.length === 0) {
-        form.setError("imageIds", { type: "manual", message: "معرف صورة واحد على الأقل مطلوب" });
-        return;
-      }
-
-      await updateProduct(productId, { ...values, imageIds: imageIdsArray });
+      await updateProduct(productId, values);
       toast({ title: "نجاح", description: "تم تحديث المنتج بنجاح." });
       router.push('/dashboard/products');
     } catch (error) {
@@ -106,14 +98,12 @@ export default function EditProductPage() {
             <CardContent className="space-y-6">
                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-24 w-full' /></div>
+                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-40 w-full' /></div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                     <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                 </div>
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
-                    <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
-                </div>
+                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
             </CardContent>
             <CardFooter className='justify-end'>
                 <Skeleton className='h-10 w-32' />
@@ -161,6 +151,23 @@ export default function EditProductPage() {
                     </FormItem>
                     )} />
                     
+                     <FormField
+                        control={form.control}
+                        name="imageIds"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>صور المنتج</FormLabel>
+                                <FormControl>
+                                    <ImageUpload
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField control={form.control} name="price" render={({ field }) => (
                         <FormItem>
@@ -179,34 +186,25 @@ export default function EditProductPage() {
                         )} />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField control={form.control} name="categoryId" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>الفئة</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="اختر فئة" />
-                                </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                {categories.map(cat => (
-                                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                                ))}
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                        )} />
+                    <FormField control={form.control} name="categoryId" render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>الفئة</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="اختر فئة" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {categories.map(cat => (
+                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                    )} />
 
-                        <FormField control={form.control} name="imageIds" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>معرفات الصور (مفصولة بفاصلة)</FormLabel>
-                            <FormControl><Input {...field} /></FormControl>
-                             <FormMessage />
-                        </FormItem>
-                        )} />
-                    </div>
                 </CardContent>
                 <CardFooter className='justify-end'>
                     <Button type="submit" disabled={form.formState.isSubmitting}>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -5,7 +6,7 @@ import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/lib/types";
-import { getPlaceholderImage } from "@/lib/placeholder-images";
+import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ProductDetailSheetContent } from "./ProductDetailSheet";
 import { Button } from "../ui/button";
@@ -18,7 +19,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const productImage = getPlaceholderImage(product.imageIds[0]);
+  const imageUrl = getCloudinaryImageUrl(product.imageIds[0]);
   const [open, setOpen] = useState(false);
   const { addToCart } = useCart();
 
@@ -36,11 +37,10 @@ export function ProductCard({ product }: ProductCardProps) {
                 <CardHeader className="p-0">
                   <div className="relative aspect-square w-full">
                         <Image
-                            src={productImage.imageUrl}
+                            src={imageUrl}
                             alt={product.name}
                             fill
                             className="object-cover"
-                            data-ai-hint={productImage.imageHint}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                   </div>
