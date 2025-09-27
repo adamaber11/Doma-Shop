@@ -99,15 +99,14 @@ export default function ProductsPage() {
             </Dialog>
         )}
         
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-3xl font-bold font-headline">منتجاتنا</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
+            <aside>
+                <h2 className="text-2xl font-bold font-headline mb-4">الفئات</h2>
                 <ProductFilters />
-            </div>
+            </aside>
 
-            <Separator />
-            
             <main>
+                <h1 className="text-3xl font-bold font-headline mb-6">منتجاتنا</h1>
                 {loading ? (
                 <div className="flex flex-wrap justify-center gap-1.5">
                     {[...Array(9)].map((_, i) => (
