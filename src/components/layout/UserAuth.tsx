@@ -65,7 +65,7 @@ export function UserAuth() {
               <DropdownMenuItem asChild>
                 <Link href="/dashboard">
                   <LayoutDashboard className="ml-2 h-4 w-4" />
-                  <span>الداشبورد</span>
+                  <span>لوحه التحكم</span>
                 </Link>
               </DropdownMenuItem>
             )}
