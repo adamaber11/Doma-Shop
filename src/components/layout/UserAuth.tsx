@@ -10,17 +10,18 @@ import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/lib/firebase";
+import { Skeleton } from "../ui/skeleton";
 
 export function UserAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [isClient, setIsClient] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
-    setIsClient(true);
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -39,12 +40,9 @@ export function UserAuth() {
     }
   };
   
-  if (!isClient) {
+  if (loading) {
       return (
-        <Button variant="ghost" size="icon">
-          <User className="h-5 w-5" />
-          <span className="sr-only">قائمة المستخدم</span>
-        </Button>
+        <Skeleton className="h-10 w-10 rounded-full" />
       )
   }
 
