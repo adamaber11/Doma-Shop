@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from 'react-hook-form';
@@ -11,6 +12,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { addContactMessage } from '@/services/product-service';
+import { useEffect, useState } from 'react';
+import { getContactInfoSettings } from '@/services/settings-service';
+import type { ContactInfoSettings } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const contactSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
@@ -20,10 +25,28 @@ const contactSchema = z.object({
 
 export default function ContactPage() {
   const { toast } = useToast();
+  const [contactInfo, setContactInfo] = useState<ContactInfoSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
     defaultValues: { name: "", email: "", message: "" }
   });
+  
+  useEffect(() => {
+    const fetchSettings = async () => {
+      setLoading(true);
+      try {
+        const settings = await getContactInfoSettings();
+        setContactInfo(settings);
+      } catch (error) {
+        console.error("Failed to fetch contact info:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const onSubmit = async (values: z.infer<typeof contactSchema>) => {
     try {
@@ -51,27 +74,43 @@ export default function ContactPage() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="bg-primary/10 text-primary p-3 rounded-full"><Mail className="h-6 w-6" /></div>
-            <div>
-              <h3 className="font-semibold text-lg">البريد الإلكتروني</h3>
-              <p className="text-muted-foreground">support@doma.com</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="bg-primary/10 text-primary p-3 rounded-full"><Phone className="h-6 w-6" /></div>
-            <div>
-              <h3 className="font-semibold text-lg">الهاتف</h3>
-              <p className="text-muted-foreground">+1 (555) 123-4567</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="bg-primary/10 text-primary p-3 rounded-full"><MapPin className="h-6 w-6" /></div>
-            <div>
-              <h3 className="font-semibold text-lg">العنوان</h3>
-              <p className="text-muted-foreground">123 شارع التجارة، المدينة الرقمية، 10101</p>
-            </div>
-          </div>
+          {loading ? (
+            <>
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <Skeleton className="h-12 w-12 rounded-full" />
+                  <div className='space-y-2'>
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-4 w-48" />
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/10 text-primary p-3 rounded-full"><Mail className="h-6 w-6" /></div>
+                <div>
+                  <h3 className="font-semibold text-lg">البريد الإلكتروني</h3>
+                  <p className="text-muted-foreground">{contactInfo?.email}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/10 text-primary p-3 rounded-full"><Phone className="h-6 w-6" /></div>
+                <div>
+                  <h3 className="font-semibold text-lg">الهاتف</h3>
+                  <p className="text-muted-foreground">{contactInfo?.phone}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/10 text-primary p-3 rounded-full"><MapPin className="h-6 w-6" /></div>
+                <div>
+                  <h3 className="font-semibold text-lg">العنوان</h3>
+                  <p className="text-muted-foreground">{contactInfo?.address}</p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
         <div className="md:col-span-2">
           <Card>

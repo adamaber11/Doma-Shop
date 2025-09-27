@@ -79,3 +79,10 @@ export type ContactMessage = {
   message: string;
   createdAt: Date;
 };
+
+export type ContactInfoSettings = {
+    email: string;
+    phone: string;
+    address: string;
+};
+
