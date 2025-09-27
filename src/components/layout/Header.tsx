@@ -16,6 +16,7 @@ import { UserAuth } from "./UserAuth";
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
   { href: "/products", label: "المنتجات" },
+  { href: "/offers", label: "العروض" },
   { href: "/about", label: "من نحن" },
   { href: "/contact", label: "اتصل بنا" },
 ];

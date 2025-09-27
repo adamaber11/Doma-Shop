@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -131,15 +132,18 @@ export default function CheckoutPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-4">
-                  {cartItems.map(item => (
-                    <li key={item.id} className="flex justify-between items-start">
-                      <div>
-                        <p className="font-semibold">{item.product.name}</p>
-                        <p className="text-sm text-muted-foreground">الكمية: {item.quantity}</p>
-                      </div>
-                      <p className="font-medium">{formatCurrency(item.product.price * item.quantity)}</p>
-                    </li>
-                  ))}
+                  {cartItems.map(item => {
+                    const price = item.product.salePrice ?? item.product.price;
+                    return (
+                      <li key={item.id} className="flex justify-between items-start">
+                        <div>
+                          <p className="font-semibold">{item.product.name}</p>
+                          <p className="text-sm text-muted-foreground">الكمية: {item.quantity}</p>
+                        </div>
+                        <p className="font-medium">{formatCurrency(price * item.quantity)}</p>
+                      </li>
+                    );
+                  })}
                 </ul>
                 <Separator className="my-4" />
                 <div className="space-y-2">

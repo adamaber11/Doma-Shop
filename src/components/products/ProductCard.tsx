@@ -7,13 +7,14 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { formatCurrency } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { Button } from "../ui/button";
-import { Eye, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import Link from "next/link";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ProductDetailSheetContent } from "./ProductDetailSheet";
+import { Badge } from "../ui/badge";
 
 interface ProductCardProps {
   product: Product;
@@ -36,6 +37,8 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
   
+  const hasSale = product.salePrice && product.salePrice < product.price;
+
   return (
     <>
       <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer">
@@ -50,11 +53,23 @@ export function ProductCard({ product }: ProductCardProps) {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
+                     {hasSale && (
+                        <Badge variant="destructive" className="absolute top-2 left-2">عرض</Badge>
+                     )}
               </div>
             </CardHeader>
             <CardContent className="p-4 flex-grow">
                 <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{product.name}</h3>
-              <p className="text-muted-foreground text-sm">{formatCurrency(product.price)}</p>
+                 <div className="flex items-center gap-2 mt-1">
+                    {hasSale ? (
+                        <>
+                            <p className="text-lg font-semibold text-primary">{formatCurrency(product.salePrice!)}</p>
+                            <p className="text-sm text-muted-foreground line-through">{formatCurrency(product.price)}</p>
+                        </>
+                    ) : (
+                        <p className="text-lg font-semibold">{formatCurrency(product.price)}</p>
+                    )}
+                </div>
             </CardContent>
         </Link>
         <CardFooter className="p-4 pt-0">

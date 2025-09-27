@@ -30,6 +30,7 @@ const productSchema = z.object({
   name: z.string().min(3, "يجب أن يكون اسم المنتج 3 أحرف على الأقل"),
   description: z.string().min(10, "يجب أن يكون الوصف 10 أحرف على الأقل"),
   price: z.coerce.number().min(0.01, "السعر مطلوب"),
+  salePrice: z.coerce.number().optional(),
   categoryId: z.string({ required_error: "الفئة مطلوبة" }),
   stock: z.coerce.number().min(0, "المخزون مطلوب"),
   variants: z.array(variantSchema).min(1, "متغير واحد على الأقل مطلوب (لون وصور)"),
@@ -93,6 +94,7 @@ export default function NewProductPage() {
   const onSubmit = async (values: ProductFormValues) => {
     const productData = {
         ...values,
+        salePrice: values.salePrice || null,
         variants: values.variants.map(variant => ({
             ...variant,
             imageUrls: variant.imageUrls.map(url => url.value)
@@ -228,20 +230,28 @@ export default function NewProductPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField control={form.control} name="price" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>السعر</FormLabel>
+                            <FormLabel>السعر الأصلي</FormLabel>
                             <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )} />
 
-                        <FormField control={form.control} name="stock" render={({ field }) => (
+                        <FormField control={form.control} name="salePrice" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>سعر العرض (اختياري)</FormLabel>
+                            <FormControl><Input type="number" step="0.01" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )} />
+                    </div>
+
+                    <FormField control={form.control} name="stock" render={({ field }) => (
                         <FormItem>
                             <FormLabel>الكمية في المخزون</FormLabel>
                             <FormControl><Input type="number" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                         )} />
-                    </div>
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormField control={form.control} name="brand" render={({ field }) => (

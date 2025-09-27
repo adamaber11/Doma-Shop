@@ -42,6 +42,7 @@ export function CartSheetContent() {
                     {cartItems.map(item => {
                     const variant = item.product.variants.find(v => v.color === item.selectedColor);
                     const itemImage = variant?.imageUrls[0] || getPlaceholderImage('product-1').imageUrl;
+                    const price = item.product.salePrice ?? item.product.price;
                     
                     return (
                         <li key={item.id} className="flex items-start py-4">
@@ -82,7 +83,7 @@ export function CartSheetContent() {
                                 </div>
                             </div>
                             <div className="flex flex-col items-end mr-2">
-                                <span className="font-semibold text-sm mb-2">{formatCurrency(item.product.price * item.quantity)}</span>
+                                <span className="font-semibold text-sm mb-2">{formatCurrency(price * item.quantity)}</span>
                                 <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => removeFromCart(item.id)}>
                                     <Trash2 className="h-4 w-4" />
                                 </Button>

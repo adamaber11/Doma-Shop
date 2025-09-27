@@ -1,5 +1,4 @@
 
-
 export type Category = {
   id: string;
   name: string;
@@ -24,6 +23,7 @@ export type Product = {
   name: string;
   description: string;
   price: number;
+  salePrice?: number;
   categoryId: string;
   stock: number;
   variants: ProductVariant[];

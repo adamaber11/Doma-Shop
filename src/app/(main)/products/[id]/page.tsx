@@ -95,13 +95,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                 <div className="grid grid-cols-[80px_1fr] md:grid-cols-1 lg:grid-cols-[80px_1fr] gap-4 items-start">
-                    <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
-                        <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
-                        <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
-                        <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
-                    </div>
+                 <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
                     <Skeleton className="aspect-square w-full rounded-lg" />
+                     <div className="flex flex-row md:flex-col gap-2 justify-center">
+                        <Skeleton className="h-20 w-20 rounded-md" />
+                        <Skeleton className="h-20 w-20 rounded-md" />
+                        <Skeleton className="h-20 w-20 rounded-md" />
+                    </div>
                 </div>
                 <div className="space-y-6">
                     <Skeleton className="h-10 w-3/4" />
@@ -123,11 +123,22 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
     : 0;
 
+  const hasSale = product.salePrice && product.salePrice < product.price;
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div className="grid grid-cols-1 gap-4 items-start md:grid-cols-[80px_1fr]">
-           <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center order-2 md:order-1">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
+          <div className="aspect-square relative rounded-lg overflow-hidden border">
+            <Image
+              src={productImages[activeImageIndex]}
+              alt={product.name}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+           <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
               {productImages.length > 1 && productImages.map((imageUrl, index) => (
                 <button
                   key={index}
@@ -141,21 +152,22 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </button>
               ))}
             </div>
-          <div className="aspect-square relative rounded-lg overflow-hidden border order-1 md:order-2">
-            <Image
-              src={productImages[activeImageIndex]}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-            />
-          </div>
         </div>
 
 
         <div className="flex flex-col">
           <h1 className="text-3xl lg:text-4xl font-bold font-headline mb-2">{product.name}</h1>
-          <p className="text-3xl font-semibold text-primary mb-2">{formatCurrency(product.price)}</p>
+          
+           <div className="flex items-center gap-4 mb-2">
+              {hasSale ? (
+                  <>
+                      <p className="text-3xl font-semibold text-primary">{formatCurrency(product.salePrice!)}</p>
+                      <p className="text-xl text-muted-foreground line-through">{formatCurrency(product.price)}</p>
+                  </>
+              ) : (
+                  <p className="text-3xl font-semibold text-primary">{formatCurrency(product.price)}</p>
+              )}
+          </div>
 
           {reviews.length > 0 && (
             <div className="flex items-center gap-2 mb-4">
