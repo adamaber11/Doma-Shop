@@ -1,8 +1,17 @@
 
+
 export type Category = {
   id: string;
   name: string;
   imageId: string;
+};
+
+export type Review = {
+  id: string;
+  rating: number;
+  comment: string;
+  author: string;
+  createdAt: Date;
 };
 
 export type ProductVariant = {
@@ -25,6 +34,7 @@ export type Product = {
   type?: string;
   material?: string;
   madeIn?: string;
+  reviews?: Review[];
 };
 
 export type CartItem = {

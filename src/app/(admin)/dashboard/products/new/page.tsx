@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useRouter } from 'next/navigation';
@@ -360,11 +361,11 @@ function ImageUrlsFieldArray({ variantIndex, control }: { variantIndex: number; 
           key={field.id}
           control={control}
           name={`variants.${variantIndex}.imageUrls.${index}.value`}
-          render={({ field }) => (
+          render={({ field: formField }) => (
             <FormItem>
               <div className="flex items-center gap-2">
                 <FormControl>
-                  <Input placeholder="https://example.com/image.png" {...field} />
+                  <Input placeholder="https://example.com/image.png" {...formField} />
                 </FormControl>
                 {fields.length > 1 && (
                   <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>

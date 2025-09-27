@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { notFound } from 'next/navigation';
@@ -16,6 +17,7 @@ import { Plus, Minus, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { ProductRecommendations } from '@/components/products/ProductRecommendations';
+import { ProductReviews } from '@/components/products/ProductReviews';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const [product, setProduct] = useState<Product | null>(null);
@@ -29,8 +31,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const { addToCart } = useCart();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchProduct = async () => {
+  const fetchProduct = async () => {
       setLoading(true);
       const fetchedProduct = await getProductById(params.id);
       if (!fetchedProduct) {
@@ -46,12 +47,16 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       }
       setLoading(false);
     };
-    
+
+  useEffect(() => {
     fetchProduct();
   }, [params.id]);
   
   const productImages = useMemo(() => {
     if (!product) return [];
+    if (!product.variants || product.variants.length === 0) {
+       return [getPlaceholderImage('product-1').imageUrl];
+    }
     const variant = product.variants.find(v => v.color === selectedColor);
     return variant?.imageUrls || [getPlaceholderImage('product-1').imageUrl];
   }, [selectedColor, product]);
@@ -104,10 +109,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 items-start">
-            {productImages.length > 1 && (
-            <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start">
-              {productImages.map((imageUrl, index) => (
+        <div className="grid grid-cols-[1fr_80px] md:grid-cols-[80px_1fr] gap-4 items-start">
+           <div className="order-2 md:order-1 flex flex-col gap-2 overflow-y-auto justify-start">
+              {productImages.length > 1 && productImages.map((imageUrl, index) => (
                 <button
                   key={index}
                   className={cn(
@@ -120,8 +124,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </button>
               ))}
             </div>
-          )}
-          <div className="aspect-square relative rounded-lg overflow-hidden border">
+          <div className="order-1 md:order-2 aspect-square relative rounded-lg overflow-hidden border">
             <Image
               src={productImages[activeImageIndex]}
               alt={product.name}
@@ -202,12 +205,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <span>{product.stock > 0 ? `${product.stock} متوفر في المخزون` : 'غير متوفر'}</span>
           </div>
 
-          <Separator className="my-8" />
-
-          <ProductRecommendations currentProductId={product.id} />
-
         </div>
       </div>
+      <Separator className="my-12" />
+      <ProductReviews product={product} onReviewSubmit={fetchProduct} />
+      <Separator className="my-12" />
+      <ProductRecommendations currentProductId={product.id} />
     </div>
   );
 }

@@ -1,8 +1,9 @@
 
+
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category } from "@/lib/types";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc } from "firebase/firestore";
+import type { Product, Category, Review } from "@/lib/types";
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp } from "firebase/firestore";
 
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
@@ -23,7 +24,17 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
 
     if (!allProducts) {
         const productSnapshot = await getDocs(productsCollection);
-        allProducts = productSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product));
+        allProducts = productSnapshot.docs.map(doc => {
+            const data = doc.data();
+            // Convert Firestore Timestamps to JS Dates
+            if (data.reviews) {
+                data.reviews = data.reviews.map((review: any) => ({
+                    ...review,
+                    createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : review.createdAt
+                }));
+            }
+            return { id: doc.id, ...data } as Product;
+        });
     }
     
     if (!allCategories) {
@@ -43,15 +54,30 @@ export async function getProducts(forceRefresh: boolean = false): Promise<Produc
 
 export async function getProductById(productId: string): Promise<Product | null> {
     await fetchDataIfNeeded();
-    const product = allProducts?.find(p => p.id === productId);
-    if (product) {
-        return product;
+    const productFromCache = allProducts?.find(p => p.id === productId);
+    if (productFromCache) {
+        // Ensure reviews are properly formatted
+        if (productFromCache.reviews) {
+            productFromCache.reviews = productFromCache.reviews.map(review => ({
+                ...review,
+                createdAt: new Date(review.createdAt)
+            }));
+        }
+        return productFromCache;
     }
     
     // Fallback to direct fetch if not in cache
     const productDoc = await getDoc(doc(db, 'products', productId));
     if (productDoc.exists()) {
-        const newProduct = { id: productDoc.id, ...productDoc.data() } as Product;
+        const data = productDoc.data();
+        // Convert Firestore Timestamps to JS Dates
+        if (data.reviews) {
+             data.reviews = data.reviews.map((review: any) => ({
+                ...review,
+                createdAt: review.createdAt.toDate()
+            }));
+        }
+        const newProduct = { id: productDoc.id, ...data } as Product;
         // update cache
         if (allProducts) {
             const index = allProducts.findIndex(p => p.id === productId);
@@ -91,10 +117,14 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
     return null;
 }
 
-export async function addProduct(product: Omit<Product, 'id'>): Promise<Product> {
-    const docRef = await addDoc(productsCollection, product);
+export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Promise<Product> {
+    const productWithDefaults = {
+        ...product,
+        reviews: []
+    };
+    const docRef = await addDoc(productsCollection, productWithDefaults);
     await fetchDataIfNeeded(true); // Force cache refresh
-    const newProduct = { id: docRef.id, ...product } as Product;
+    const newProduct = { id: docRef.id, ...productWithDefaults } as Product;
     if (allProducts) {
         allProducts.push(newProduct);
     }
@@ -146,4 +176,23 @@ export async function deleteCategory(categoryId: string): Promise<void> {
     const categoryRef = doc(db, 'categories', categoryId);
     await deleteDoc(categoryRef);
     await fetchDataIfNeeded(true); // Force cache refresh
+}
+
+
+export async function addReview(productId: string, review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
+    const productRef = doc(db, 'products', productId);
+    const newReview = {
+        id: new Date().getTime().toString(),
+        ...review,
+        createdAt: Timestamp.now(),
+    };
+    await updateDoc(productRef, {
+        reviews: arrayUnion(newReview)
+    });
+    await fetchDataIfNeeded(true);
+
+    return {
+        ...newReview,
+        createdAt: newReview.createdAt.toDate()
+    };
 }
