@@ -104,13 +104,13 @@ export default function Home() {
           </div>
           {loading ? (
             <div className="flex flex-wrap justify-center gap-8">
-              {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-20 w-20 rounded-full" />)}
+              {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-16 w-16 rounded-full" />)}
             </div>
           ) : (
             <div className="flex flex-wrap justify-center gap-8">
               {categories.map((category) => (
-                <Link key={category.id} href={`/products?category=${category.id}`} className="group flex flex-col items-center gap-2 text-center w-20">
-                   <div className="relative h-20 w-20 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary group-hover:scale-105 transition-all">
+                <Link key={category.id} href={`/products?category=${category.id}`} className="group flex flex-col items-center gap-2 text-center w-16">
+                   <div className="relative h-16 w-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary group-hover:scale-105 transition-all">
                         <Image
                           src={category.imageUrl}
                           alt={category.name}
@@ -118,7 +118,7 @@ export default function Home() {
                           className="object-cover"
                         />
                     </div>
-                    <h3 className="font-semibold text-sm text-card-foreground group-hover:text-primary transition-colors">{category.name}</h3>
+                    <h3 className="font-semibold text-xs text-card-foreground group-hover:text-primary transition-colors">{category.name}</h3>
                 </Link>
               ))}
             </div>
