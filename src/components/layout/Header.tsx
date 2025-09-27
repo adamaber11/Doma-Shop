@@ -9,6 +9,10 @@ import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
+import { useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -19,6 +23,32 @@ const navLinks = [
 
 export function Header() {
   const { cartCount } = useCart();
+  const [user, setUser] = useState<FirebaseUser | null>(null);
+  const router = useRouter();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      toast({ title: "تم تسجيل الخروج بنجاح" });
+      router.push('/login');
+    } catch (error) {
+      console.error("Logout error", error);
+      toast({
+        title: "حدث خطأ أثناء تسجيل الخروج",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -70,21 +100,31 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>حسابي</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/profile">الملف الشخصي</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                 <Link href="/orders">الطلبات</Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-               <DropdownMenuItem asChild>
-                 <Link href="/login">تسجيل الدخول</Link>
-              </DropdownMenuItem>
-               <DropdownMenuItem asChild>
-                 <Link href="/signup">إنشاء حساب</Link>
-              </DropdownMenuItem>
+              {user ? (
+                <>
+                  <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile">الملف الشخصي</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/orders">الطلبات</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    تسجيل الخروج
+                  </DropdownMenuItem>
+                </>
+              ) : (
+                <>
+                  <DropdownMenuItem asChild>
+                    <Link href="/login">تسجيل الدخول</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/signup">إنشاء حساب</Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           
