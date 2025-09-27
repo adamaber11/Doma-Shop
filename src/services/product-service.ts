@@ -71,7 +71,24 @@ export async function getCategories(forceRefresh: boolean = false): Promise<Cate
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
     await fetchDataIfNeeded();
-    return allCategories?.find(c => c.id === categoryId) || null;
+    const category = allCategories?.find(c => c.id === categoryId);
+     if (category) {
+        return category;
+    }
+    // Fallback to direct fetch if not in cache
+    const catDoc = await getDoc(doc(db, 'categories', categoryId));
+    if (catDoc.exists()) {
+        const newCat = { id: catDoc.id, ...catDoc.data() } as Category;
+        // update cache
+        if (allCategories) {
+            const index = allCategories.findIndex(c => c.id === categoryId);
+            if(index !== -1) allCategories[index] = newCat;
+            else allCategories.push(newCat);
+        }
+        return newCat;
+    }
+
+    return null;
 }
 
 export async function addProduct(product: Omit<Product, 'id'>): Promise<Product> {
@@ -83,6 +100,12 @@ export async function addProduct(product: Omit<Product, 'id'>): Promise<Product>
 export async function updateProduct(productId: string, productUpdate: Partial<Product>): Promise<void> {
     const productRef = doc(db, 'products', productId);
     await updateDoc(productRef, productUpdate);
+    await fetchDataIfNeeded(true); // Force cache refresh
+}
+
+export async function updateCategory(categoryId: string, categoryUpdate: Partial<Category>): Promise<void> {
+    const categoryRef = doc(db, 'categories', categoryId);
+    await updateDoc(categoryRef, categoryUpdate);
     await fetchDataIfNeeded(true); // Force cache refresh
 }
 

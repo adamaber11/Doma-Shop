@@ -8,7 +8,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
-import { Home, Package, ShoppingCart, Users, LogOut } from "lucide-react";
+import { Home, Package, ShoppingCart, Users, LogOut, Tags } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,7 @@ export default function DashboardLayout({
   const navLinks = [
     { href: "/dashboard", label: "الرئيسية", icon: Home, active: pathname === '/dashboard' },
     { href: "/dashboard/products", label: "المنتجات", icon: Package, active: pathname.startsWith('/dashboard/products') },
+    { href: "/dashboard/categories", label: "الفئات", icon: Tags, active: pathname.startsWith('/dashboard/categories') },
     { href: "/dashboard/orders", label: "الطلبات", icon: ShoppingCart, active: pathname.startsWith('/dashboard/orders') },
     { href: "/dashboard/customers", label: "العملاء", icon: Users, active: pathname.startsWith('/dashboard/customers') },
   ]
