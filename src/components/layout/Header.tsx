@@ -67,8 +67,7 @@ export function Header() {
   };
   
   const headerClasses = cn(
-    "sticky top-0 z-50 w-full transition-colors duration-300",
-    isHomePage && !scrolled ? "bg-transparent text-white" : "border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60"
+    "sticky top-0 z-50 w-full transition-colors duration-300 border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60"
   );
 
   return (
@@ -113,15 +112,6 @@ export function Header() {
             <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-64" />
           </div>
 
-          {user && user.email === 'adamaber50@gmail.com' && (
-            <Link href="/dashboard">
-              <Button variant="ghost" size="icon">
-                  <LayoutDashboard className="h-5 w-5" />
-                  <span className="sr-only">الداشبورد</span>
-              </Button>
-            </Link>
-          )}
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -134,6 +124,14 @@ export function Header() {
                 <>
                   <DropdownMenuLabel>حسابي</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {user.email === 'adamaber50@gmail.com' && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard">
+                        <LayoutDashboard className="ml-2 h-4 w-4" />
+                        <span>الداشبورد</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild>
                     <Link href="/profile">الملف الشخصي</Link>
                   </DropdownMenuItem>
