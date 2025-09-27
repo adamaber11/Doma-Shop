@@ -104,13 +104,13 @@ export default function Home() {
           </div>
           {loading ? (
             <div className="flex flex-wrap justify-center gap-8">
-              {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-24 w-24 rounded-full" />)}
+              {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-20 w-20 rounded-full" />)}
             </div>
           ) : (
             <div className="flex flex-wrap justify-center gap-8">
               {categories.map((category) => (
-                <Link key={category.id} href={`/products?category=${category.id}`} className="group flex flex-col items-center gap-2 text-center w-24">
-                   <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary group-hover:scale-105 transition-all">
+                <Link key={category.id} href={`/products?category=${category.id}`} className="group flex flex-col items-center gap-2 text-center w-20">
+                   <div className="relative h-20 w-20 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary group-hover:scale-105 transition-all">
                         <Image
                           src={category.imageUrl}
                           alt={category.name}
