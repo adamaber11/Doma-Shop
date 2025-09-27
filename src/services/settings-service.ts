@@ -2,13 +2,37 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { HomepageSettings, ContactInfoSettings, AboutPageSettings } from "@/lib/types";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import type { HomepageSettings, ContactInfoSettings, AboutPageSettings, ShippingRate } from "@/lib/types";
+import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const settingsCollectionName = 'settings';
 const homepageDocName = 'homepage';
 const contactInfoDocName = 'contactInfo';
 const aboutPageDocName = 'aboutPage';
+const shippingRatesCollection = collection(db, 'shippingRates');
+
+
+// Shipping Rates
+export async function getShippingRates(): Promise<ShippingRate[]> {
+    const snapshot = await getDocs(shippingRatesCollection);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ShippingRate));
+}
+
+export async function addShippingRate(rate: Omit<ShippingRate, 'id'>): Promise<ShippingRate> {
+    const docRef = await addDoc(shippingRatesCollection, rate);
+    return { id: docRef.id, ...rate };
+}
+
+export async function updateShippingRate(id: string, rate: Partial<ShippingRate>): Promise<void> {
+    const docRef = doc(db, 'shippingRates', id);
+    await updateDoc(docRef, rate);
+}
+
+export async function deleteShippingRate(id: string): Promise<void> {
+    const docRef = doc(db, 'shippingRates', id);
+    await deleteDoc(docRef);
+}
+
 
 export async function getHomepageSettings(): Promise<HomepageSettings | null> {
     try {

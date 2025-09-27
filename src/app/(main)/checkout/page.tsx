@@ -16,10 +16,14 @@ import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useEffect, useState } from 'react';
 import { addOrder } from '@/services/product-service';
+import { getShippingRates } from '@/services/settings-service';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Wallet, Truck } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import type { ShippingRate } from '@/lib/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const shippingSchema = z.object({
   name: z.string().min(2, "الاسم قصير جدًا"),
@@ -28,6 +32,7 @@ const shippingSchema = z.object({
   city: z.string().min(2, "المدينة قصيرة جدًا"),
   zip: z.string().regex(/^\d{5}$/, "رمز بريدي غير صالح"),
   country: z.string().min(2, "الدولة مطلوبة"),
+  governorate: z.string({ required_error: "يرجى اختيار المحافظة" }),
 });
 
 export default function CheckoutPage() {
@@ -35,13 +40,21 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [shippingRates, setShippingRates] = useState<ShippingRate[]>([]);
+  const [loadingRates, setLoadingRates] = useState(true);
 
   const form = useForm<z.infer<typeof shippingSchema>>({
     resolver: zodResolver(shippingSchema),
     defaultValues: {
-      name: "", email: "", address: "", city: "", zip: "", country: ""
+      name: "", email: "", address: "", city: "", zip: "", country: "Egypt",
     }
   });
+
+  const selectedGovernorateId = form.watch('governorate');
+  const selectedRate = shippingRates.find(rate => rate.id === selectedGovernorateId);
+  const shippingCost = selectedRate ? selectedRate.cost : 0;
+  const totalWithShipping = cartTotal + shippingCost;
+
 
   useEffect(() => {
     if (cartCount === 0) {
@@ -49,21 +62,51 @@ export default function CheckoutPage() {
     }
   }, [cartCount, router]);
 
+  useEffect(() => {
+    const fetchRates = async () => {
+        setLoadingRates(true);
+        try {
+            const rates = await getShippingRates();
+            setShippingRates(rates);
+        } catch (error) {
+            console.error("Failed to fetch shipping rates", error);
+            toast({ title: "خطأ", description: "فشل في تحميل أسعار الشحن." });
+        } finally {
+            setLoadingRates(false);
+        }
+    }
+    fetchRates();
+  }, [toast]);
+
+
   if (cartCount === 0) {
     return null; // Render nothing while redirecting
   }
 
   const onSubmit = async (values: z.infer<typeof shippingSchema>) => {
+    if (!selectedRate) {
+        toast({ title: "خطأ", description: "يرجى اختيار محافظة لحساب الشحن.", variant: "destructive" });
+        return;
+    }
+
     try {
         const orderData = {
             customerName: values.name,
             customerEmail: values.email,
+            shippingAddress: {
+                governorate: selectedRate.governorate,
+                address: values.address,
+                city: values.city,
+                zip: values.zip,
+                country: values.country,
+            },
             items: cartItems.map(item => ({
                 productName: item.product.name,
                 quantity: item.quantity,
                 price: item.product.salePrice ?? item.product.price,
             })),
-            total: cartTotal,
+            total: totalWithShipping,
+            shippingCost: shippingCost,
             paymentMethod: 'cod' as const,
         };
         const newOrder = await addOrder(orderData);
@@ -105,6 +148,28 @@ export default function CheckoutPage() {
                         <FormMessage />
                       </FormItem>
                     )} />
+                    
+                    <FormField control={form.control} name="governorate" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>المحافظة</FormLabel>
+                            {loadingRates ? <Skeleton className="h-10 w-full" /> : (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="اختر محافظتك" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {shippingRates.map(rate => (
+                                    <SelectItem key={rate.id} value={rate.id}>{rate.governorate}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                                </Select>
+                            )}
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+
                     <FormField control={form.control} name="address" render={({ field }) => (
                       <FormItem>
                         <FormLabel>العنوان</FormLabel>
@@ -130,7 +195,7 @@ export default function CheckoutPage() {
                       <FormField control={form.control} name="country" render={({ field }) => (
                         <FormItem>
                           <FormLabel>الدولة</FormLabel>
-                          <FormControl><Input {...field} /></FormControl>
+                          <FormControl><Input {...field} disabled /></FormControl>
                           <FormMessage />
                         </FormItem>
                       )} />
@@ -196,17 +261,17 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>الشحن</span>
-                    <span>مجاني</span>
+                    <span>{shippingCost > 0 ? formatCurrency(shippingCost) : (selectedGovernorateId ? 'مجاني' : 'اختر محافظة')}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">
                     <span>الإجمالي</span>
-                    <span>{formatCurrency(cartTotal)}</span>
+                    <span>{formatCurrency(totalWithShipping)}</span>
                   </div>
                 </div>
               </CardContent>
             </Card>
-            <Button onClick={form.handleSubmit(onSubmit)} size="lg" className="w-full mt-6" disabled={form.formState.isSubmitting}>
+            <Button onClick={form.handleSubmit(onSubmit)} size="lg" className="w-full mt-6" disabled={form.formState.isSubmitting || loadingRates}>
                   {form.formState.isSubmitting ? 'جاري إتمام الطلب...' : 'إتمام الطلب'}
               </Button>
           </div>

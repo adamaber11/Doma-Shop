@@ -50,12 +50,20 @@ export type Order = {
   id: string;
   customerName: string;
   customerEmail: string;
+  shippingAddress: {
+    governorate: string;
+    address: string;
+    city: string;
+    zip: string;
+    country: string;
+  };
   items: {
     productName: string;
     quantity: number;
     price: number;
   }[];
   total: number;
+  shippingCost: number;
   status: 'pending' | 'shipped' | 'delivered' | 'cancelled';
   paymentMethod: 'cod';
   createdAt: Date;
@@ -108,4 +116,10 @@ export type ContactInfoSettings = {
     email: string;
     phone: string;
     address: string;
+};
+
+export type ShippingRate = {
+    id: string;
+    governorate: string;
+    cost: number;
 };

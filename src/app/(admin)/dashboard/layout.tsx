@@ -9,7 +9,7 @@ import { onAuthStateChanged, User, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
-import { Home, Package, ShoppingCart, Users, LogOut, Tags, Settings, Megaphone, Annoyed, MessageSquare } from "lucide-react";
+import { Home, Package, ShoppingCart, Users, LogOut, Tags, Settings, Megaphone, Annoyed, MessageSquare, Truck } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -52,6 +52,7 @@ export default function DashboardLayout({
     { href: "/dashboard/popup-ads", label: "الإعلانات المنبثقة", icon: Annoyed, active: pathname.startsWith('/dashboard/popup-ads') },
     { href: "/dashboard/orders", label: "الطلبات", icon: ShoppingCart, active: pathname.startsWith('/dashboard/orders') },
     { href: "/dashboard/customers", label: "العملاء", icon: Users, active: pathname.startsWith('/dashboard/customers') },
+    { href: "/dashboard/shipping", label: "الشحن", icon: Truck, active: pathname.startsWith('/dashboard/shipping') },
     { href: "/dashboard/messages", label: "الرسائل", icon: MessageSquare, active: pathname.startsWith('/dashboard/messages') },
     { href: "/dashboard/settings", label: "الإعدادات", icon: Settings, active: pathname.startsWith('/dashboard/settings') },
   ]
