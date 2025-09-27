@@ -52,7 +52,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     <span className="text-red-600 text-[10px] font-bold">عرض لمدة محدودة</span>
                   </div>
                 )}
-                <h3 className="text-sm font-normal line-clamp-2 mb-2 flex-grow">{product.name}</h3>
+                <h3 className="text-sm font-normal text-black line-clamp-2 mb-2 flex-grow hover:text-primary hover:underline">{product.name}</h3>
                 
                 {reviews.length > 0 && (
                     <div className="flex items-center gap-1 mb-2">
