@@ -21,7 +21,6 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const imageUrl = product.variants?.[0]?.imageUrls?.[0] || getPlaceholderImage('product-1').imageUrl;
   
-  const [open, setOpen] = useState(false);
   const { addToCart } = useCart();
   const { toast } = useToast();
   
@@ -35,7 +34,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <div className="bg-white text-black h-full flex flex-col group">
+      <div className="bg-white text-black h-full flex flex-col max-w-xs mx-auto">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <div className="relative w-full aspect-square bg-white p-4">
                 <Image
@@ -79,11 +78,6 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
         </Link>
       </div>
-      <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent className="w-full max-w-lg overflow-y-auto" side="right">
-              <ProductDetailSheetContent product={product} />
-          </SheetContent>
-      </Sheet>
     </>
   );
 }
