@@ -14,6 +14,7 @@ import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/lib/firebase";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -22,11 +23,30 @@ const navLinks = [
   { href: "/contact", label: "اتصل بنا" },
 ];
 
-export function Header() {
+interface HeaderProps {
+  isHomePage?: boolean;
+}
+
+export function Header({ isHomePage = false }: HeaderProps) {
   const { cartCount } = useCart();
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const router = useRouter();
   const { toast } = useToast();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    if (isHomePage) {
+      window.addEventListener('scroll', handleScroll);
+    }
+    return () => {
+       if (isHomePage) {
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [isHomePage]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -50,7 +70,10 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={cn(
+      "sticky top-0 z-50 w-full transition-colors duration-300", 
+      isHomePage && !scrolled ? "bg-transparent text-white border-b border-transparent" : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 text-foreground border-b"
+    )}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">
@@ -88,7 +111,7 @@ export function Header() {
         <div className="flex items-center gap-4">
           <div className="relative hidden md:block">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-64" />
+            <Input type="search" placeholder="ابحث عن منتجات..." className={cn("pr-10 w-64", isHomePage && !scrolled && "bg-white/20 placeholder-gray-300 text-white border-gray-400")} />
           </div>
 
           {user && user.email === 'adamaber50@gmail.com' && (
