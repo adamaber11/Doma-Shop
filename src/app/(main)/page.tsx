@@ -57,7 +57,7 @@ export default function Home() {
 
 
   const plugin = React.useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true })
+    Autoplay({ delay: 1500, stopOnInteraction: true })
   );
 
   return (
@@ -154,7 +154,7 @@ export default function Home() {
               }}
               plugins={[plugin.current]}
               onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.reset}
+              onMouseLeave={plugin.current.play}
               className="w-full"
             >
               <CarouselContent>
@@ -197,7 +197,7 @@ export default function Home() {
               }}
               plugins={[plugin.current]}
               onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.reset}
+              onMouseLeave={plugin.current.play}
               className="w-full"
             >
               <CarouselContent>
