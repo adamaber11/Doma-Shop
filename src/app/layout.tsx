@@ -6,6 +6,9 @@ import { CartProvider } from '@/context/CartContext';
 export const metadata: Metadata = {
   title: 'Doma',
   description: 'A complete E-commerce website using Firebase.',
+  icons: {
+    icon: 'https://res.cloudinary.com/doqltxyb2/image/upload/v1759015201/D_hm7dda.png',
+  },
 };
 
 export default function RootLayout({
