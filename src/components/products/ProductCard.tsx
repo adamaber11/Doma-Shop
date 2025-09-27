@@ -41,10 +41,10 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 cursor-pointer">
+      <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <CardHeader className="p-0">
-              <div className="relative aspect-square w-full">
+              <div className="relative aspect-square w-full h-48">
                     <Image
                         src={imageUrl}
                         alt={product.name}
