@@ -2,13 +2,14 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { HomepageSettings, ContactInfoSettings, AboutPageSettings, ShippingRate } from "@/lib/types";
+import type { HomepageSettings, ContactInfoSettings, AboutPageSettings, ShippingRate, SocialMediaSettings } from "@/lib/types";
 import { collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
 
 const settingsCollectionName = 'settings';
 const homepageDocName = 'homepage';
 const contactInfoDocName = 'contactInfo';
 const aboutPageDocName = 'aboutPage';
+const socialMediaDocName = 'socialMedia';
 const shippingRatesCollection = collection(db, 'shippingRates');
 
 
@@ -132,5 +133,36 @@ export async function updateAboutPageSettings(settings: AboutPageSettings): Prom
     } catch (error) {
         console.error("Error updating about page settings: ", error);
         throw new Error("Failed to update about page settings.");
+    }
+}
+
+export async function getSocialMediaSettings(): Promise<SocialMediaSettings | null> {
+    try {
+        const docRef = doc(db, settingsCollectionName, socialMediaDocName);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data() as SocialMediaSettings;
+        } else {
+            // Return default/empty settings if none are found
+            return {
+                facebookUrl: "",
+                instagramUrl: "",
+                tiktokUrl: "",
+            };
+        }
+    } catch (error) {
+        console.error("Error getting social media settings: ", error);
+        return null;
+    }
+}
+
+export async function updateSocialMediaSettings(settings: SocialMediaSettings): Promise<void> {
+    try {
+        const docRef = doc(db, settingsCollectionName, socialMediaDocName);
+        await setDoc(docRef, settings, { merge: true });
+    } catch (error) {
+        console.error("Error updating social media settings: ", error);
+        throw new Error("Failed to update social media settings.");
     }
 }

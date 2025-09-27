@@ -118,6 +118,12 @@ export type ContactInfoSettings = {
     address: string;
 };
 
+export type SocialMediaSettings = {
+    facebookUrl: string;
+    instagramUrl: string;
+    tiktokUrl: string;
+};
+
 export type ShippingRate = {
     id: string;
     governorate: string;

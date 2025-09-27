@@ -1,7 +1,14 @@
+
+"use client";
+
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { getSocialMediaSettings } from "@/services/settings-service";
+import type { SocialMediaSettings } from "@/lib/types";
+import { Skeleton } from "../ui/skeleton";
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -28,6 +35,24 @@ const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 
 export function Footer() {
+  const [socialSettings, setSocialSettings] = useState<SocialMediaSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      setLoading(true);
+      try {
+        const settings = await getSocialMediaSettings();
+        setSocialSettings(settings);
+      } catch (error) {
+        console.error("Failed to fetch social media settings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   return (
     <footer className="bg-black text-white">
       <div className="container mx-auto px-4 py-12">
@@ -50,7 +75,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/products?category=electronics" className="text-gray-400 hover:text-white">إلكترونيات</Link></li>
               <li><Link href="/products?category=fashion" className="text-gray-400 hover:text-white">أزياء</Link></li>
-              <li><Link href="/products?category=home-kitchen" className="text-gray-400 hover:text-white">المنزل والمطبخ</Link></li>
+              <li><Link href="/products?category=home-furniture" className="text-gray-400 hover:text-white">المنزل والمطبخ</Link></li>
               <li><Link href="/products" className="text-gray-400 hover:text-white">كل المنتجات</Link></li>
             </ul>
           </div>
@@ -74,15 +99,31 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center">
           <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} دوما. جميع الحقوق محفوظة.</p>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
-            <Link href="#" aria-label="Facebook">
-              <FacebookIcon className="h-5 w-5 text-gray-400 hover:text-white" />
-            </Link>
-            <Link href="#" aria-label="Instagram">
-              <InstagramIcon className="h-5 w-5 text-gray-400 hover:text-white" />
-            </Link>
-             <Link href="#" aria-label="TikTok">
-              <TikTokIcon className="h-5 w-5 text-gray-400 hover:text-white" />
-            </Link>
+             {loading ? (
+                <div className="flex items-center gap-4">
+                    <Skeleton className="h-5 w-5 bg-gray-700" />
+                    <Skeleton className="h-5 w-5 bg-gray-700" />
+                    <Skeleton className="h-5 w-5 bg-gray-700" />
+                </div>
+            ) : (
+              <>
+                {socialSettings?.facebookUrl && (
+                  <Link href={socialSettings.facebookUrl} aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+                    <FacebookIcon className="h-5 w-5 text-gray-400 hover:text-white" />
+                  </Link>
+                )}
+                {socialSettings?.instagramUrl && (
+                  <Link href={socialSettings.instagramUrl} aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                    <InstagramIcon className="h-5 w-5 text-gray-400 hover:text-white" />
+                  </Link>
+                )}
+                {socialSettings?.tiktokUrl && (
+                  <Link href={socialSettings.tiktokUrl} aria-label="TikTok" target="_blank" rel="noopener noreferrer">
+                    <TikTokIcon className="h-5 w-5 text-gray-400 hover:text-white" />
+                  </Link>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
