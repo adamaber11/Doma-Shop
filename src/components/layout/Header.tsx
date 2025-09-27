@@ -10,9 +10,10 @@ import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
 import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
+import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -28,7 +29,6 @@ export function Header() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
@@ -36,7 +36,6 @@ export function Header() {
   }, []);
 
   const handleLogout = async () => {
-    const auth = getAuth();
     try {
       await signOut(auth);
       toast({ title: "تم تسجيل الخروج بنجاح" });

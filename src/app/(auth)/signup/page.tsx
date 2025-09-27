@@ -9,11 +9,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { auth } from '@/lib/firebase';
 
 
 const signupSchema = z.object({
@@ -28,7 +29,6 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         router.push('/');
@@ -47,7 +47,6 @@ export default function SignupPage() {
 
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     try {
-      const auth = getAuth();
       await createUserWithEmailAndPassword(auth, values.email, values.password);
       toast({ title: "تم إنشاء الحساب بنجاح!" });
       router.push('/');
@@ -63,7 +62,6 @@ export default function SignupPage() {
 
   const handleGoogleLogin = async () => {
     try {
-        const auth = getAuth();
         await signInWithPopup(auth, new GoogleAuthProvider());
         toast({ title: "تم تسجيل الدخول بنجاح!" });
         router.push('/');
