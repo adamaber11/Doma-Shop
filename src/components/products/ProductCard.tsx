@@ -41,7 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 cursor-pointer shadow-sm hover:shadow-md">
+      <Card className="flex flex-col h-full overflow-hidden shadow-sm">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <CardHeader className="p-0">
               <div className="relative aspect-square w-full h-48">
@@ -49,17 +49,16 @@ export function ProductCard({ product }: ProductCardProps) {
                         src={imageUrl}
                         alt={product.name}
                         fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
-                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300" />
                      {hasSale && (
                         <Badge variant="destructive" className="absolute top-2 left-2">عرض</Badge>
                      )}
               </div>
             </CardHeader>
             <CardContent className="p-4 flex-grow flex flex-col">
-                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors flex-grow">{product.name}</h3>
+                <h3 className="font-semibold text-lg flex-grow">{product.name}</h3>
                  <div className="flex items-center gap-2 mt-1">
                     {hasSale ? (
                         <>
