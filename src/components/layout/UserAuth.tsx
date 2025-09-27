@@ -13,14 +13,14 @@ import { auth } from "@/lib/firebase";
 
 export function UserAuth() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   useEffect(() => {
+    setIsClient(true);
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setLoading(false);
     });
     return () => unsubscribe();
   }, []);
@@ -39,7 +39,7 @@ export function UserAuth() {
     }
   };
   
-  if (loading) {
+  if (!isClient) {
       return (
         <Button variant="ghost" size="icon">
           <User className="h-5 w-5" />
