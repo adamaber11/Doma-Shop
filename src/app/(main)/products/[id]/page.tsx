@@ -168,7 +168,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 />
               </div>
             </div>
-            <div className="mt-6 border rounded-lg p-4">
+            <div className="mt-6 border rounded-lg p-4 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     {features.map((feature, index) => (
                         <div key={index} className="flex items-center gap-3">
@@ -176,6 +176,15 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                             <span className="text-sm font-medium text-muted-foreground">{feature.text}</span>
                         </div>
                     ))}
+                </div>
+                 {(product.brand || product.type || product.material || product.madeIn) && <Separator />}
+                <div>
+                    <ul className="space-y-2 text-sm text-muted-foreground">
+                        {product.brand && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brand}</li>}
+                        {product.type && <li><span className="font-semibold text-foreground">النوع:</span> {product.type}</li>}
+                        {product.material && <li><span className="font-semibold text-foreground">الخامة:</span> {product.material}</li>}
+                        {product.madeIn && <li><span className="font-semibold text-foreground">بلد الصنع:</span> {product.madeIn}</li>}
+                    </ul>
                 </div>
             </div>
         </div>
@@ -213,16 +222,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
           <p className="text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
           
-          <Separator className="my-4" />
-            <div>
-                <h3 className="text-lg font-semibold mb-2">تفاصيل المنتج</h3>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                    {product.brand && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brand}</li>}
-                    {product.type && <li><span className="font-semibold text-foreground">النوع:</span> {product.type}</li>}
-                    {product.material && <li><span className="font-semibold text-foreground">الخامة:</span> {product.material}</li>}
-                    {product.madeIn && <li><span className="font-semibold text-foreground">بلد الصنع:</span> {product.madeIn}</li>}
-                </ul>
-            </div>
           <Separator className="my-4" />
 
           <div className="space-y-6 mb-6">
@@ -295,7 +294,3 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
-
-    
-
-    
