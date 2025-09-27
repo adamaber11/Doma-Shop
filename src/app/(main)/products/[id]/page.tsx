@@ -134,6 +134,18 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <p className="text-3xl font-semibold text-primary mb-4">{formatCurrency(product.price)}</p>
           <p className="text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
           
+          <Separator className="my-4" />
+            <div>
+                <h3 className="text-lg font-semibold mb-2">تفاصيل المنتج</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                    {product.brand && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brand}</li>}
+                    {product.type && <li><span className="font-semibold text-foreground">النوع:</span> {product.type}</li>}
+                    {product.material && <li><span className="font-semibold text-foreground">الخامة:</span> {product.material}</li>}
+                    {product.madeIn && <li><span className="font-semibold text-foreground">بلد الصنع:</span> {product.madeIn}</li>}
+                </ul>
+            </div>
+          <Separator className="my-4" />
+
           <div className="space-y-6 mb-6">
             {product.variants && product.variants.length > 0 && (
               <div>

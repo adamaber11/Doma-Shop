@@ -11,7 +11,7 @@ export type ProductVariant = {
 };
 
 export type Product = {
-  id: string;
+  id:string;
   name: string;
   description: string;
   price: number;
@@ -21,6 +21,10 @@ export type Product = {
   sizes?: string[];
   isFeatured?: boolean;
   isBestOffer?: boolean;
+  brand?: string;
+  type?: string;
+  material?: string;
+  madeIn?: string;
 };
 
 export type CartItem = {

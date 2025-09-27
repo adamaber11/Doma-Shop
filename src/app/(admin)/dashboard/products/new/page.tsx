@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray, useFormContext, Control } from 'react-hook-form';
+import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { addProduct, getCategories } from '@/services/product-service';
@@ -35,6 +35,10 @@ const productSchema = z.object({
   isFeatured: z.boolean().default(false),
   isBestOffer: z.boolean().default(false),
   sizes: z.array(z.object({ value: z.string().min(1, "المقاس مطلوب") })).optional(),
+  brand: z.string().optional(),
+  type: z.string().optional(),
+  material: z.string().optional(),
+  madeIn: z.string().optional(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -70,6 +74,10 @@ export default function NewProductPage() {
       isFeatured: false,
       isBestOffer: false,
       sizes: [],
+      brand: "",
+      type: "",
+      material: "",
+      madeIn: "",
     }
   });
 
@@ -234,6 +242,41 @@ export default function NewProductPage() {
                         )} />
                     </div>
 
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField control={form.control} name="brand" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>الماركة (اختياري)</FormLabel>
+                            <FormControl><Input {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )} />
+
+                        <FormField control={form.control} name="type" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>النوع (اختياري)</FormLabel>
+                            <FormControl><Input {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )} />
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField control={form.control} name="material" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>الخامة (اختياري)</FormLabel>
+                            <FormControl><Input {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )} />
+
+                        <FormField control={form.control} name="madeIn" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>بلد الصنع (اختياري)</FormLabel>
+                            <FormControl><Input {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )} />
+                    </div>
+
                     <FormField control={form.control} name="categoryId" render={({ field }) => (
                     <FormItem>
                         <FormLabel>الفئة</FormLabel>
@@ -341,5 +384,3 @@ function ImageUrlsFieldArray({ variantIndex, control }: { variantIndex: number; 
     </div>
   );
 }
-
-    
