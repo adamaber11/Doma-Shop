@@ -26,6 +26,7 @@ export function Header() {
   const pathname = usePathname();
   
   const isDashboard = pathname.startsWith('/dashboard');
+  const isHomePage = pathname === '/';
 
   if (isDashboard) {
     return null;
@@ -50,10 +51,12 @@ export function Header() {
                 ))}
             </nav>
             <div className="flex items-center gap-2 md:gap-4">
-                <div className="relative hidden md:block">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-48 md:w-64" />
-                </div>
+                {!isHomePage && (
+                  <div className="relative hidden md:block">
+                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-48 md:w-64" />
+                  </div>
+                )}
 
                 <UserAuth />
                 
