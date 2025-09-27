@@ -1,32 +1,63 @@
+
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from 'next/navigation';
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductFilters } from "@/components/products/ProductFilters";
-import { getProducts } from "@/services/product-service";
-import type { Product } from "@/lib/types";
+import { getProducts, getAds } from "@/services/product-service";
+import type { Product, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
+import Link from "next/link";
+import { Card } from "@/components/ui/card";
+
+const AdCard = ({ ad }: { ad: Ad }) => (
+  <Card className="overflow-hidden group">
+    <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer">
+      <div className="relative aspect-video">
+        <Image
+          src={ad.imageUrl}
+          alt="Advertisement"
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
+    </Link>
+  </Card>
+);
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
+  const [ads, setAds] = useState<Ad[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const randomAd = useMemo(() => {
+    const activeAds = ads.filter(ad => ad.isActive);
+    if (activeAds.length === 0) return null;
+    return activeAds[Math.floor(Math.random() * activeAds.length)];
+  }, [ads]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       setLoading(true);
       try {
-        const fetchedProducts = await getProducts();
+        const [fetchedProducts, fetchedAds] = await Promise.all([
+          getProducts(),
+          getAds()
+        ]);
         setProducts(fetchedProducts);
+        setAds(fetchedAds);
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -40,11 +71,26 @@ export default function ProductsPage() {
 
     if (price && typeof price === 'string') {
       const [min, max] = price.split('-').map(Number);
-      tempProducts = tempProducts.filter(p => p.price >= min && p.price <= max);
+      tempProducts = tempProducts.filter(p => {
+        const productPrice = p.salePrice ?? p.price;
+        return productPrice >= min && productPrice <= max;
+      });
     }
     
     setFilteredProducts(tempProducts);
   }, [searchParams, products]);
+
+  const productsWithAd = useMemo(() => {
+    if (!randomAd) return filteredProducts.map(p => ({ type: 'product', data: p }));
+    
+    const items: ( {type: 'product', data: Product} | {type: 'ad', data: Ad} )[] = filteredProducts.map(p => ({ type: 'product', data: p }));
+    const middleIndex = Math.floor(items.length / 2);
+    
+    if (items.length > 3) {
+      items.splice(middleIndex, 0, { type: 'ad', data: randomAd });
+    }
+    return items;
+  }, [filteredProducts, randomAd]);
 
 
   return (
@@ -65,11 +111,17 @@ export default function ProductsPage() {
                    </div>
                 ))}
               </div>
-            ) : filteredProducts.length > 0 ? (
+            ) : productsWithAd.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+                {productsWithAd.map((item, index) => {
+                  if (item.type === 'product') {
+                    return <ProductCard key={item.data.id} product={item.data} />;
+                  }
+                  if (item.type === 'ad') {
+                    return <div key={`ad-${index}`} className="sm:col-span-2 xl:col-span-1"><AdCard ad={item.data} /></div>;
+                  }
+                  return null;
+                })}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center py-16">

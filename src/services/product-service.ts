@@ -2,15 +2,18 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category, Review } from "@/lib/types";
+import type { Product, Category, Review, Ad } from "@/lib/types";
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp } from "firebase/firestore";
 
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
+const adsCollection = collection(db, 'advertisements');
+
 
 // Cache variables
 let allProducts: Product[] | null = null;
 let allCategories: Category[] | null = null;
+let allAds: Ad[] | null = null;
 let lastFetchTime: number = 0;
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
@@ -19,6 +22,7 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
     if (forceRefresh || now - lastFetchTime > CACHE_DURATION) {
         allProducts = null;
         allCategories = null;
+        allAds = null;
         console.log('Cache cleared, fetching new data...');
     }
 
@@ -42,11 +46,17 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         allCategories = categorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
     }
 
+    if (!allAds) {
+        const adSnapshot = await getDocs(adsCollection);
+        allAds = adSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
+    }
+
     if (forceRefresh || !lastFetchTime) {
       lastFetchTime = now;
     }
 }
 
+// Product Functions
 export async function getProducts(forceRefresh: boolean = false): Promise<Product[]> {
   await fetchDataIfNeeded(forceRefresh);
   return allProducts || [];
@@ -90,6 +100,51 @@ export async function getProductById(productId: string): Promise<Product | null>
     return null;
 }
 
+export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Promise<Product> {
+    const productWithDefaults = {
+        ...product,
+        reviews: []
+    };
+    const docRef = await addDoc(productsCollection, productWithDefaults);
+    await fetchDataIfNeeded(true); // Force cache refresh
+    const newProduct = { id: docRef.id, ...productWithDefaults } as Product;
+    if (allProducts) {
+        allProducts.push(newProduct);
+    }
+    return newProduct;
+}
+
+export async function updateProduct(productId: string, productUpdate: Partial<Product>): Promise<void> {
+    const productRef = doc(db, 'products', productId);
+    await updateDoc(productRef, productUpdate);
+    await fetchDataIfNeeded(true); // Force cache refresh
+}
+
+export async function deleteProduct(productId: string): Promise<void> {
+    const productRef = doc(db, 'products', productId);
+    await deleteDoc(productRef);
+    await fetchDataIfNeeded(true); // Force cache refresh
+}
+
+export async function addReview(productId: string, review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
+    const productRef = doc(db, 'products', productId);
+    const newReview = {
+        id: new Date().getTime().toString(),
+        ...review,
+        createdAt: Timestamp.now(),
+    };
+    await updateDoc(productRef, {
+        reviews: arrayUnion(newReview)
+    });
+    await fetchDataIfNeeded(true);
+
+    return {
+        ...newReview,
+        createdAt: newReview.createdAt.toDate()
+    };
+}
+
+// Category Functions
 export async function getCategories(forceRefresh: boolean = false): Promise<Category[]> {
     await fetchDataIfNeeded(forceRefresh);
     return allCategories || [];
@@ -117,20 +172,6 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
     return null;
 }
 
-export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Promise<Product> {
-    const productWithDefaults = {
-        ...product,
-        reviews: []
-    };
-    const docRef = await addDoc(productsCollection, productWithDefaults);
-    await fetchDataIfNeeded(true); // Force cache refresh
-    const newProduct = { id: docRef.id, ...productWithDefaults } as Product;
-    if (allProducts) {
-        allProducts.push(newProduct);
-    }
-    return newProduct;
-}
-
 export async function addCategory(category: Omit<Category, 'id'>): Promise<Category> {
     // Generate an ID from the name
     const id = category.name.toLowerCase().replace(/\s+/g, '-');
@@ -144,31 +185,9 @@ export async function addCategory(category: Omit<Category, 'id'>): Promise<Categ
     return newCategory;
 }
 
-export async function updateProduct(productId: string, productUpdate: Partial<Product>): Promise<void> {
-    const productRef = doc(db, 'products', productId);
-    await updateDoc(productRef, productUpdate);
-    await fetchDataIfNeeded(true); // Force cache refresh
-}
-
 export async function updateCategory(categoryId: string, categoryUpdate: Partial<Category>): Promise<void> {
     const categoryRef = doc(db, 'categories', categoryId);
     await updateDoc(categoryRef, categoryUpdate);
-    await fetchDataIfNeeded(true); // Force cache refresh
-}
-
-export async function deleteProduct(productId: string): Promise<void> {
-    const productRef = doc(db, 'products', productId);
-    await deleteDoc(productRef);
-    await fetchDataIfNeeded(true); // Force cache refresh
-}
-
-export async function deleteProducts(productIds: string[]): Promise<void> {
-    const batch = writeBatch(db);
-    productIds.forEach(productId => {
-        const productRef = doc(db, 'products', productId);
-        batch.delete(productRef);
-    });
-    await batch.commit();
     await fetchDataIfNeeded(true); // Force cache refresh
 }
 
@@ -179,20 +198,43 @@ export async function deleteCategory(categoryId: string): Promise<void> {
 }
 
 
-export async function addReview(productId: string, review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
-    const productRef = doc(db, 'products', productId);
-    const newReview = {
-        id: new Date().getTime().toString(),
-        ...review,
-        createdAt: Timestamp.now(),
-    };
-    await updateDoc(productRef, {
-        reviews: arrayUnion(newReview)
-    });
-    await fetchDataIfNeeded(true);
+// Advertisement Functions
+export async function getAds(forceRefresh: boolean = false): Promise<Ad[]> {
+    await fetchDataIfNeeded(forceRefresh);
+    return allAds || [];
+}
 
-    return {
-        ...newReview,
-        createdAt: newReview.createdAt.toDate()
-    };
+export async function getAdById(adId: string): Promise<Ad | null> {
+    await fetchDataIfNeeded();
+    const adFromCache = allAds?.find(ad => ad.id === adId);
+    if (adFromCache) return adFromCache;
+
+    const adDoc = await getDoc(doc(db, 'advertisements', adId));
+     if (adDoc.exists()) {
+        const newAd = { id: adDoc.id, ...adDoc.data() } as Ad;
+        if(allAds) allAds.push(newAd);
+        return newAd;
+    }
+    return null;
+}
+
+
+export async function addAd(ad: Omit<Ad, 'id'>): Promise<Ad> {
+    const docRef = await addDoc(adsCollection, ad);
+    await fetchDataIfNeeded(true);
+    const newAd = { id: docRef.id, ...ad } as Ad;
+    if(allAds) allAds.push(newAd);
+    return newAd;
+}
+
+export async function updateAd(adId: string, adUpdate: Partial<Ad>): Promise<void> {
+    const adRef = doc(db, 'advertisements', adId);
+    await updateDoc(adRef, adUpdate);
+    await fetchDataIfNeeded(true);
+}
+
+export async function deleteAd(adId: string): Promise<void> {
+    const adRef = doc(db, 'advertisements', adId);
+    await deleteDoc(adRef);
+    await fetchDataIfNeeded(true);
 }

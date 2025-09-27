@@ -1,4 +1,5 @@
 
+
 export type Category = {
   id: string;
   name: string;
@@ -63,3 +64,11 @@ export type HomepageSettings = {
     heroSubtitle: string;
     heroImageUrl: string;
 };
+
+export type Ad = {
+  id: string;
+  imageUrl: string;
+  linkUrl: string;
+  isActive: boolean;
+};
+
