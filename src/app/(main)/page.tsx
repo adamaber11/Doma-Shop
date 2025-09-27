@@ -88,18 +88,10 @@ export default function Home() {
               </Link>
             </Button>
           </div>
-          <div className="relative mt-8 w-full max-w-lg">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="ابحث عن منتجك المفضل..."
-              className="w-full pr-10 pl-4 py-3 h-12 text-lg text-black"
-            />
-          </div>
         </div>
       </section>
 
-      <section className="py-12 md:py-20 bg-background">
+      <section className="py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold font-headline">تسوق حسب الفئة</h2>
@@ -143,7 +135,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-20 bg-background">
+      <section className="py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">المنتجات المميزة</h2>
           {loading ? (
@@ -231,5 +223,3 @@ export default function Home() {
     </>
   );
 }
-
-    
