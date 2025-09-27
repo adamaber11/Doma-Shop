@@ -83,7 +83,7 @@ export default function EditProductPage() {
               price: fetchedProduct.price,
               categoryId: fetchedProduct.categoryId,
               stock: fetchedProduct.stock,
-              variants: fetchedProduct.variants.map(v => ({
+              variants: (fetchedProduct.variants || []).map(v => ({
                   color: v.color,
                   imageUrls: v.imageUrls.map(url => ({ value: url })),
               })),
@@ -402,3 +402,5 @@ function ImageUrlsFieldArray({ variantIndex }: { variantIndex: number }) {
       </div>
     );
   }
+
+    
