@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { formatCurrency, cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -21,22 +21,28 @@ interface ProductDetailSheetContentProps {
 export function ProductDetailSheetContent({ product }: ProductDetailSheetContentProps) {
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(product.colors?.[0]);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(product.variants?.[0]?.color);
   const [selectedSize, setSelectedSize] = useState<string | undefined>(product.sizes?.[0]);
 
   const { addToCart } = useCart();
   const { toast } = useToast();
 
+  const productImages = useMemo(() => {
+    const variant = product.variants.find(v => v.color === selectedColor);
+    return variant?.imageUrls || [getPlaceholderImage('product-1').imageUrl];
+  }, [selectedColor, product.variants]);
+  
+  // Reset active image index when images change
+  useState(() => {
+    setActiveImageIndex(0);
+  }, [productImages]);
+
   if (!product) {
     return null;
   }
 
-  const productImages = product.imageUrls && product.imageUrls.length > 0 
-    ? product.imageUrls 
-    : [getPlaceholderImage('product-1').imageUrl];
-
   const handleAddToCart = () => {
-    if (product.colors && product.colors.length > 0 && !selectedColor) {
+    if (product.variants && product.variants.length > 0 && !selectedColor) {
         toast({ title: "خطأ", description: "الرجاء اختيار لون.", variant: "destructive" });
         return;
     }
@@ -78,12 +84,12 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
           
           <p className="text-muted-foreground mb-6">{product.description}</p>
           
-          {product.colors && product.colors.length > 0 && (
+          {product.variants && product.variants.length > 0 && (
             <div className="mb-6">
                 <h3 className="text-sm font-medium text-muted-foreground mb-2">اللون</h3>
                 <div className="flex flex-wrap gap-2">
-                    {product.colors.map(color => (
-                        <button key={color} onClick={() => setSelectedColor(color)} className={cn("h-8 w-8 rounded-full border-2 transition-all", selectedColor === color ? 'border-primary scale-110' : 'border-border')} style={{ backgroundColor: color }} />
+                    {product.variants.map(variant => (
+                        <button key={variant.color} onClick={() => setSelectedColor(variant.color)} className={cn("h-8 w-8 rounded-full border-2 transition-all", selectedColor === variant.color ? 'border-primary scale-110' : 'border-border')} style={{ backgroundColor: variant.color }} />
                     ))}
                 </div>
             </div>
@@ -118,7 +124,7 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <Button size="lg" onClick={handleAddToCart} className="flex-1">
+            <Button size="lg" onClick={handleAddToCart} className="flex-1" disabled={!selectedColor && product.variants.length > 0}>
               أضف إلى السلة
             </Button>
           </div>

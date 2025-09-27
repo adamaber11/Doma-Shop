@@ -110,9 +110,7 @@ export default function DashboardProductsPage() {
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                const imageUrl = product.imageUrls && product.imageUrls.length > 0 
-                  ? product.imageUrls[0] 
-                  : getPlaceholderImage('product-1').imageUrl;
+                const imageUrl = product.variants?.[0]?.imageUrls?.[0] || getPlaceholderImage('product-1').imageUrl;
                 return (
                 <TableRow key={product.id}>
                   <TableCell className="hidden sm:table-cell">

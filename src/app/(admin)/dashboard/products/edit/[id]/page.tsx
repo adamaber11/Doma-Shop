@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, useParams } from 'next/navigation';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { updateProduct, getProductById, getCategories } from '@/services/product-service';
@@ -20,16 +20,20 @@ import { ArrowRight, PlusCircle, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
 
+const variantSchema = z.object({
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "يجب أن يكون اللون صالحًا (hex code)"),
+  imageUrls: z.array(z.object({ value: z.string().url("يجب أن يكون رابطًا صالحًا") })).min(1, "رابط صورة واحد على الأقل مطلوب للمتغير"),
+});
+
 const productSchema = z.object({
   name: z.string().min(3, "يجب أن يكون اسم المنتج 3 أحرف على الأقل"),
   description: z.string().min(10, "يجب أن يكون الوصف 10 أحرف على الأقل"),
   price: z.coerce.number().min(0.01, "السعر مطلوب"),
   categoryId: z.string({ required_error: "الفئة مطلوبة" }),
   stock: z.coerce.number().min(0, "المخزون مطلوب"),
-  imageUrls: z.array(z.object({ value: z.string().url("يجب أن يكون رابطًا صالحًا") })).min(1, "رابط صورة واحد على الأقل مطلوب"),
+  variants: z.array(variantSchema).min(1, "متغير واحد على الأقل مطلوب (لون وصور)"),
   isFeatured: z.boolean().default(false),
   isBestOffer: z.boolean().default(false),
-  colors: z.array(z.object({ value: z.string().regex(/^#[0-9a-fA-F]{6}$/, "يجب أن يكون اللون صالحًا (hex code)") })).optional(),
   sizes: z.array(z.object({ value: z.string().min(1, "المقاس مطلوب") })).optional(),
 });
 
@@ -53,9 +57,12 @@ export default function EditProductPage() {
       isBestOffer: false,
     }
   });
+
+  const { fields: variantFields, append: appendVariant, remove: removeVariant } = useFieldArray({
+    control: form.control,
+    name: "variants",
+  });
   
-  const { fields: imageUrlFields, append: appendImageUrl, remove: removeImageUrl } = useFieldArray({ control: form.control, name: "imageUrls" });
-  const { fields: colorFields, append: appendColor, remove: removeColor } = useFieldArray({ control: form.control, name: "colors" });
   const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({ control: form.control, name: "sizes" });
 
   useEffect(() => {
@@ -70,13 +77,19 @@ export default function EditProductPage() {
 
         if (fetchedProduct) {
           setProduct(fetchedProduct);
-          const defaultValues = {
-            ...fetchedProduct,
-            imageUrls: fetchedProduct.imageUrls.map(url => ({ value: url })),
-            colors: fetchedProduct.colors?.map(c => ({ value: c })) || [],
-            sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
-            isFeatured: fetchedProduct.isFeatured || false,
-            isBestOffer: fetchedProduct.isBestOffer || false,
+          const defaultValues: ProductFormValues = {
+              name: fetchedProduct.name,
+              description: fetchedProduct.description,
+              price: fetchedProduct.price,
+              categoryId: fetchedProduct.categoryId,
+              stock: fetchedProduct.stock,
+              variants: fetchedProduct.variants.map(v => ({
+                  color: v.color,
+                  imageUrls: v.imageUrls.map(url => ({ value: url })),
+              })),
+              sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
+              isFeatured: fetchedProduct.isFeatured || false,
+              isBestOffer: fetchedProduct.isBestOffer || false,
           };
           form.reset(defaultValues);
         } else {
@@ -98,9 +111,11 @@ export default function EditProductPage() {
   const onSubmit = async (values: ProductFormValues) => {
      const productData = {
       ...values,
-      imageUrls: values.imageUrls.map(url => url.value),
-      colors: values.colors?.map(c => c.value),
-      sizes: values.sizes?.map(s => s.value),
+        variants: values.variants.map(variant => ({
+            ...variant,
+            imageUrls: variant.imageUrls.map(url => url.value)
+        })),
+        sizes: values.sizes?.map(size => size.value)
     };
     try {
       await updateProduct(productId, productData);
@@ -150,6 +165,7 @@ export default function EditProductPage() {
 
   return (
     <Card className="max-w-4xl mx-auto">
+      <FormProvider {...form}>
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
                 <CardHeader>
@@ -183,101 +199,81 @@ export default function EditProductPage() {
                     </FormItem>
                     )} />
                     
+                    <div className='space-y-6'>
+                         <FormLabel>متغيرات المنتج (الألوان والصور)</FormLabel>
+                        {variantFields.map((variantField, variantIndex) => (
+                           <Card key={variantField.id} className="p-4 relative">
+                             <div className="space-y-4">
+                               <FormField
+                                  control={form.control}
+                                  name={`variants.${variantIndex}.color`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>لون المتغير</FormLabel>
+                                       <FormControl>
+                                         <div className='relative'>
+                                            <Input placeholder="#FFFFFF" className='pl-10' {...field} />
+                                            <Input type="color" className='absolute top-1/2 left-2 -translate-y-1/2 h-6 w-6 p-0 border-none' value={field.value || '#000000'} onChange={(e) => field.onChange(e.target.value)} />
+                                         </div>
+                                       </FormControl>
+                                       <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                <ImageUrlsFieldArray variantIndex={variantIndex} />
+                              </div>
+                               {variantFields.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-2 right-2 h-7 w-7"
+                                  onClick={() => removeVariant(variantIndex)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              )}
+                           </Card>
+                        ))}
+                         <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => appendVariant({ color: '#000000', imageUrls: [{ value: '' }] })}
+                        >
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          إضافة متغير لون
+                        </Button>
+                    </div>
+
                     <div>
-                      <FormLabel>روابط صور المنتج</FormLabel>
+                      <FormLabel>مقاسات المنتج (اختياري)</FormLabel>
                       <div className="space-y-4 mt-2">
-                        {imageUrlFields.map((field, index) => (
+                        {sizeFields.map((field, index) => (
                           <FormField
                             key={field.id}
                             control={form.control}
-                            name={`imageUrls.${index}.value`}
+                            name={`sizes.${index}.value`}
                             render={({ field }) => (
                               <FormItem>
                                 <div className="flex items-center gap-2">
                                   <FormControl>
-                                    <Input placeholder="https://example.com/image.png" {...field} />
+                                    <Input placeholder="M" {...field} />
                                   </FormControl>
-                                  {imageUrlFields.length > 1 && (
-                                    <Button type="button" variant="destructive" size="icon" onClick={() => removeImageUrl(index)}>
-                                      <Trash2 className="h-4 w-4" />
-                                    </Button>
-                                  )}
+                                  <Button type="button" variant="destructive" size="icon" onClick={() => removeSize(index)}>
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
                                 </div>
                                 <FormMessage />
                               </FormItem>
                             )}
                           />
                         ))}
-                        <Button type="button" variant="outline" size="sm" onClick={() => appendImageUrl({ value: "" })}>
+                        <Button type="button" variant="outline" size="sm" onClick={() => appendSize({ value: "" })}>
                           <PlusCircle className="mr-2 h-4 w-4" />
-                          إضافة رابط صورة
+                          إضافة مقاس
                         </Button>
                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                       <div>
-                          <FormLabel>ألوان المنتج</FormLabel>
-                          <div className="space-y-4 mt-2">
-                            {colorFields.map((field, index) => (
-                              <FormField
-                                key={field.id}
-                                control={form.control}
-                                name={`colors.${index}.value`}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <div className="flex items-center gap-2">
-                                      <FormControl>
-                                        <div className='relative'>
-                                            <Input placeholder="#FFFFFF" className='pl-10' {...field} />
-                                            <Input type="color" className='absolute top-1/2 left-2 -translate-y-1/2 h-6 w-6 p-0 border-none' value={field.value || '#000000'} onChange={(e) => field.onChange(e.target.value)} />
-                                        </div>
-                                      </FormControl>
-                                      <Button type="button" variant="destructive" size="icon" onClick={() => removeColor(index)}>
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
-                                    </div>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            ))}
-                            <Button type="button" variant="outline" size="sm" onClick={() => appendColor({ value: "#000000" })}>
-                              <PlusCircle className="mr-2 h-4 w-4" />
-                              إضافة لون
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div>
-                          <FormLabel>مقاسات المنتج</FormLabel>
-                          <div className="space-y-4 mt-2">
-                            {sizeFields.map((field, index) => (
-                              <FormField
-                                key={field.id}
-                                control={form.control}
-                                name={`sizes.${index}.value`}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <div className="flex items-center gap-2">
-                                      <FormControl>
-                                        <Input placeholder="M" {...field} />
-                                      </FormControl>
-                                      <Button type="button" variant="destructive" size="icon" onClick={() => removeSize(index)}>
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
-                                    </div>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            ))}
-                            <Button type="button" variant="outline" size="sm" onClick={() => appendSize({ value: "" })}>
-                              <PlusCircle className="mr-2 h-4 w-4" />
-                              إضافة مقاس
-                            </Button>
-                          </div>
-                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -362,6 +358,47 @@ export default function EditProductPage() {
                 </CardFooter>
             </form>
         </Form>
+        </FormProvider>
     </Card>
   );
 }
+
+function ImageUrlsFieldArray({ variantIndex }: { variantIndex: number }) {
+    const { control, register } = useForm<ProductFormValues>();
+    const { fields, append, remove } = useFieldArray({
+      control,
+      name: `variants.${variantIndex}.imageUrls`,
+    });
+  
+    return (
+      <div className="space-y-2">
+        <FormLabel>روابط صور المتغير</FormLabel>
+        {fields.map((field, index) => (
+          <FormField
+            key={field.id}
+            control={control}
+            name={`variants.${variantIndex}.imageUrls.${index}.value`}
+            render={({ field: formField }) => (
+              <FormItem>
+                <div className="flex items-center gap-2">
+                  <FormControl>
+                    <Input placeholder="https://example.com/image.png" {...formField} />
+                  </FormControl>
+                  {fields.length > 1 && (
+                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+        <Button type="button" variant="outline" size="sm" onClick={() => append({ value: "" })}>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          إضافة رابط صورة
+        </Button>
+      </div>
+    );
+  }

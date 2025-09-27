@@ -33,7 +33,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems]);
 
   const addToCart = (product: Product, quantity: number, selectedColor?: string, selectedSize?: string) => {
-    const cartItemId = `${product.id}${selectedColor ? `-${selectedColor}` : ''}${selectedSize ? `-${selectedSize}`: ''}`;
+    if (!selectedColor && product.variants.length > 0) {
+        toast({
+            title: "خطأ",
+            description: "الرجاء تحديد لون للمنتج.",
+            variant: "destructive"
+        });
+        return;
+    }
+    
+    const cartItemId = `${product.id}${selectedColor ? `-${selectedColor.replace('#', '')}` : ''}${selectedSize ? `-${selectedSize}`: ''}`;
     
     setCartItems(prevItems => {
       const existingItem = prevItems.find(item => item.id === cartItemId);
@@ -49,7 +58,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         id: cartItemId, 
         product, 
         quantity,
-        selectedColor,
+        selectedColor: selectedColor!,
         selectedSize
       };
       return [...prevItems, newItem];

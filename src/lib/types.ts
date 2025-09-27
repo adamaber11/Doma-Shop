@@ -5,25 +5,29 @@ export type Category = {
   imageId: string;
 };
 
+export type ProductVariant = {
+  color: string;
+  imageUrls: string[];
+};
+
 export type Product = {
   id: string;
   name: string;
   description: string;
   price: number;
   categoryId: string;
-  imageUrls: string[];
   stock: number;
+  variants: ProductVariant[];
+  sizes?: string[];
   isFeatured?: boolean;
   isBestOffer?: boolean;
-  colors?: string[];
-  sizes?: string[];
 };
 
 export type CartItem = {
   id: string;
   product: Product;
   quantity: number;
-  selectedColor?: string;
+  selectedColor: string;
   selectedSize?: string;
 };
 

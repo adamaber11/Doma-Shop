@@ -20,9 +20,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const imageUrl = product.imageUrls && product.imageUrls.length > 0 
-    ? product.imageUrls[0] 
-    : getPlaceholderImage('product-1').imageUrl;
+  const imageUrl = product.variants?.[0]?.imageUrls?.[0] || getPlaceholderImage('product-1').imageUrl;
   
   const [open, setOpen] = useState(false);
   const { addToCart } = useCart();
@@ -31,7 +29,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation(); 
     e.preventDefault();
-    if ((product.colors && product.colors.length > 0) || (product.sizes && product.sizes.length > 0)) {
+    if ((product.variants && product.variants.length > 1) || (product.sizes && product.sizes.length > 0)) {
         setOpen(true);
         toast({
             title: "التخصيص مطلوب",
@@ -39,7 +37,7 @@ export function ProductCard({ product }: ProductCardProps) {
             variant: "default"
         });
     } else {
-        addToCart(product, 1);
+        addToCart(product, 1, product.variants[0].color, product.sizes?.[0]);
     }
   };
   

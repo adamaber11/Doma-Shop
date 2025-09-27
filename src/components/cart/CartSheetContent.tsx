@@ -40,9 +40,9 @@ export function CartSheetContent() {
             <ScrollArea className="flex-1 -mx-6">
                 <ul className="divide-y divide-border px-6">
                     {cartItems.map(item => {
-                    const itemImage = item.product.imageUrls && item.product.imageUrls.length > 0 
-                      ? item.product.imageUrls[0] 
-                      : getPlaceholderImage('product-1').imageUrl;
+                    const variant = item.product.variants.find(v => v.color === item.selectedColor);
+                    const itemImage = variant?.imageUrls[0] || getPlaceholderImage('product-1').imageUrl;
+                    
                     return (
                         <li key={item.id} className="flex items-start py-4">
                             <div className="relative h-20 w-20 rounded-md overflow-hidden ml-4 flex-shrink-0">
