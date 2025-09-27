@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getProductRecommendations } from '@/ai/flows/product-recommendations';
-import { allProducts } from '@/lib/data';
+import { getProducts } from '@/services/product-service';
 import type { Product } from '@/lib/types';
 import { ProductCard } from './ProductCard';
 import { Skeleton } from '../ui/skeleton';
@@ -14,8 +14,19 @@ interface ProductRecommendationsProps {
 export function ProductRecommendations({ currentProductId }: ProductRecommendationsProps) {
   const [recommendations, setRecommendations] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
   useEffect(() => {
+    const fetchAllProducts = async () => {
+      const products = await getProducts();
+      setAllProducts(products);
+    }
+    fetchAllProducts();
+  }, []);
+
+  useEffect(() => {
+    if (allProducts.length === 0) return;
+
     const fetchRecommendations = async () => {
       setLoading(true);
       try {
@@ -48,7 +59,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
     };
 
     fetchRecommendations();
-  }, [currentProductId]);
+  }, [currentProductId, allProducts]);
 
   if (loading) {
     return (

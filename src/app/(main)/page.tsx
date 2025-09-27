@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/products/ProductCard";
-import { allProducts, allCategories } from "@/lib/data";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import {
@@ -15,12 +14,37 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getProducts, getCategories } from "@/services/product-service";
+import type { Product, Category } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const featuredProducts = allProducts.slice(0, 8);
-  const bestOffersProducts = allProducts.slice(4, 8);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [bestOffersProducts, setBestOffersProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const heroImage = getPlaceholderImage('hero-1');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [products, fetchedCategories] = await Promise.all([
+          getProducts(),
+          getCategories()
+        ]);
+        setFeaturedProducts(products.slice(0, 8));
+        setBestOffersProducts(products.slice(4, 8));
+        setCategories(fetchedCategories.slice(0, 5));
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
 
   const plugin = React.useRef(
@@ -64,85 +88,115 @@ export default function Home() {
               </Link>
             </Button>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
-            {allCategories.slice(0, 5).map((category) => {
-              const categoryImage = getPlaceholderImage(category.imageId);
-              return (
-              <Link key={category.id} href={`/products?category=${category.id}`} className="group">
-                <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full">
-                  <CardContent className="p-0 flex flex-col flex-grow">
-                    <div className="relative aspect-square">
-                      <Image
-                        src={categoryImage.imageUrl}
-                        alt={category.name}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        data-ai-hint={categoryImage.imageHint}
-                      />
-                      <div className="absolute inset-0 bg-black/20" />
-                    </div>
-                    <div className="p-4 bg-card flex-grow flex flex-col justify-center">
-                      <h3 className="font-semibold text-center text-card-foreground">{category.name}</h3>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            )})}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+              {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-48 w-full" />)}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+              {categories.map((category) => {
+                const categoryImage = getPlaceholderImage(category.imageId);
+                return (
+                <Link key={category.id} href={`/products?category=${category.id}`} className="group">
+                  <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <div className="relative aspect-square">
+                        <Image
+                          src={categoryImage.imageUrl}
+                          alt={category.name}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          data-ai-hint={categoryImage.imageHint}
+                        />
+                        <div className="absolute inset-0 bg-black/20" />
+                      </div>
+                      <div className="p-4 bg-card flex-grow flex flex-col justify-center">
+                        <h3 className="font-semibold text-center text-card-foreground">{category.name}</h3>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              )})}
+            </div>
+          )}
         </div>
       </section>
 
       <section className="bg-secondary py-12 md:py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">المنتجات المميزة</h2>
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-              direction: "rtl",
-            }}
-            plugins={[plugin.current]}
-            onMouseEnter={plugin.current.stop}
-            onMouseLeave={plugin.current.reset}
-            className="w-full"
-          >
-            <CarouselContent>
-              {featuredProducts.map((product) => (
-                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <div className="p-1">
-                    <ProductCard product={product} />
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+               {[...Array(4)].map((_, i) => (
+                  <div key={i} className="space-y-2">
+                      <Skeleton className="h-64 w-full" />
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-6 w-1/4" />
                   </div>
-                </CarouselItem>
               ))}
-            </CarouselContent>
-          </Carousel>
+            </div>
+          ) : (
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+                direction: "rtl",
+              }}
+              plugins={[plugin.current]}
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
+              className="w-full"
+            >
+              <CarouselContent>
+                {featuredProducts.map((product) => (
+                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                    <div className="p-1">
+                      <ProductCard product={product} />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          )}
         </div>
       </section>
 
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">أفضل العروض</h2>
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-              direction: "rtl",
-            }}
-            plugins={[plugin.current]}
-            onMouseEnter={plugin.current.stop}
-            onMouseLeave={plugin.current.reset}
-            className="w-full"
-          >
-            <CarouselContent>
-              {bestOffersProducts.map((product) => (
-                <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-                  <div className="p-1">
-                    <ProductCard product={product} />
+           {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+               {[...Array(4)].map((_, i) => (
+                  <div key={i} className="space-y-2">
+                      <Skeleton className="h-64 w-full" />
+                      <Skeleton className="h-6 w-3/4" />
+                      <Skeleton className="h-6 w-1/4" />
                   </div>
-                </CarouselItem>
               ))}
-            </CarouselContent>
-          </Carousel>
+            </div>
+          ) : (
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+                direction: "rtl",
+              }}
+              plugins={[plugin.current]}
+              onMouseEnter={plugin.current.stop}
+              onMouseLeave={plugin.current.reset}
+              className="w-full"
+            >
+              <CarouselContent>
+                {bestOffersProducts.map((product) => (
+                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                    <div className="p-1">
+                      <ProductCard product={product} />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
+          )}
         </div>
       </section>
     </>
