@@ -8,12 +8,14 @@ import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBa
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
 const adsCollection = collection(db, 'advertisements');
+const popupAdsCollection = collection(db, 'popupAds');
 
 
 // Cache variables
 let allProducts: Product[] | null = null;
 let allCategories: Category[] | null = null;
 let allAds: Ad[] | null = null;
+let allPopupAds: Ad[] | null = null;
 let lastFetchTime: number = 0;
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
@@ -23,6 +25,7 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         allProducts = null;
         allCategories = null;
         allAds = null;
+        allPopupAds = null;
         console.log('Cache cleared, fetching new data...');
     }
 
@@ -49,6 +52,11 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
     if (!allAds) {
         const adSnapshot = await getDocs(adsCollection);
         allAds = adSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
+    }
+
+    if (!allPopupAds) {
+        const popupAdSnapshot = await getDocs(popupAdsCollection);
+        allPopupAds = popupAdSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
     }
 
     if (forceRefresh || !lastFetchTime) {
@@ -198,7 +206,7 @@ export async function deleteCategory(categoryId: string): Promise<void> {
 }
 
 
-// Advertisement Functions
+// Advertisement Functions (Banners)
 export async function getAds(forceRefresh: boolean = false): Promise<Ad[]> {
     await fetchDataIfNeeded(forceRefresh);
     return allAds || [];
@@ -235,6 +243,48 @@ export async function updateAd(adId: string, adUpdate: Partial<Ad>): Promise<voi
 
 export async function deleteAd(adId: string): Promise<void> {
     const adRef = doc(db, 'advertisements', adId);
+    await deleteDoc(adRef);
+    await fetchDataIfNeeded(true);
+}
+
+
+// Popup Ad Functions
+export async function getPopupAds(forceRefresh: boolean = false): Promise<Ad[]> {
+    await fetchDataIfNeeded(forceRefresh);
+    return allPopupAds || [];
+}
+
+export async function getPopupAdById(adId: string): Promise<Ad | null> {
+    await fetchDataIfNeeded();
+    const adFromCache = allPopupAds?.find(ad => ad.id === adId);
+    if (adFromCache) return adFromCache;
+
+    const adDoc = await getDoc(doc(db, 'popupAds', adId));
+     if (adDoc.exists()) {
+        const newAd = { id: adDoc.id, ...adDoc.data() } as Ad;
+        if(allPopupAds) allPopupAds.push(newAd);
+        return newAd;
+    }
+    return null;
+}
+
+
+export async function addPopupAd(ad: Omit<Ad, 'id'>): Promise<Ad> {
+    const docRef = await addDoc(popupAdsCollection, ad);
+    await fetchDataIfNeeded(true);
+    const newAd = { id: docRef.id, ...ad } as Ad;
+    if(allPopupAds) allPopupAds.push(newAd);
+    return newAd;
+}
+
+export async function updatePopupAd(adId: string, adUpdate: Partial<Ad>): Promise<void> {
+    const adRef = doc(db, 'popupAds', adId);
+    await updateDoc(adRef, adUpdate);
+    await fetchDataIfNeeded(true);
+}
+
+export async function deletePopupAd(adId: string): Promise<void> {
+    const adRef = doc(db, 'popupAds', adId);
     await deleteDoc(adRef);
     await fetchDataIfNeeded(true);
 }

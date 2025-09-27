@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { updateAd, getAdById } from '@/services/product-service';
+import { updatePopupAd, getPopupAdById } from '@/services/product-service';
 import type { Ad } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,7 +26,7 @@ const adSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export default function EditAdPage() {
+export default function EditPopupAdPage() {
   const router = useRouter();
   const params = useParams();
   const { id } = params;
@@ -46,18 +46,18 @@ export default function EditAdPage() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const fetchedAd = await getAdById(adId);
+        const fetchedAd = await getPopupAdById(adId);
 
         if (fetchedAd) {
           setAd(fetchedAd);
           form.reset(fetchedAd);
         } else {
-            toast({ title: "خطأ", description: "لم يتم العثور على البنر.", variant: "destructive" });
-            router.push('/dashboard/advertisements');
+            toast({ title: "خطأ", description: "لم يتم العثور على الإعلان.", variant: "destructive" });
+            router.push('/dashboard/popup-ads');
         }
       } catch (error) {
         console.error("Failed to fetch ad", error);
-        toast({ title: "خطأ", description: "فشل في جلب بيانات البنر.", variant: "destructive" });
+        toast({ title: "خطأ", description: "فشل في جلب بيانات الإعلان.", variant: "destructive" });
       } finally {
         setLoading(false);
       }
@@ -69,14 +69,14 @@ export default function EditAdPage() {
 
   const onSubmit = async (values: z.infer<typeof adSchema>) => {
     try {
-      await updateAd(adId, values);
-      toast({ title: "نجاح", description: "تم تحديث البنر بنجاح." });
-      router.push('/dashboard/advertisements');
+      await updatePopupAd(adId, values);
+      toast({ title: "نجاح", description: "تم تحديث الإعلان بنجاح." });
+      router.push('/dashboard/popup-ads');
     } catch (error) {
       console.error("Failed to update ad", error);
       toast({
         title: "خطأ",
-        description: "فشل في تحديث البنر.",
+        description: "فشل في تحديث الإعلان.",
         variant: "destructive",
       });
     }
@@ -112,13 +112,13 @@ export default function EditAdPage() {
                 <CardHeader>
                     <div className='flex items-center justify-between'>
                         <div>
-                            <CardTitle>تعديل البنر</CardTitle>
-                            <CardDescription>تحديث تفاصيل البنر أدناه.</CardDescription>
+                            <CardTitle>تعديل الإعلان المنبثق</CardTitle>
+                            <CardDescription>تحديث تفاصيل الإعلان أدناه.</CardDescription>
                         </div>
                         <Button variant="ghost" asChild>
-                            <Link href="/dashboard/advertisements">
+                            <Link href="/dashboard/popup-ads">
                                <ArrowRight className="h-4 w-4" />
-                                الرجوع إلى البنرات
+                                الرجوع إلى الإعلانات المنبثقة
                             </Link>
                         </Button>
                     </div>
@@ -126,7 +126,7 @@ export default function EditAdPage() {
                 <CardContent className="space-y-6">
                     <FormField control={form.control} name="imageUrl" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>رابط صورة البنر</FormLabel>
+                            <FormLabel>رابط صورة الإعلان</FormLabel>
                             <FormControl><Input {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
@@ -136,7 +136,7 @@ export default function EditAdPage() {
                         <div>
                             <FormLabel>معاينة الصورة</FormLabel>
                             <div className="mt-2 relative aspect-video w-full max-w-sm rounded-md overflow-hidden border">
-                                <Image src={imageUrlValue} alt="معاينة البنر" fill className="object-cover"/>
+                                <Image src={imageUrlValue} alt="معاينة الإعلان" fill className="object-cover"/>
                             </div>
                         </div>
                     )}
@@ -158,9 +158,9 @@ export default function EditAdPage() {
                                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                 </FormControl>
                                 <div className="space-y-1 leading-none">
-                                    <FormLabel>بنر نشط</FormLabel>
+                                    <FormLabel>إعلان نشط</FormLabel>
                                     <FormDescription>
-                                        هل يجب عرض هذا البنر للمستخدمين؟
+                                        هل يجب عرض هذا الإعلان للمستخدمين؟
                                     </FormDescription>
                                 </div>
                             </FormItem>

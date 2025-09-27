@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { getAds, deleteAd } from '@/services/product-service';
+import { getPopupAds, deletePopupAd } from '@/services/product-service';
 import type { Ad } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -16,7 +16,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 
-export default function DashboardAdsPage() {
+export default function DashboardPopupAdsPage() {
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -24,11 +24,11 @@ export default function DashboardAdsPage() {
   const fetchAds = async () => {
     setLoading(true);
     try {
-      const fetchedAds = await getAds(true); // Force refresh
+      const fetchedAds = await getPopupAds(true); // Force refresh
       setAds(fetchedAds);
     } catch (error) {
       console.error('Failed to fetch ads:', error);
-      toast({ title: "خطأ", description: "فشل في جلب البنرات.", variant: "destructive" });
+      toast({ title: "خطأ", description: "فشل في جلب الإعلانات المنبثقة.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -40,23 +40,23 @@ export default function DashboardAdsPage() {
 
   const handleDelete = async (adId: string) => {
     try {
-      await deleteAd(adId);
-      toast({ title: "نجاح", description: "تم حذف البنر بنجاح." });
+      await deletePopupAd(adId);
+      toast({ title: "نجاح", description: "تم حذف الإعلان بنجاح." });
       fetchAds(); // Refresh the list
     } catch (error) {
       console.error('Failed to delete ad:', error);
-      toast({ title: "خطأ", description: "فشل في حذف البنر.", variant: "destructive" });
+      toast({ title: "خطأ", description: "فشل في حذف الإعلان.", variant: "destructive" });
     }
   };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">بنرات الصفحة الرئيسية</h1>
+        <h1 className="text-3xl font-bold">الإعلانات المنبثقة</h1>
         <Button asChild>
-          <Link href="/dashboard/advertisements/new">
+          <Link href="/dashboard/popup-ads/new">
             <PlusCircle className="ml-2 h-4 w-4" />
-            إضافة بنر
+            إضافة إعلان منبثق
           </Link>
         </Button>
       </div>
@@ -100,7 +100,7 @@ export default function DashboardAdsPage() {
                 <TableRow key={ad.id}>
                   <TableCell className="hidden sm:table-cell">
                     <Image
-                      alt="صورة البنر"
+                      alt="صورة الإعلان"
                       className="aspect-video rounded-md object-cover"
                       height="64"
                       src={ad.imageUrl}
@@ -124,7 +124,7 @@ export default function DashboardAdsPage() {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
-                          <DropdownMenuItem asChild><Link href={`/dashboard/advertisements/edit/${ad.id}`}>تعديل</Link></DropdownMenuItem>
+                          <DropdownMenuItem asChild><Link href={`/dashboard/popup-ads/edit/${ad.id}`}>تعديل</Link></DropdownMenuItem>
                           <AlertDialogTrigger asChild>
                                <DropdownMenuItem className="text-destructive focus:text-destructive">حذف</DropdownMenuItem>
                           </AlertDialogTrigger>
@@ -134,7 +134,7 @@ export default function DashboardAdsPage() {
                             <AlertDialogHeader>
                                 <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف البنر نهائيًا.
+                                هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف الإعلان نهائيًا.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -152,8 +152,8 @@ export default function DashboardAdsPage() {
       )}
        { !loading && ads.length === 0 && (
          <div className="text-center py-16 border rounded-lg">
-            <h2 className="text-2xl font-semibold">لم يتم العثور على بنرات</h2>
-            <p className="text-muted-foreground mt-2">ابدأ بإضافة بنر جديد.</p>
+            <h2 className="text-2xl font-semibold">لم يتم العثور على إعلانات منبثقة</h2>
+            <p className="text-muted-foreground mt-2">ابدأ بإضافة إعلان جديد.</p>
          </div>
         )}
     </div>

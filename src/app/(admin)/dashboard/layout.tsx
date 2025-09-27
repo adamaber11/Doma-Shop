@@ -9,7 +9,7 @@ import { onAuthStateChanged, User, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
-import { Home, Package, ShoppingCart, Users, LogOut, Tags, Settings, Megaphone } from "lucide-react";
+import { Home, Package, ShoppingCart, Users, LogOut, Tags, Settings, Megaphone, Annoyed } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,8 @@ export default function DashboardLayout({
     { href: "/dashboard", label: "الرئيسية", icon: Home, active: pathname === '/dashboard' },
     { href: "/dashboard/products", label: "المنتجات", icon: Package, active: pathname.startsWith('/dashboard/products') },
     { href: "/dashboard/categories", label: "الفئات", icon: Tags, active: pathname.startsWith('/dashboard/categories') },
-    { href: "/dashboard/advertisements", label: "الإعلانات", icon: Megaphone, active: pathname.startsWith('/dashboard/advertisements') },
+    { href: "/dashboard/advertisements", label: "البنرات", icon: Megaphone, active: pathname.startsWith('/dashboard/advertisements') },
+    { href: "/dashboard/popup-ads", label: "الإعلانات المنبثقة", icon: Annoyed, active: pathname.startsWith('/dashboard/popup-ads') },
     { href: "/dashboard/settings", label: "الإعدادات", icon: Settings, active: pathname.startsWith('/dashboard/settings') },
     { href: "/dashboard/orders", label: "الطلبات", icon: ShoppingCart, active: pathname.startsWith('/dashboard/orders') },
     { href: "/dashboard/customers", label: "العملاء", icon: Users, active: pathname.startsWith('/dashboard/customers') },

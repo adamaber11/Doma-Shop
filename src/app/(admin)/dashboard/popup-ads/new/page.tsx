@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { addAd } from '@/services/product-service';
+import { addPopupAd } from '@/services/product-service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
@@ -22,7 +22,7 @@ const adSchema = z.object({
   isActive: z.boolean().default(true),
 });
 
-export default function NewAdPage() {
+export default function NewPopupAdPage() {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -37,14 +37,14 @@ export default function NewAdPage() {
 
   const onSubmit = async (values: z.infer<typeof adSchema>) => {
     try {
-      await addAd(values);
-      toast({ title: "نجاح", description: "تمت إضافة البنر بنجاح." });
-      router.push('/dashboard/advertisements');
+      await addPopupAd(values);
+      toast({ title: "نجاح", description: "تمت إضافة الإعلان المنبثق بنجاح." });
+      router.push('/dashboard/popup-ads');
     } catch (error) {
       console.error("Failed to add ad", error);
       toast({
         title: "خطأ",
-        description: "فشل في إضافة البنر.",
+        description: "فشل في إضافة الإعلان.",
         variant: "destructive",
       });
     }
@@ -57,13 +57,13 @@ export default function NewAdPage() {
                 <CardHeader>
                     <div className='flex items-center justify-between'>
                         <div>
-                            <CardTitle>إضافة بنر جديد</CardTitle>
-                            <CardDescription>املأ التفاصيل أدناه لإضافة بنر جديد للصفحة الرئيسية.</CardDescription>
+                            <CardTitle>إضافة إعلان منبثق جديد</CardTitle>
+                            <CardDescription>املأ التفاصيل أدناه لإضافة إعلان منبثق جديد.</CardDescription>
                         </div>
                         <Button variant="ghost" asChild>
-                            <Link href="/dashboard/advertisements">
+                            <Link href="/dashboard/popup-ads">
                                <ArrowRight className="h-4 w-4" />
-                                الرجوع إلى البنرات
+                                الرجوع إلى الإعلانات المنبثقة
                             </Link>
                         </Button>
                     </div>
@@ -71,7 +71,7 @@ export default function NewAdPage() {
                 <CardContent className="space-y-6">
                     <FormField control={form.control} name="imageUrl" render={({ field }) => (
                         <FormItem>
-                            <FormLabel>رابط صورة البنر</FormLabel>
+                            <FormLabel>رابط صورة الإعلان</FormLabel>
                             <FormControl><Input placeholder="https://example.com/ad-image.png" {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
@@ -94,9 +94,9 @@ export default function NewAdPage() {
                                     <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                 </FormControl>
                                 <div className="space-y-1 leading-none">
-                                    <FormLabel>بنر نشط</FormLabel>
+                                    <FormLabel>إعلان نشط</FormLabel>
                                     <FormDescription>
-                                        هل يجب عرض هذا البنر للمستخدمين؟
+                                        هل يجب عرض هذا الإعلان للمستخدمين؟
                                     </FormDescription>
                                 </div>
                             </FormItem>
@@ -105,7 +105,7 @@ export default function NewAdPage() {
                 </CardContent>
                 <CardFooter className='justify-end'>
                     <Button type="submit" disabled={form.formState.isSubmitting}>
-                        {form.formState.isSubmitting ? 'جاري الإضافة...' : 'إضافة بنر'}
+                        {form.formState.isSubmitting ? 'جاري الإضافة...' : 'إضافة إعلان'}
                     </Button>
                 </CardFooter>
             </form>

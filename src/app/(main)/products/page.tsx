@@ -6,7 +6,7 @@ import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from 'next/navigation';
 import { ProductCard } from "@/components/products/ProductCard";
 import { ProductFilters } from "@/components/products/ProductFilters";
-import { getProducts, getAds } from "@/services/product-service";
+import { getProducts, getPopupAds } from "@/services/product-service";
 import type { Product, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
@@ -18,16 +18,16 @@ import { Button } from "@/components/ui/button";
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
-  const [ads, setAds] = useState<Ad[]>([]);
+  const [popupAds, setPopupAds] = useState<Ad[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
 
   const randomAd = useMemo(() => {
-    const activeAds = ads.filter(ad => ad.isActive);
+    const activeAds = popupAds.filter(ad => ad.isActive);
     if (activeAds.length === 0) return null;
     return activeAds[Math.floor(Math.random() * activeAds.length)];
-  }, [ads]);
+  }, [popupAds]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,10 +35,10 @@ export default function ProductsPage() {
       try {
         const [fetchedProducts, fetchedAds] = await Promise.all([
           getProducts(),
-          getAds()
+          getPopupAds()
         ]);
         setProducts(fetchedProducts);
-        setAds(fetchedAds);
+        setPopupAds(fetchedAds);
         
         const adShown = sessionStorage.getItem('adShown');
         if (!adShown && fetchedAds.filter(ad => ad.isActive).length > 0) {
