@@ -98,7 +98,7 @@ export default function ProductsPage() {
                                 src={randomAd.imageUrl}
                                 alt="Advertisement"
                                 fill
-                                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                className="object-cover"
                                 />
                             </div>
                         </Link>
@@ -114,7 +114,7 @@ export default function ProductsPage() {
           </aside>
           <main className="lg:col-span-3">
             {loading ? (
-               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1.5">
                 {[...Array(9)].map((_, i) => (
                    <div key={i} className="space-y-2">
                       <Skeleton className="aspect-[4/3] w-full" />
@@ -124,7 +124,7 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : filteredProducts.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-1.5">
                 {filteredProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}

@@ -99,11 +99,11 @@ export default function Home() {
             </Button>
           </div>
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-1.5">
               {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-48 w-full" />)}
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-1.5">
               {categories.map((category) => {
                 const categoryImage = getPlaceholderImage(category.imageId);
                 return (
@@ -115,7 +115,7 @@ export default function Home() {
                           src={categoryImage.imageUrl}
                           alt={category.name}
                           fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="object-cover"
                           data-ai-hint={categoryImage.imageHint}
                         />
                         <div className="absolute inset-0 bg-black/20" />
@@ -136,7 +136,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">المنتجات المميزة</h2>
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1.5">
                {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
                       <Skeleton className="aspect-[4/3] w-full" />
@@ -157,9 +157,9 @@ export default function Home() {
               onMouseLeave={plugin.current.play}
               className="w-full"
             >
-              <CarouselContent>
+              <CarouselContent className="-ml-1.5">
                 {featuredProducts.map((product) => (
-                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-1.5">
                     <div className="p-1">
                       <ProductCard product={product} />
                     </div>
@@ -179,7 +179,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">أفضل العروض</h2>
            {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1.5">
                {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
                       <Skeleton className="aspect-[4/3] w-full" />
@@ -200,9 +200,9 @@ export default function Home() {
               onMouseLeave={plugin.current.play}
               className="w-full"
             >
-              <CarouselContent>
+              <CarouselContent className="-ml-1.5">
                 {bestOffersProducts.map((product) => (
-                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                  <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4 pl-1.5">
                     <div className="p-1">
                       <ProductCard product={product} />
                     </div>

@@ -38,7 +38,7 @@ export default function OffersPage() {
         </div>
         <main>
           {loading ? (
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
               {[...Array(8)].map((_, i) => (
                  <div key={i} className="space-y-2">
                     <Skeleton className="h-64 w-full" />
@@ -48,13 +48,13 @@ export default function OffersPage() {
               ))}
             </div>
           ) : offerProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-1.5">
               {offerProducts.map(product => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center text-center py-16 border rounded-lg">
+            <div className="flex flex-col items-center justify-center text-center py-16">
                 <PercentCircle className="w-24 h-24 text-muted-foreground mb-4" />
                 <h2 className="text-2xl font-semibold">لا توجد عروض حاليًا</h2>
                 <p className="text-muted-foreground mt-2">تحقق مرة أخرى قريبًا للحصول على صفقات مذهلة!</p>
