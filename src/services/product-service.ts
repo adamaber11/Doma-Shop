@@ -2,13 +2,14 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category, Review, Ad } from "@/lib/types";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp } from "firebase/firestore";
+import type { Product, Category, Review, Ad, ContactMessage } from "@/lib/types";
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query } from "firebase/firestore";
 
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
 const adsCollection = collection(db, 'advertisements');
 const popupAdsCollection = collection(db, 'popupAds');
+const messagesCollection = collection(db, 'contactMessages');
 
 
 // Cache variables
@@ -16,6 +17,7 @@ let allProducts: Product[] | null = null;
 let allCategories: Category[] | null = null;
 let allAds: Ad[] | null = null;
 let allPopupAds: Ad[] | null = null;
+let allMessages: ContactMessage[] | null = null;
 let lastFetchTime: number = 0;
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
@@ -26,6 +28,7 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         allCategories = null;
         allAds = null;
         allPopupAds = null;
+        allMessages = null;
         console.log('Cache cleared, fetching new data...');
     }
 
@@ -57,6 +60,19 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
     if (!allPopupAds) {
         const popupAdSnapshot = await getDocs(popupAdsCollection);
         allPopupAds = popupAdSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
+    }
+
+    if (!allMessages) {
+        const q = query(messagesCollection, orderBy("createdAt", "desc"));
+        const messageSnapshot = await getDocs(q);
+        allMessages = messageSnapshot.docs.map(doc => {
+             const data = doc.data();
+             return { 
+                 id: doc.id, 
+                 ...data,
+                 createdAt: data.createdAt.toDate() 
+            } as ContactMessage;
+        });
     }
 
     if (forceRefresh || !lastFetchTime) {
@@ -286,5 +302,32 @@ export async function updatePopupAd(adId: string, adUpdate: Partial<Ad>): Promis
 export async function deletePopupAd(adId: string): Promise<void> {
     const adRef = doc(db, 'popupAds', adId);
     await deleteDoc(adRef);
+    await fetchDataIfNeeded(true);
+}
+
+
+// Contact Messages Functions
+export async function addContactMessage(message: Omit<ContactMessage, 'id' | 'createdAt'>): Promise<ContactMessage> {
+    const messageData = {
+        ...message,
+        createdAt: Timestamp.now()
+    }
+    const docRef = await addDoc(messagesCollection, messageData);
+    await fetchDataIfNeeded(true);
+    const newMessage = { id: docRef.id, ...messageData, createdAt: messageData.createdAt.toDate() };
+    if (allMessages) {
+        allMessages.unshift(newMessage);
+    }
+    return newMessage;
+}
+
+export async function getContactMessages(forceRefresh: boolean = false): Promise<ContactMessage[]> {
+    await fetchDataIfNeeded(forceRefresh);
+    return allMessages || [];
+}
+
+export async function deleteContactMessage(messageId: string): Promise<void> {
+    const messageRef = doc(db, 'contactMessages', messageId);
+    await deleteDoc(messageRef);
     await fetchDataIfNeeded(true);
 }

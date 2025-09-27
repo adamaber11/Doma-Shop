@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { addContactMessage } from '@/services/product-service';
 
 const contactSchema = z.object({
   name: z.string().min(2, "الاسم مطلوب"),
@@ -24,13 +25,22 @@ export default function ContactPage() {
     defaultValues: { name: "", email: "", message: "" }
   });
 
-  const onSubmit = (values: z.infer<typeof contactSchema>) => {
-    console.log("Contact form submitted:", values);
-    toast({
-      title: "تم إرسال الرسالة!",
-      description: "شكرًا لتواصلك معنا. سنعود إليك قريبًا.",
-    });
-    form.reset();
+  const onSubmit = async (values: z.infer<typeof contactSchema>) => {
+    try {
+        await addContactMessage(values);
+        toast({
+            title: "تم إرسال الرسالة!",
+            description: "شكرًا لتواصلك معنا. سنعود إليك قريبًا.",
+        });
+        form.reset();
+    } catch (error) {
+        console.error("Failed to send message", error);
+        toast({
+            title: "خطأ",
+            description: "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
+            variant: "destructive"
+        });
+    }
   };
 
   return (
@@ -93,7 +103,9 @@ export default function ContactPage() {
                       <FormMessage />
                     </FormItem>
                   )} />
-                  <Button type="submit" className="w-full">إرسال الرسالة</Button>
+                  <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting ? 'جاري الإرسال...' : 'إرسال الرسالة'}
+                  </Button>
                 </form>
               </Form>
             </CardContent>
