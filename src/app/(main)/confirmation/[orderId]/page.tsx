@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { CheckCircle, Download } from "lucide-react";
 import Link from "next/link";
 
@@ -21,6 +21,9 @@ export default function ConfirmationPage({ params }: { params: { orderId: string
               <p className="text-sm font-medium">رقم طلبك هو:</p>
               <p className="text-lg font-mono font-semibold text-primary">{params.orderId}</p>
             </div>
+             <CardDescription>
+                لقد اخترت الدفع عند الاستلام. يرجى تجهيز المبلغ الإجمالي للدفع عند وصول مندوب التوصيل.
+            </CardDescription>
             <p className="text-sm text-muted-foreground">
               يمكنك تتبع حالة طلبك في قسم "طلباتي" في ملفك الشخصي.
             </p>

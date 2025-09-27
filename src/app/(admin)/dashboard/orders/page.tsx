@@ -67,6 +67,13 @@ export default function DashboardOrdersPage() {
         default: return 'غير معروف';
     }
   }
+  
+  const getPaymentMethodText = (method: Order['paymentMethod']) => {
+    switch(method) {
+        case 'cod': return 'عند الاستلام';
+        default: return 'غير معروف';
+    }
+  }
 
 
   return (
@@ -84,6 +91,7 @@ export default function DashboardOrdersPage() {
                 <TableHead>العميل</TableHead>
                 <TableHead>التاريخ</TableHead>
                 <TableHead>الإجمالي</TableHead>
+                <TableHead>الدفع</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead><span className="sr-only">الإجراءات</span></TableHead>
               </TableRow>
@@ -94,6 +102,7 @@ export default function DashboardOrdersPage() {
                   <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-24" /></TableCell>
                   <TableCell><Skeleton className="h-5 w-32" /></TableCell>
                   <TableCell><Skeleton className="h-5 w-20" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                   <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                   <TableCell><Skeleton className="h-6 w-20" /></TableCell>
                   <TableCell><Skeleton className="h-8 w-8" /></TableCell>
@@ -111,6 +120,7 @@ export default function DashboardOrdersPage() {
                 <TableHead>العميل</TableHead>
                 <TableHead>التاريخ</TableHead>
                 <TableHead>الإجمالي</TableHead>
+                <TableHead>الدفع</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead><span className="sr-only">الإجراءات</span></TableHead>
               </TableRow>
@@ -125,6 +135,7 @@ export default function DashboardOrdersPage() {
                   </TableCell>
                   <TableCell>{format(new Date(order.createdAt), "d MMMM yyyy", { locale: ar })}</TableCell>
                   <TableCell>{formatCurrency(order.total)}</TableCell>
+                  <TableCell>{getPaymentMethodText(order.paymentMethod)}</TableCell>
                   <TableCell>
                     <Badge variant={getStatusVariant(order.status)}>{getStatusText(order.status)}</Badge>
                   </TableCell>

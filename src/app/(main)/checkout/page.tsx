@@ -14,9 +14,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { addOrder } from '@/services/product-service';
 import { useToast } from '@/hooks/use-toast';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Wallet } from 'lucide-react';
 
 const shippingSchema = z.object({
   name: z.string().min(2, "الاسم قصير جدًا"),
@@ -31,6 +33,7 @@ export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart, cartCount } = useCart();
   const router = useRouter();
   const { toast } = useToast();
+  const [paymentMethod, setPaymentMethod] = useState("cod");
 
   const form = useForm<z.infer<typeof shippingSchema>>({
     resolver: zodResolver(shippingSchema),
@@ -60,6 +63,7 @@ export default function CheckoutPage() {
                 price: item.product.salePrice ?? item.product.price,
             })),
             total: cartTotal,
+            paymentMethod: 'cod' as const,
         };
         const newOrder = await addOrder(orderData);
         clearCart();
@@ -134,16 +138,23 @@ export default function CheckoutPage() {
                 </Form>
               </CardContent>
             </Card>
-            <Card className="mt-8">
+             <Card className="mt-8">
               <CardHeader>
-                <CardTitle>الدفع</CardTitle>
+                <CardTitle>طريقة الدفع</CardTitle>
               </CardHeader>
               <CardContent>
-                  <p className="text-muted-foreground">هذا متجر تجريبي. لن تتم معالجة أي دفعة حقيقية.</p>
-                  <div className="mt-4 p-4 border rounded-md bg-secondary">
-                      <p className="font-semibold">بوابة دفع وهمية</p>
-                      <p className="text-sm">انقر على "إتمام الطلب" لمحاكاة عملية دفع ناجحة.</p>
-                  </div>
+                 <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} defaultValue="cod">
+                    <div className="flex items-center space-x-2 rounded-md border p-4">
+                        <RadioGroupItem value="cod" id="cod" />
+                        <Label htmlFor="cod" className="flex items-center gap-3 cursor-pointer">
+                            <Wallet className="h-6 w-6 text-muted-foreground" />
+                            <div>
+                                <span className="font-semibold">الدفع عند الاستلام</span>
+                                <p className="text-xs text-muted-foreground">ادفع نقدًا عند وصول طلبك إلى باب منزلك.</p>
+                            </div>
+                        </Label>
+                    </div>
+                </RadioGroup>
               </CardContent>
             </Card>
           </div>

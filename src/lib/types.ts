@@ -57,6 +57,7 @@ export type Order = {
   }[];
   total: number;
   status: 'pending' | 'shipped' | 'delivered' | 'cancelled';
+  paymentMethod: 'cod';
   createdAt: Date;
 };
 
