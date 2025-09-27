@@ -5,17 +5,13 @@ import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Menu, Search, ShoppingCart, User, LayoutDashboard } from "lucide-react";
+import { Menu, Search, ShoppingCart } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
-import { useEffect, useState } from "react";
-import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
-import { useRouter, usePathname } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { auth } from "@/lib/firebase";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { UserAuth } from "./UserAuth";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -26,34 +22,10 @@ const navLinks = [
 
 export function Header() {
   const { cartCount } = useCart();
-  const [user, setUser] = useState<FirebaseUser | null>(null);
-  const router = useRouter();
   const pathname = usePathname();
-  const { toast } = useToast();
   
   const isDashboard = pathname.startsWith('/dashboard');
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      toast({ title: "تم تسجيل الخروج بنجاح" });
-      router.push('/login');
-    } catch (error) {
-      console.error("Logout error", error);
-      toast({
-        title: "حدث خطأ أثناء تسجيل الخروج",
-        variant: "destructive",
-      });
-    }
-  };
-  
   if (isDashboard) {
     return null;
   }
@@ -104,49 +76,7 @@ export function Header() {
             <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-64" />
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <User className="h-5 w-5" />
-                <span className="sr-only">قائمة المستخدم</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {user ? (
-                <>
-                  <DropdownMenuLabel>حسابي</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {user.email === 'adamaber50@gmail.com' && (
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard">
-                        <LayoutDashboard className="ml-2 h-4 w-4" />
-                        <span>الداشبورد</span>
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link href="/profile">الملف الشخصي</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/orders">الطلبات</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    تسجيل الخروج
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <>
-                  <DropdownMenuItem asChild>
-                    <Link href="/login">تسجيل الدخول</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/signup">إنشاء حساب</Link>
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UserAuth />
           
           <Sheet>
             <SheetTrigger asChild>
