@@ -78,9 +78,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                <div>
-                    <Skeleton className="aspect-square w-full rounded-lg" />
-                    <div className="flex gap-2 mt-4">
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4">
+                    <Skeleton className="aspect-square w-full rounded-lg md:col-start-1" />
+                    <div className="flex md:flex-col gap-2 justify-center md:col-start-2">
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
@@ -104,8 +104,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div>
-          <div className="aspect-square relative mb-4 rounded-lg overflow-hidden border">
+        <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] lg:grid-cols-[1fr_80px] gap-4 items-start">
+          <div className="aspect-square relative rounded-lg overflow-hidden border order-2 md:order-none lg:order-1">
             <Image
               src={productImages[activeImageIndex]}
               alt={product.name}
@@ -115,11 +115,14 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             />
           </div>
           {productImages.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start order-1 md:order-none lg:order-2">
               {productImages.map((imageUrl, index) => (
                 <button
                   key={index}
-                  className={`relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 ${index === activeImageIndex ? 'border-primary' : 'border-transparent'}`}
+                  className={cn(
+                      "relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all",
+                      index === activeImageIndex ? 'border-primary' : 'border-transparent'
+                  )}
                   onClick={() => setActiveImageIndex(index)}
                 >
                   <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
