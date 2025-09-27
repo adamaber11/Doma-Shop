@@ -1,8 +1,7 @@
 
-
 "use client";
 
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
 import { getProductById } from '@/services/product-service';
 import type { Product } from '@/lib/types';
@@ -13,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/hooks/use-cart';
-import { Plus, Minus, CheckCircle, Star } from 'lucide-react';
+import { Plus, Minus, CheckCircle, Star, ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { getPlaceholderImage } from '@/lib/placeholder-images';
 import { ProductRecommendations } from '@/components/products/ProductRecommendations';
@@ -30,6 +29,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   const { addToCart } = useCart();
   const { toast } = useToast();
+  const router = useRouter();
 
   const fetchProduct = async () => {
       setLoading(true);
@@ -65,31 +65,43 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     setActiveImageIndex(0);
   }, [productImages]);
 
-
-  const handleAddToCart = () => {
-    if (!product) return;
+  const handleAction = (buyNow: boolean = false) => {
+    if (!product) return false;
     if (product.variants && product.variants.length > 0 && !selectedColor) {
         toast({ title: "خطأ", description: "الرجاء اختيار لون.", variant: "destructive" });
-        return;
+        return false;
     }
     if (product.sizes && product.sizes.length > 0 && !selectedSize) {
         toast({ title: "خطأ", description: "الرجاء اختيار مقاس.", variant: "destructive" });
-        return;
+        return false;
     }
     addToCart(product, quantity, selectedColor, selectedSize);
+
+    if (buyNow) {
+        router.push('/checkout');
+    }
+    return true;
   };
+
+  const handleAddToCart = () => {
+    handleAction(false);
+  }
+
+  const handleBuyNow = () => {
+    handleAction(true);
+  }
   
   if (loading) {
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                 <div className="grid grid-cols-1 gap-4">
-                    <Skeleton className="aspect-square w-full rounded-lg" />
-                    <div className="flex gap-2 justify-center">
-                        <Skeleton className="h-20 w-20 rounded-md" />
-                        <Skeleton className="h-20 w-20 rounded-md" />
-                        <Skeleton className="h-20 w-20 rounded-md" />
+                 <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
+                    <div className="md:order-2 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
+                        <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
+                        <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
+                        <Skeleton className="h-20 w-20 rounded-md flex-shrink-0" />
                     </div>
+                    <Skeleton className="md:order-1 aspect-square w-full rounded-lg" />
                 </div>
                 <div className="space-y-6">
                     <Skeleton className="h-10 w-3/4" />
@@ -114,8 +126,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-         <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 items-start">
-           <div className="order-2 md:order-1 flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-start">
+         <div className="grid grid-cols-1 md:grid-cols-[1fr_80px] gap-4 items-start">
+           <div className="md:order-2 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center">
               {productImages.length > 1 && productImages.map((imageUrl, index) => (
                 <button
                   key={index}
@@ -129,7 +141,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </button>
               ))}
             </div>
-          <div className="order-1 md:order-2 aspect-square relative rounded-lg overflow-hidden border">
+          <div className="md:order-1 aspect-square relative rounded-lg overflow-hidden border">
             <Image
               src={productImages[activeImageIndex]}
               alt={product.name}
@@ -197,24 +209,32 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             )}
           </div>
           
-          <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-            <div className="flex items-center border rounded-md">
-              <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
-                <Minus className="h-4 w-4" />
-              </Button>
-              <Input
-                type="number"
-                value={quantity}
-                readOnly
-                className="w-16 h-10 text-center border-0 focus-visible:ring-0"
-              />
-              <Button variant="ghost" size="icon" onClick={() => setQuantity(q => q + 1)}>
-                <Plus className="h-4 w-4" />
-              </Button>
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center border rounded-md">
+                <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Input
+                  type="number"
+                  value={quantity}
+                  readOnly
+                  className="w-16 h-10 text-center border-0 focus-visible:ring-0"
+                />
+                <Button variant="ghost" size="icon" onClick={() => setQuantity(q => q + 1)}>
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                 <Button size="lg" onClick={handleAddToCart} className="flex-1">
+                    <ShoppingBag className="ml-2 h-5 w-5" />
+                    أضف إلى السلة
+                </Button>
+                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="flex-1">
+                    اشتري الآن
+                </Button>
+              </div>
             </div>
-            <Button size="lg" onClick={handleAddToCart} className="flex-1 w-full sm:w-auto">
-              أضف إلى السلة
-            </Button>
           </div>
           
           <div className="flex items-center gap-2 text-sm text-green-600 mb-8">
@@ -231,3 +251,5 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
+
+    
