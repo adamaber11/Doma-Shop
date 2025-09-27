@@ -83,13 +83,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4">
-                    <div className="flex md:flex-col gap-2 justify-center">
+                 <div className="grid grid-cols-1 gap-4">
+                    <Skeleton className="aspect-square w-full rounded-lg" />
+                    <div className="flex gap-2 justify-center">
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
                     </div>
-                    <Skeleton className="aspect-square w-full rounded-lg" />
                 </div>
                 <div className="space-y-6">
                     <Skeleton className="h-10 w-3/4" />
@@ -114,8 +114,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div className="grid grid-cols-[1fr_80px] md:grid-cols-[80px_1fr] gap-4 items-start">
-           <div className="order-2 md:order-1 flex flex-col gap-2 overflow-y-auto justify-start">
+         <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 items-start">
+           <div className="order-2 md:order-1 flex md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-start">
               {productImages.length > 1 && productImages.map((imageUrl, index) => (
                 <button
                   key={index}
@@ -197,7 +197,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             )}
           </div>
           
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
             <div className="flex items-center border rounded-md">
               <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
                 <Minus className="h-4 w-4" />
@@ -212,7 +212,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 <Plus className="h-4 w-4" />
               </Button>
             </div>
-            <Button size="lg" onClick={handleAddToCart} className="flex-1">
+            <Button size="lg" onClick={handleAddToCart} className="flex-1 w-full sm:w-auto">
               أضف إلى السلة
             </Button>
           </div>
