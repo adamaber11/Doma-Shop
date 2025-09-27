@@ -31,7 +31,7 @@ export default function Home() {
     <>
         <div className="flex flex-col min-h-screen">
           <main className="flex-1">
-            <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200 -mt-16">
+            <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200">
               <Image
                   src={heroImage.imageUrl}
                   alt={heroImage.description}
@@ -41,7 +41,7 @@ export default function Home() {
                   priority
                 />
               <div className="absolute inset-0 bg-black/40" />
-              <div className="relative container mx-auto h-full flex flex-col items-start justify-center text-white px-4 pt-16">
+              <div className="relative container mx-auto h-full flex flex-col items-start justify-center text-white px-4">
                 <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4 text-shadow">
                   اكتشف أسلوبك
                 </h1>

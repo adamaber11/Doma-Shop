@@ -36,15 +36,19 @@ export function Header({ isHomePage = false }: HeaderProps) {
 
   useEffect(() => {
     const handleScroll = () => {
+      // For non-home pages, the header is always "scrolled"
+      if (!isHomePage) {
+        setScrolled(true);
+        return;
+      }
       setScrolled(window.scrollY > 10);
     };
-    if (isHomePage) {
-      window.addEventListener('scroll', handleScroll);
-    }
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Call on mount to set initial state
+
     return () => {
-       if (isHomePage) {
-        window.removeEventListener('scroll', handleScroll);
-      }
+      window.removeEventListener('scroll', handleScroll);
     };
   }, [isHomePage]);
 
@@ -68,12 +72,17 @@ export function Header({ isHomePage = false }: HeaderProps) {
       });
     }
   };
+  
+  const headerClasses = cn(
+    "sticky top-0 z-50 w-full transition-colors duration-300",
+    isHomePage ? "bg-transparent" : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 text-foreground border-b"
+  );
+  
+  // This logic is flawed. If it's the home page, it should just be a normal header.
+  // The hero section will be the first thing on the page.
 
   return (
-    <header className={cn(
-      "sticky top-0 z-50 w-full transition-colors duration-300", 
-      isHomePage && !scrolled ? "bg-transparent text-white border-b border-transparent" : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 text-foreground border-b"
-    )}>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">
@@ -111,7 +120,7 @@ export function Header({ isHomePage = false }: HeaderProps) {
         <div className="flex items-center gap-4">
           <div className="relative hidden md:block">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input type="search" placeholder="ابحث عن منتجات..." className={cn("pr-10 w-64", isHomePage && !scrolled && "bg-white/20 placeholder-gray-300 text-white border-gray-400")} />
+            <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-64" />
           </div>
 
           {user && user.email === 'adamaber50@gmail.com' && (
