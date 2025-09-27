@@ -41,7 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer">
+      <Card className="group flex flex-col h-full overflow-hidden transition-all duration-300 cursor-pointer">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <CardHeader className="p-0">
               <div className="relative aspect-square w-full">
