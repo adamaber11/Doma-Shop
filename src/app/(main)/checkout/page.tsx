@@ -18,7 +18,8 @@ import { useEffect, useState } from 'react';
 import { addOrder } from '@/services/product-service';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Wallet } from 'lucide-react';
+import { Wallet, Truck } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const shippingSchema = z.object({
   name: z.string().min(2, "الاسم قصير جدًا"),
@@ -138,6 +139,15 @@ export default function CheckoutPage() {
                 </Form>
               </CardContent>
             </Card>
+            
+            <Alert variant="destructive" className="mt-8">
+                <Truck className="h-4 w-4" />
+                <AlertTitle>معلومات الشحن</AlertTitle>
+                <AlertDescription>
+                    الشحن من 3 ايام الى 7 ايام
+                </AlertDescription>
+            </Alert>
+            
              <Card className="mt-8">
               <CardHeader>
                 <CardTitle>طريقة الدفع</CardTitle>
@@ -204,3 +214,5 @@ export default function CheckoutPage() {
       </div>
   );
 }
+
+    
