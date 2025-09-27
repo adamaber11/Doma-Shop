@@ -11,7 +11,7 @@ import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut, User as FirebaseUser } from "firebase/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
@@ -23,24 +23,17 @@ const navLinks = [
   { href: "/contact", label: "اتصل بنا" },
 ];
 
-interface HeaderProps {
-  isHomePage?: boolean;
-}
-
-export function Header({ isHomePage = false }: HeaderProps) {
+export function Header() {
   const { cartCount } = useCart();
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const { toast } = useToast();
   const [scrolled, setScrolled] = useState(false);
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
-      // For non-home pages, the header is always "scrolled"
-      if (!isHomePage) {
-        setScrolled(true);
-        return;
-      }
       setScrolled(window.scrollY > 10);
     };
 
@@ -50,7 +43,7 @@ export function Header({ isHomePage = false }: HeaderProps) {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [isHomePage]);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -75,14 +68,11 @@ export function Header({ isHomePage = false }: HeaderProps) {
   
   const headerClasses = cn(
     "sticky top-0 z-50 w-full transition-colors duration-300",
-    isHomePage ? "bg-transparent" : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 text-foreground border-b"
+    isHomePage && !scrolled ? "bg-transparent text-white" : "border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60"
   );
-  
-  // This logic is flawed. If it's the home page, it should just be a normal header.
-  // The hero section will be the first thing on the page.
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className={headerClasses}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4">
           <div className="hidden lg:block">
