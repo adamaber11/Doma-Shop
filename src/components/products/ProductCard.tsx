@@ -44,7 +44,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <div className="bg-white text-black h-full flex flex-col group overflow-hidden">
+      <div className="bg-white text-black h-full flex flex-col group">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <div className="relative w-full aspect-[4/3] bg-gray-100">
                 <Image
@@ -80,9 +80,6 @@ export function ProductCard({ product }: ProductCardProps) {
                     )}
                 </div>
 
-                <Button onClick={handleAddToCart} variant="default" size="sm" className="w-full mt-auto text-xs h-8">
-                    أضف إلى العربة
-                </Button>
             </div>
         </Link>
       </div>
