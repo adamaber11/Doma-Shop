@@ -108,8 +108,8 @@ export default function Home() {
                 const categoryImage = getPlaceholderImage(category.imageId);
                 return (
                 <Link key={category.id} href={`/products?category=${category.id}`} className="group">
-                  <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col h-full">
-                    <CardContent className="p-0 flex flex-col flex-grow">
+                  <div className="overflow-hidden flex flex-col h-full bg-card">
+                    <div className="p-0 flex flex-col flex-grow">
                       <div className="relative aspect-square">
                         <Image
                           src={categoryImage.imageUrl}
@@ -123,8 +123,8 @@ export default function Home() {
                       <div className="p-4 bg-card flex-grow flex flex-col justify-center">
                         <h3 className="font-semibold text-center text-card-foreground">{category.name}</h3>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </Link>
               )})}
             </div>
@@ -139,9 +139,9 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
-                      <Skeleton className="h-64 w-full" />
-                      <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-6 w-1/4" />
+                      <Skeleton className="aspect-[4/3] w-full" />
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-5 w-1/4" />
                   </div>
               ))}
             </div>
@@ -182,9 +182,9 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                {[...Array(4)].map((_, i) => (
                   <div key={i} className="space-y-2">
-                      <Skeleton className="h-64 w-full" />
-                      <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-6 w-1/4" />
+                      <Skeleton className="aspect-[4/3] w-full" />
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-5 w-1/4" />
                   </div>
               ))}
             </div>

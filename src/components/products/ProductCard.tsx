@@ -3,18 +3,16 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
 import { Button } from "../ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import Link from "next/link";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { useToast } from "@/hooks/use-toast";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { ProductDetailSheetContent } from "./ProductDetailSheet";
-import { Badge } from "../ui/badge";
 
 interface ProductCardProps {
   product: Product;
@@ -39,45 +37,55 @@ export function ProductCard({ product }: ProductCardProps) {
   
   const hasSale = product.salePrice && product.salePrice < product.price;
 
+  const reviews = product.reviews || [];
+  const averageRating = reviews.length > 0
+    ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+    : 0;
+
   return (
     <>
-      <Card className="flex flex-col h-full overflow-hidden shadow-sm">
+      <div className="bg-white text-black h-full flex flex-col group overflow-hidden">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
-            <CardHeader className="p-0">
-              <div className="relative aspect-square w-full h-48">
-                    <Image
-                        src={imageUrl}
-                        alt={product.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                     {hasSale && (
-                        <Badge variant="destructive" className="absolute top-2 left-2">عرض</Badge>
-                     )}
-              </div>
-            </CardHeader>
-            <CardContent className="p-4 flex-grow flex flex-col">
-                <h3 className="font-semibold text-lg flex-grow">{product.name}</h3>
-                 <div className="flex items-center gap-2 mt-1">
+            <div className="relative w-full aspect-[4/3] bg-gray-100">
+                <Image
+                    src={imageUrl}
+                    alt={product.name}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                />
+            </div>
+            <div className="p-4 flex-grow flex flex-col">
+                <h3 className="text-sm font-normal line-clamp-2 mb-2 flex-grow">{product.name}</h3>
+                
+                {reviews.length > 0 && (
+                    <div className="flex items-center gap-1 mb-2">
+                        <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                                <Star key={i} className={cn("h-4 w-4", averageRating > i ? "text-yellow-400 fill-yellow-400" : "text-gray-300")} />
+                            ))}
+                        </div>
+                        <span className="text-xs text-gray-600">({reviews.length})</span>
+                    </div>
+                )}
+
+                <div className="mb-3">
                     {hasSale ? (
-                        <>
-                            <p className="text-lg font-semibold text-primary">{formatCurrency(product.salePrice!)}</p>
-                            <p className="text-sm text-muted-foreground line-through">{formatCurrency(product.price)}</p>
-                        </>
+                        <div className="flex items-baseline gap-2">
+                            <p className="text-xl font-bold">{formatCurrency(product.salePrice!)}</p>
+                            <p className="text-xs text-gray-500 line-through">{formatCurrency(product.price)}</p>
+                        </div>
                     ) : (
-                        <p className="text-lg font-semibold">{formatCurrency(product.price)}</p>
+                        <p className="text-xl font-bold">{formatCurrency(product.price)}</p>
                     )}
                 </div>
-            </CardContent>
+
+                <Button onClick={handleAddToCart} variant="default" size="sm" className="w-full mt-auto text-xs h-8">
+                    أضف إلى العربة
+                </Button>
+            </div>
         </Link>
-        <CardFooter className="p-4 pt-0">
-          <Button onClick={handleAddToCart} className="w-full">
-            <ShoppingCart className="ml-2 h-4 w-4" />
-            أضف إلى السلة
-          </Button>
-        </CardFooter>
-      </Card>
+      </div>
       <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent className="w-full max-w-lg overflow-y-auto" side="right">
               <ProductDetailSheetContent product={product} />

@@ -115,11 +115,11 @@ export default function ProductsPage() {
           <main className="lg:col-span-3">
             {loading ? (
                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
+                {[...Array(9)].map((_, i) => (
                    <div key={i} className="space-y-2">
-                      <Skeleton className="h-64 w-full" />
-                      <Skeleton className="h-6 w-3/4" />
-                      <Skeleton className="h-6 w-1/4" />
+                      <Skeleton className="aspect-[4/3] w-full" />
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-5 w-1/4" />
                    </div>
                 ))}
               </div>
