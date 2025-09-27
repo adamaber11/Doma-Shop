@@ -1,6 +1,9 @@
 
 'use client';
 
+// This component is no longer used for product images, but is kept for the settings page.
+// It will be replaced there as well.
+
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';

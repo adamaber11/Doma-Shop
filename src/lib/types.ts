@@ -61,5 +61,5 @@ export type Order = {
 export type HomepageSettings = {
     heroTitle: string;
     heroSubtitle: string;
-    heroImagePublicId: string;
+    heroImageUrl: string;
 };

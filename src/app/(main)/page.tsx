@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/products/ProductCard";
-import { getCloudinaryImageUrl } from "@/lib/cloudinary";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import {
   Carousel,
@@ -49,8 +48,8 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const heroImage = homepageSettings?.heroImagePublicId 
-    ? getCloudinaryImageUrl(homepageSettings.heroImagePublicId) 
+  const heroImage = homepageSettings?.heroImageUrl 
+    ? homepageSettings.heroImageUrl
     : getPlaceholderImage('hero-1').imageUrl;
   
   const heroTitle = homepageSettings?.heroTitle || "اكتشف أسلوبك";

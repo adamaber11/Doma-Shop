@@ -14,14 +14,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ImageUpload } from '@/components/shared/ImageUpload';
 import { getCloudinaryImageUrl } from '@/lib/cloudinary';
 import Image from 'next/image';
 
 const settingsSchema = z.object({
   heroTitle: z.string().min(3, "العنوان الرئيسي قصير جدًا"),
   heroSubtitle: z.string().min(10, "العنوان الفرعي قصير جدًا"),
-  heroImagePublicId: z.string().min(1, "صورة الهيرو مطلوبة"),
+  heroImageUrl: z.string().url("يجب أن يكون رابطًا صالحًا"),
 });
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
@@ -52,7 +51,7 @@ export default function SettingsPage() {
     fetchSettings();
   }, [form, toast]);
   
-  const heroImagePublicId = form.watch('heroImagePublicId');
+  const heroImageUrl = form.watch('heroImageUrl');
 
   const onSubmit = async (values: SettingsFormValues) => {
     try {
@@ -121,25 +120,22 @@ export default function SettingsPage() {
             />
              <FormField
                 control={form.control}
-                name="heroImagePublicId"
+                name="heroImageUrl"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>صورة الهيرو</FormLabel>
+                    <FormLabel>رابط صورة الهيرو</FormLabel>
                     <FormControl>
-                        <ImageUpload 
-                            value={field.value ? [field.value] : []} 
-                            onChange={(ids) => field.onChange(ids[0] || "")}
-                        />
+                        <Input placeholder="https://example.com/image.png" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              {heroImagePublicId && (
+              {heroImageUrl && (
                   <div>
                       <FormLabel>معاينة الصورة الحالية</FormLabel>
                       <div className="mt-2 relative aspect-video w-full max-w-lg rounded-md overflow-hidden border">
-                          <Image src={getCloudinaryImageUrl(heroImagePublicId)} alt="معاينة صورة الهيرو" fill className="object-cover"/>
+                          <Image src={heroImageUrl} alt="معاينة صورة الهيرو" fill className="object-cover"/>
                       </div>
                   </div>
               )}
