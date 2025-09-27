@@ -16,7 +16,7 @@ import { ArrowRight } from 'lucide-react';
 
 const categorySchema = z.object({
   name: z.string().min(2, "يجب أن يكون اسم الفئة حرفين على الأقل"),
-  imageId: z.string().min(1, "معرف الصورة مطلوب"),
+  imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
 });
 
 export default function NewCategoryPage() {
@@ -27,7 +27,7 @@ export default function NewCategoryPage() {
     resolver: zodResolver(categorySchema),
     defaultValues: {
       name: "",
-      imageId: "",
+      imageUrl: "",
     }
   });
 
@@ -73,10 +73,10 @@ export default function NewCategoryPage() {
                     </FormItem>
                     )} />
 
-                    <FormField control={form.control} name="imageId" render={({ field }) => (
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>معرف الصورة</FormLabel>
-                        <FormControl><Input placeholder="مثال: electronics-cat" {...field} /></FormControl>
+                        <FormLabel>رابط صورة الفئة</FormLabel>
+                        <FormControl><Input placeholder="https://example.com/category-image.png" {...field} /></FormControl>
                          <FormMessage />
                     </FormItem>
                     )} />

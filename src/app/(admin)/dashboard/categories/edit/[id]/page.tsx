@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const categorySchema = z.object({
   name: z.string().min(2, "يجب أن يكون اسم الفئة حرفين على الأقل"),
-  imageId: z.string().min(1, "معرف الصورة مطلوب"),
+  imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
 });
 
 export default function EditCategoryPage() {
@@ -125,9 +125,9 @@ export default function EditCategoryPage() {
                     </FormItem>
                     )} />
 
-                    <FormField control={form.control} name="imageId" render={({ field }) => (
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>معرف الصورة</FormLabel>
+                        <FormLabel>رابط صورة الفئة</FormLabel>
                         <FormControl><Input {...field} /></FormControl>
                          <FormMessage />
                     </FormItem>

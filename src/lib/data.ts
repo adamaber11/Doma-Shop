@@ -3,19 +3,19 @@
 import type { Product, Category, Review, Order, Customer } from './types';
 
 export const allCategories: Category[] = [
-  { id: 'electronics', name: 'الإلكترونيات', imageId: 'electronics-cat' },
-  { id: 'fashion', name: 'الموضة', imageId: 'fashion-cat' },
-  { id: 'beauty-personal-care', name: 'الجمال والعناية الشخصية', imageId: 'beauty-cat' },
-  { id: 'home-furniture', name: 'المنزل والأثاث', imageId: 'home-kitchen-cat' },
-  { id: 'home-appliances', name: 'الأجهزة المنزلية', imageId: 'product-12' },
-  { id: 'sports-outdoors', name: 'الرياضة والهواء الطلق', imageId: 'sports-cat' },
-  { id: 'toys-kids', name: 'الألعاب والأطفال', imageId: 'toys-cat' },
-  { id: 'books-stationery', name: 'الكتب والأدوات المكتبية', imageId: 'books-cat' },
-  { id: 'grocery-food', name: 'البقالة والأطعمة', imageId: 'grocery-cat' },
-  { id: 'handmade', name: 'الأعمال اليدوية', imageId: 'product-21' },
-  { id: 'used', name: 'المستعمل', imageId: 'product-22' },
-  { id: 'cars-parts', name: 'السيارات وقطع الغيار', imageId: 'vehicles-cat' },
-  { id: 'pet-supplies', name: 'مستلزمات الحيوانات الأليفة', imageId: 'product-16' }
+  { id: 'electronics', name: 'الإلكترونيات', imageUrl: 'https://picsum.photos/seed/electronics-cat/100/100' },
+  { id: 'fashion', name: 'الموضة', imageUrl: 'https://picsum.photos/seed/fashion-cat/100/100' },
+  { id: 'beauty-personal-care', name: 'الجمال والعناية الشخصية', imageUrl: 'https://picsum.photos/seed/beauty-cat/100/100' },
+  { id: 'home-furniture', name: 'المنزل والأثاث', imageUrl: 'https://picsum.photos/seed/home-kitchen-cat/100/100' },
+  { id: 'home-appliances', name: 'الأجهزة المنزلية', imageUrl: 'https://picsum.photos/seed/product-12/100/100' },
+  { id: 'sports-outdoors', name: 'الرياضة والهواء الطلق', imageUrl: 'https://picsum.photos/seed/sports-cat/100/100' },
+  { id: 'toys-kids', name: 'الألعاب والأطفال', imageUrl: 'https://picsum.photos/seed/toys-cat/100/100' },
+  { id: 'books-stationery', name: 'الكتب والأدوات المكتبية', imageUrl: 'https://picsum.photos/seed/books-cat/100/100' },
+  { id: 'grocery-food', name: 'البقالة والأطعمة', imageUrl: 'https://picsum.photos/seed/grocery-cat/100/100' },
+  { id: 'handmade', name: 'الأعمال اليدوية', imageUrl: 'https://picsum.photos/seed/product-21/100/100' },
+  { id: 'used', name: 'المستعمل', imageUrl: 'https://picsum.photos/seed/product-22/100/100' },
+  { id: 'cars-parts', name: 'السيارات وقطع الغيار', imageUrl: 'https://picsum.photos/seed/vehicles-cat/100/100' },
+  { id: 'pet-supplies', name: 'مستلزمات الحيوانات الأليفة', imageUrl: 'https://picsum.photos/seed/product-16/100/100' }
 ];
 
 const sampleReviews: Review[] = [

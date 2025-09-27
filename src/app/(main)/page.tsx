@@ -1,10 +1,10 @@
 
+
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ProductCard } from "@/components/products/ProductCard";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 import {
   Carousel,
@@ -20,7 +20,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 
 export default function Home() {
-  const [bestOffersProducts, setBestOffersProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -30,14 +29,12 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [products, fetchedCategories, settings, ads] = await Promise.all([
-          getProducts(),
+        const [fetchedCategories, settings, ads] = await Promise.all([
           getCategories(),
           getHomepageSettings(),
           getAds()
         ]);
-        setBestOffersProducts(products.filter(p => p.isBestOffer).slice(0, 8));
-        setCategories(fetchedCategories.slice(0, 5));
+        setCategories(fetchedCategories.slice(0, 8));
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
       } catch (error) {
@@ -106,34 +103,24 @@ export default function Home() {
             </Button>
           </div>
           {loading ? (
-            <div className="flex flex-wrap justify-center gap-1.5">
-              {[...Array(5)].map((_, i) => <Skeleton key={i} className="h-48 w-full max-w-[180px]" />)}
+            <div className="flex flex-wrap justify-center gap-8">
+              {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-24 w-24 rounded-full" />)}
             </div>
           ) : (
-            <div className="flex flex-wrap justify-center gap-1.5">
-              {categories.map((category) => {
-                const categoryImage = getPlaceholderImage(category.imageId);
-                return (
-                <Link key={category.id} href={`/products?category=${category.id}`} className="group">
-                  <div className="overflow-hidden flex flex-col h-full bg-card max-w-[180px]">
-                    <div className="p-0 flex flex-col flex-grow">
-                      <div className="relative aspect-square">
+            <div className="flex flex-wrap justify-center gap-8">
+              {categories.map((category) => (
+                <Link key={category.id} href={`/products?category=${category.id}`} className="group flex flex-col items-center gap-2 text-center w-24">
+                   <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary group-hover:scale-105 transition-all">
                         <Image
-                          src={categoryImage.imageUrl}
+                          src={category.imageUrl}
                           alt={category.name}
                           fill
                           className="object-cover"
-                          data-ai-hint={categoryImage.imageHint}
                         />
-                        <div className="absolute inset-0 bg-black/20" />
-                      </div>
-                      <div className="p-4 bg-card flex-grow flex flex-col justify-center">
-                        <h3 className="font-semibold text-center text-card-foreground">{category.name}</h3>
-                      </div>
                     </div>
-                  </div>
+                    <h3 className="font-semibold text-sm text-card-foreground group-hover:text-primary transition-colors">{category.name}</h3>
                 </Link>
-              )})}
+              ))}
             </div>
           )}
         </div>
@@ -181,49 +168,6 @@ export default function Home() {
                 )}
               </CarouselContent>
             </Carousel>
-        </div>
-      </section>
-
-      <section className="py-12 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 font-headline">أفضل العروض</h2>
-           {loading ? (
-            <div className="flex justify-center gap-1.5">
-               {[...Array(4)].map((_, i) => (
-                  <div key={i} className="space-y-2">
-                      <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
-                      <Skeleton className="h-5 w-3/4" />
-                      <Skeleton className="h-5 w-1/4" />
-                  </div>
-              ))}
-            </div>
-          ) : bestOffersProducts.length > 0 ? (
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-                direction: "rtl",
-              }}
-              plugins={[plugin.current]}
-              onMouseEnter={plugin.current.stop}
-              onMouseLeave={plugin.current.play}
-              className="w-full"
-            >
-              <CarouselContent className="-ml-1.5">
-                {bestOffersProducts.map((product) => (
-                  <CarouselItem key={product.id} className="basis-auto pl-1.5">
-                    <div className="p-1">
-                      <ProductCard product={product} />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          ): (
-             <div className="text-center py-10">
-                <p className="text-muted-foreground">لا توجد عروض خاصة حاليًا.</p>
-             </div>
-          )}
         </div>
       </section>
     </>
