@@ -2,17 +2,11 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import { formatCurrency, cn } from "@/lib/utils";
 import type { Product } from "@/lib/types";
-import { Button } from "../ui/button";
-import { ShoppingCart, Star } from "lucide-react";
-import { useCart } from "@/hooks/use-cart";
+import { Star } from "lucide-react";
 import Link from "next/link";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { useToast } from "@/hooks/use-toast";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
-import { ProductDetailSheetContent } from "./ProductDetailSheet";
 
 interface ProductCardProps {
   product: Product;
