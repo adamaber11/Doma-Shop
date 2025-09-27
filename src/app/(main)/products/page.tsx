@@ -58,18 +58,9 @@ export default function ProductsPage() {
   useEffect(() => {
     let tempProducts = [...products];
     const category = searchParams.get('category');
-    const price = searchParams.get('price');
 
     if (category) {
       tempProducts = tempProducts.filter(p => p.categoryId === category);
-    }
-
-    if (price && typeof price === 'string') {
-      const [min, max] = price.split('-').map(Number);
-      tempProducts = tempProducts.filter(p => {
-        const productPrice = p.salePrice ?? p.price;
-        return productPrice >= min && productPrice <= max;
-      });
     }
     
     setFilteredProducts(tempProducts);
