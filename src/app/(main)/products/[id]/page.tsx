@@ -31,9 +31,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const { toast } = useToast();
   const router = useRouter();
 
-  const fetchProduct = async (productId: string) => {
+  const fetchProduct = async (params: { id: string }) => {
       setLoading(true);
-      const fetchedProduct = await getProductById(productId);
+      const fetchedProduct = await getProductById(params.id);
       if (!fetchedProduct) {
         notFound();
       } else {
@@ -49,10 +49,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     };
 
   useEffect(() => {
-    if (params.id) {
-        fetchProduct(params.id);
-    }
-  }, [params.id]);
+    fetchProduct(params);
+  }, [params]);
   
   const productImages = useMemo(() => {
     if (!product) return [];
@@ -290,11 +288,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
       </div>
       <Separator className="my-12" />
-      <ProductReviews product={product} onReviewSubmit={() => fetchProduct(params.id)} />
+      <ProductReviews product={product} onReviewSubmit={() => fetchProduct(params)} />
       <Separator className="my-12" />
       <ProductRecommendations currentProductId={product.id} />
     </div>
   );
+
+    
 
     
 
