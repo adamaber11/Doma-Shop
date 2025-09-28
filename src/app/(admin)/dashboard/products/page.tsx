@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -15,7 +16,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getPlaceholderImage } from '@/lib/placeholder-images';
 
 export default function DashboardProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -110,7 +110,7 @@ export default function DashboardProductsPage() {
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                const imageUrl = product.variants?.[0]?.imageUrls?.[0] || getPlaceholderImage('product-1').imageUrl;
+                const imageUrl = product.variants?.[0]?.imageUrls?.[0] || 'https://picsum.photos/seed/placeholder/64/64';
                 return (
                 <TableRow key={product.id}>
                   <TableCell className="hidden sm:table-cell">

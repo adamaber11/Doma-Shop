@@ -14,21 +14,14 @@ import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [popupAds, setPopupAds] = useState<Ad[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
-
-  const randomAd = useMemo(() => {
-    const activeAds = popupAds.filter(ad => ad.isActive);
-    if (activeAds.length === 0) return null;
-    return activeAds[Math.floor(Math.random() * activeAds.length)];
-  }, [popupAds]);
+  const [randomAd, setRandomAd] = useState<Ad | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,10 +32,12 @@ export default function ProductsPage() {
           getPopupAds()
         ]);
         setProducts(fetchedProducts);
-        setPopupAds(fetchedAds);
+        const activeAds = fetchedAds.filter(ad => ad.isActive);
+        setPopupAds(activeAds);
         
         const adShown = sessionStorage.getItem('adShown');
-        if (!adShown && fetchedAds.filter(ad => ad.isActive).length > 0) {
+        if (!adShown && activeAds.length > 0) {
+            setRandomAd(activeAds[Math.floor(Math.random() * activeAds.length)]);
             setIsAdModalOpen(true);
             sessionStorage.setItem('adShown', 'true');
         }
@@ -56,7 +51,7 @@ export default function ProductsPage() {
     fetchData();
   }, []);
 
-  useEffect(() => {
+  const filteredProducts = useMemo(() => {
     let tempProducts = [...products];
     const category = searchParams.get('category');
 
@@ -64,7 +59,7 @@ export default function ProductsPage() {
       tempProducts = tempProducts.filter(p => p.categoryId === category);
     }
     
-    setFilteredProducts(tempProducts);
+    return tempProducts;
   }, [searchParams, products]);
 
 
