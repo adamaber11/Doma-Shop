@@ -19,6 +19,7 @@ import { ProductRecommendations } from '@/components/products/ProductRecommendat
 import { ProductReviews } from '@/components/products/ProductReviews';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   
@@ -33,27 +34,30 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   const fetchProduct = async (productId: string) => {
       setLoading(true);
-      const fetchedProduct = await getProductById(productId);
-      if (!fetchedProduct) {
-        notFound();
-      } else {
-        setProduct(fetchedProduct);
-        if (fetchedProduct.variants && fetchedProduct.variants.length > 0) {
-          setSelectedColor(fetchedProduct.variants[0].color);
-        }
-        if (fetchedProduct.sizes && fetchedProduct.sizes.length > 0) {
+      try {
+        const fetchedProduct = await getProductById(productId);
+        if (!fetchedProduct) {
+            notFound();
+        } else {
+            setProduct(fetchedProduct);
+            if (fetchedProduct.variants && fetchedProduct.variants.length > 0) {
+            setSelectedColor(fetchedProduct.variants[0].color);
+            }
             // No default selection for size to force user choice
         }
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+        notFound();
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
   useEffect(() => {
-    const id = params.id;
     if (id) {
         fetchProduct(id);
     }
-  }, [params]);
+  }, [id]);
   
   const productImages = useMemo(() => {
     if (!product) return [];
@@ -291,14 +295,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
       </div>
       <Separator className="my-12" />
-      <ProductReviews product={product} onReviewSubmit={() => fetchProduct(params.id)} />
+      <ProductReviews product={product} onReviewSubmit={() => fetchProduct(id)} />
       <Separator className="my-12" />
       <ProductRecommendations currentProductId={product.id} />
     </div>
   );
-
-    
-
-    
+}
 
     
