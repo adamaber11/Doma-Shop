@@ -301,3 +301,5 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
+
+    
