@@ -19,7 +19,6 @@ import { ProductRecommendations } from '@/components/products/ProductRecommendat
 import { ProductReviews } from '@/components/products/ProductReviews';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   
@@ -32,9 +31,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   const { toast } = useToast();
   const router = useRouter();
 
-  const fetchProduct = async () => {
+  const fetchProduct = async (productId: string) => {
       setLoading(true);
-      const fetchedProduct = await getProductById(id);
+      const fetchedProduct = await getProductById(productId);
       if (!fetchedProduct) {
         notFound();
       } else {
@@ -50,8 +49,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     };
 
   useEffect(() => {
-    fetchProduct();
-  }, [id]);
+    if (params.id) {
+        fetchProduct(params.id);
+    }
+  }, [params.id]);
   
   const productImages = useMemo(() => {
     if (!product) return [];
@@ -289,10 +290,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         </div>
       </div>
       <Separator className="my-12" />
-      <ProductReviews product={product} onReviewSubmit={fetchProduct} />
+      <ProductReviews product={product} onReviewSubmit={() => fetchProduct(params.id)} />
       <Separator className="my-12" />
       <ProductRecommendations currentProductId={product.id} />
     </div>
   );
+
+    
 
     
