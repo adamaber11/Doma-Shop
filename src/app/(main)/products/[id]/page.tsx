@@ -19,6 +19,7 @@ import { ProductRecommendations } from '@/components/products/ProductRecommendat
 import { ProductReviews } from '@/components/products/ProductReviews';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   
@@ -33,7 +34,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   const fetchProduct = async () => {
       setLoading(true);
-      const fetchedProduct = await getProductById(params.id);
+      const fetchedProduct = await getProductById(id);
       if (!fetchedProduct) {
         notFound();
       } else {
@@ -50,7 +51,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 
   useEffect(() => {
     fetchProduct();
-  }, [params.id]);
+  }, [id]);
   
   const productImages = useMemo(() => {
     if (!product) return [];
@@ -293,4 +294,5 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       <ProductRecommendations currentProductId={product.id} />
     </div>
   );
-}
+
+    
