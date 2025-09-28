@@ -49,10 +49,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     };
 
   useEffect(() => {
-    if (params.id) {
-        fetchProduct(params.id);
+    const id = params.id;
+    if (id) {
+        fetchProduct(id);
     }
-  }, [params.id]);
+  }, [params]);
   
   const productImages = useMemo(() => {
     if (!product) return [];
@@ -295,6 +296,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
       <ProductRecommendations currentProductId={product.id} />
     </div>
   );
+
+    
 
     
 
