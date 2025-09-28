@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     'أدوات رياضية', 'ملابس رياضية', 'أجهزة جيم منزلية', 'Protein Supplements', 'Sportswear Online', 'Fitness Equipment',
     'خصومات حصرية', 'الدفع عند الاستلام', 'شحن مجاني', 'تخفيضات اليوم', 'Best Price Online', 'Free Shipping', 'Cash on Delivery', 'Daily Deals',
   ],
-  icons: {
+   icons: {
     icon: '/favicon.png',
   },
 };
@@ -32,7 +32,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-body antialiased flex flex-col min-h-screen">
+      <body>
         <CartProvider>
             {children}
         </CartProvider>
