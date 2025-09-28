@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, Search, ShoppingCart } from "lucide-react";
@@ -84,6 +84,7 @@ export function Header() {
                     </Button>
                     </SheetTrigger>
                     <SheetContent side="right">
+                    <SheetTitle className="sr-only">قائمة التنقل</SheetTitle>
                     <div className="flex flex-col gap-6 p-4">
                         <Logo />
                         <nav className="flex flex-col gap-4">
