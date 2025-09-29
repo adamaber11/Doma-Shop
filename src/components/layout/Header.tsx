@@ -65,16 +65,6 @@ export function Header() {
                 ))}
             </nav>
             <div className="flex items-center gap-2 md:gap-4">
-                <form onSubmit={handleSearch} className="relative hidden md:block">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input 
-                      type="search" 
-                      placeholder="ابحث عن منتجات..." 
-                      className="pr-10 w-48 md:w-64"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                </form>
 
                 <UserAuth />
                 
@@ -110,16 +100,6 @@ export function Header() {
                         </SheetHeader>
                         <div className="flex-1 overflow-y-auto">
                              <div className="p-4">
-                                <form onSubmit={handleSearch} className="relative w-full mb-4">
-                                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                    <Input 
-                                      type="search" 
-                                      placeholder="ابحث عن منتجات..." 
-                                      className="pr-10"
-                                      value={searchTerm}
-                                      onChange={(e) => setSearchTerm(e.target.value)}
-                                    />
-                                </form>
                                 <Separator className="mb-4" />
                                 <MobileCategories />
                                 <Separator className="my-4" />
