@@ -12,8 +12,6 @@ import type { Product, HomepageSettings, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 
 export default function Home() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -52,11 +50,6 @@ export default function Home() {
   
   const heroTitle = homepageSettings?.heroTitle || "اكتشف أسلوبك";
   const heroSubtitle = homepageSettings?.heroSubtitle || "استكشف مجموعتنا المنسقة من أجود المنتجات. الجودة والأناقة تصل إلى عتبة داركم.";
-
-
-  const plugin = React.useRef(
-    Autoplay({ delay: 2000, stopOnInteraction: true })
-  );
 
   return (
     <>
@@ -139,37 +132,21 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="flex space-x-4">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="min-w-0 flex-shrink-0" style={{flexBasis: 'calc(25% - 12px)'}}>
-                    <Skeleton className="h-96 w-full" />
+             <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0">
+                    <Skeleton className="h-96 w-[180px]" />
                   </div>
                 ))}
              </div>
            ) : (
-             <Carousel
-                opts={{
-                    align: "start",
-                    loop: bestOfferProducts.length > 4,
-                    direction: 'rtl',
-                }}
-                plugins={[plugin.current]}
-                onMouseEnter={plugin.current.stop}
-                onMouseLeave={plugin.current.play}
-                className="w-full"
-                >
-                <CarouselContent className="flex gap-x-[5px]">
-                    {bestOfferProducts.map((product) => (
-                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
-                         <div className="h-full">
-                            <ProductCard product={product} />
-                        </div>
-                    </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 z-10" />
-                <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-10" />
-             </Carousel>
+             <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+                {bestOfferProducts.map((product) => (
+                <div key={product.id} className="flex-shrink-0">
+                    <ProductCard product={product} />
+                </div>
+                ))}
+            </div>
             )}
         </div>
       </section>
@@ -185,37 +162,21 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="flex space-x-4">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="min-w-0 flex-shrink-0" style={{flexBasis: 'calc(25% - 12px)'}}>
-                    <Skeleton className="h-96 w-full" />
+             <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0">
+                    <Skeleton className="h-96 w-[180px]" />
                   </div>
                 ))}
              </div>
            ) : (
-             <Carousel
-                opts={{
-                    align: "start",
-                    loop: bestSellingProducts.length > 4,
-                    direction: 'rtl',
-                }}
-                plugins={[plugin.current]}
-                onMouseEnter={plugin.current.stop}
-                onMouseLeave={plugin.current.play}
-                className="w-full"
-                >
-                <CarouselContent className="flex gap-x-[5px]">
-                    {bestSellingProducts.map((product) => (
-                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
-                         <div className="h-full">
-                            <ProductCard product={product} />
-                        </div>
-                    </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 z-10" />
-                <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-10" />
-             </Carousel>
+             <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+                {bestSellingProducts.map((product) => (
+                <div key={product.id} className="flex-shrink-0">
+                    <ProductCard product={product} />
+                </div>
+                ))}
+            </div>
             )}
         </div>
       </section>
@@ -231,40 +192,26 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="flex space-x-4">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="min-w-0 flex-shrink-0" style={{flexBasis: 'calc(25% - 12px)'}}>
-                    <Skeleton className="h-96 w-full" />
+             <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0">
+                    <Skeleton className="h-96 w-[180px]" />
                   </div>
                 ))}
              </div>
            ) : (
-             <Carousel
-                opts={{
-                    align: "start",
-                    loop: featuredProducts.length > 4,
-                    direction: 'rtl',
-                }}
-                plugins={[plugin.current]}
-                onMouseEnter={plugin.current.stop}
-                onMouseLeave={plugin.current.play}
-                className="w-full"
-                >
-                <CarouselContent className="flex gap-x-[5px]">
-                    {featuredProducts.map((product) => (
-                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
-                         <div className="h-full">
-                            <ProductCard product={product} />
-                        </div>
-                    </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 z-10" />
-                <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-10" />
-             </Carousel>
+             <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+                {featuredProducts.map((product) => (
+                <div key={product.id} className="flex-shrink-0">
+                    <ProductCard product={product} />
+                </div>
+                ))}
+            </div>
             )}
         </div>
       </section>
     </>
   );
 }
+
+    
