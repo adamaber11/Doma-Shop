@@ -98,40 +98,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold font-headline">تسوق حسب الفئة</h2>
-            <Button variant="ghost" asChild>
-              <Link href="/products" className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
-                عرض الكل <ArrowRight className="mr-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          {loading ? (
-            <div className="flex flex-wrap justify-center gap-8">
-              {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-16 w-16 rounded-full" />)}
-            </div>
-          ) : (
-            <div className="flex flex-wrap justify-center gap-8">
-              {categories.map((category) => (
-                <Link key={category.id} href={`/products?category=${category.id}`} className="group flex flex-col items-center gap-2 text-center w-16">
-                   <div className="relative h-16 w-16 rounded-full overflow-hidden border-2 border-transparent group-hover:border-primary group-hover:scale-105 transition-all">
-                        <Image
-                          src={category.imageUrl}
-                          alt={category.name}
-                          fill
-                          className="object-cover"
-                        />
-                    </div>
-                    <h3 className="font-semibold text-xs text-card-foreground group-hover:text-primary transition-colors">{category.name}</h3>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
       <section className="py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
           <Carousel

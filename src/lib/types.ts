@@ -32,8 +32,6 @@ export type Product = {
   description: string;
   price: number;
   salePrice?: number | null;
-  categoryId: string;
-  subcategoryId?: string; // New field
   stock: number;
   variants: ProductVariant[];
   sizes?: string[];
@@ -138,5 +136,3 @@ export type ShippingRate = {
     governorate: string;
     cost: number;
 };
-
-    

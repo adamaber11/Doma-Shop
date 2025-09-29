@@ -49,12 +49,9 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
         }
       } catch (error) {
         console.error("Failed to fetch recommendations:", error);
-        // Fallback to simple category-based recommendations
-        const currentProduct = allProducts.find(p => p.id === currentProductId);
-        if(currentProduct){
-            const fallbackRecs = allProducts.filter(p => p.categoryId === currentProduct.categoryId && p.id !== currentProductId).slice(0,4);
-            setRecommendations(fallbackRecs);
-        }
+        // Fallback to simple random recommendations
+        const fallbackRecs = allProducts.filter(p => p.id !== currentProductId).sort(() => 0.5 - Math.random()).slice(0,4);
+        setRecommendations(fallbackRecs);
       } finally {
         setLoading(false);
       }
