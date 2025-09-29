@@ -70,13 +70,13 @@ export default function Home() {
 
   return (
     <>
-      <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
+      <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] bg-black">
         {loading ? <Skeleton className="h-full w-full" /> : (
             <Image
                 src={heroImage}
                 alt="Hero image"
                 fill
-                className="object-cover"
+                className="object-contain"
                 priority
             />
         )}
