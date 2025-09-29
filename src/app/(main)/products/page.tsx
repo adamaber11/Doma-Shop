@@ -145,7 +145,7 @@ export default function ProductsPage() {
                   </form>
                 </div>
                  {loading ? (
-                    <div className="flex overflow-x-auto gap-[5px] pb-4">
+                    <div className="flex overflow-x-auto gap-[5px] pb-4 no-scrollbar">
                         {[...Array(12)].map((_, j) => (
                              <div key={j} className="flex-shrink-0">
                                 <Skeleton className="h-96 w-[180px] mx-auto" />
@@ -155,7 +155,7 @@ export default function ProductsPage() {
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="flex overflow-x-auto gap-4 pb-4">
+                        <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
                             {filteredProducts.map((product) => (
                                 <div key={product.id} className="flex-shrink-0">
                                   <ProductCard product={product} />
