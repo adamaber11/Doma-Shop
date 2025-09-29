@@ -109,6 +109,7 @@ export type Ad = {
   imageUrl: string;
   linkUrl: string;
   isActive: boolean;
+  description?: string;
 };
 
 export type ContactMessage = {

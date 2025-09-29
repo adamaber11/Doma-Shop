@@ -5,14 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShoppingBag } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 import React, { useEffect, useState } from "react";
 import { getProducts, getAds } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
@@ -20,6 +12,8 @@ import type { Product, HomepageSettings, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 export default function Home() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -62,10 +56,6 @@ export default function Home() {
 
   const plugin = React.useRef(
     Autoplay({ delay: 2000, stopOnInteraction: true })
-  );
-  
-  const bannerPlugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true })
   );
 
   return (
@@ -112,15 +102,18 @@ export default function Home() {
                 ))
             ) : bannerAds.length > 0 ? (
                 bannerAds.slice(0, 3).map((ad) => (
-                    <Link key={ad.id} href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group">
-                        <div className="relative aspect-video w-full rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
-                            <Image
-                                src={ad.imageUrl}
-                                alt="Advertisement"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
+                    <Link key={ad.id} href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                        <Image
+                            src={ad.imageUrl}
+                            alt={ad.description || "Advertisement"}
+                            fill
+                            className="object-cover"
+                        />
+                        {ad.description && (
+                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-4 text-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <p>{ad.description}</p>
+                            </div>
+                        )}
                     </Link>
                 ))
             ) : (

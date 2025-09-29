@@ -15,10 +15,12 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 
 const adSchema = z.object({
   imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
   linkUrl: z.string().url("يجب أن يكون رابط الانتقال صالحًا"),
+  description: z.string().optional(),
   isActive: z.boolean().default(true),
 });
 
@@ -31,6 +33,7 @@ export default function NewAdPage() {
     defaultValues: {
       imageUrl: "",
       linkUrl: "",
+      description: "",
       isActive: true,
     }
   });
@@ -81,6 +84,14 @@ export default function NewAdPage() {
                         <FormItem>
                             <FormLabel>رابط الانتقال عند النقر</FormLabel>
                             <FormControl><Input placeholder="https://example.com/product/123" {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    
+                    <FormField control={form.control} name="description" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>الوصف (اختياري)</FormLabel>
+                            <FormControl><Textarea placeholder="وصف قصير يظهر عند مرور الماوس..." {...field} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />

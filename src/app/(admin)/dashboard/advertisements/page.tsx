@@ -67,7 +67,7 @@ export default function DashboardAdsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px] hidden sm:table-cell">الصورة</TableHead>
-                <TableHead>الرابط</TableHead>
+                <TableHead>الوصف</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead><span className="sr-only">الإجراءات</span></TableHead>
               </TableRow>
@@ -90,7 +90,7 @@ export default function DashboardAdsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px] hidden sm:table-cell">الصورة</TableHead>
-                <TableHead>الرابط</TableHead>
+                <TableHead>الوصف</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead><span className="sr-only">الإجراءات</span></TableHead>
               </TableRow>
@@ -107,8 +107,8 @@ export default function DashboardAdsPage() {
                       width="128"
                     />
                   </TableCell>
-                  <TableCell className="font-medium max-w-xs truncate">
-                    <a href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">{ad.linkUrl}</a>
+                  <TableCell className="font-medium max-w-xs truncate" title={ad.description}>
+                    {ad.description || '-'}
                   </TableCell>
                   <TableCell>
                     <Badge variant={ad.isActive ? 'default' : 'secondary'}>{ad.isActive ? 'نشط' : 'غير نشط'}</Badge>

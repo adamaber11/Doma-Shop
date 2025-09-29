@@ -19,10 +19,12 @@ import { ArrowRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
+import { Textarea } from '@/components/ui/textarea';
 
 const adSchema = z.object({
   imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
   linkUrl: z.string().url("يجب أن يكون رابط الانتقال صالحًا"),
+  description: z.string().optional(),
   isActive: z.boolean().default(true),
 });
 
@@ -92,6 +94,7 @@ export default function EditAdPage() {
             <CardContent className="space-y-6">
                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
+                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-20 w-full' /></div>
                 <div className="space-y-2"><Skeleton className='h-24 w-full' /></div>
             </CardContent>
             <CardFooter className='justify-end'>
@@ -145,6 +148,14 @@ export default function EditAdPage() {
                         <FormItem>
                             <FormLabel>رابط الانتقال عند النقر</FormLabel>
                             <FormControl><Input {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    
+                    <FormField control={form.control} name="description" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>الوصف (اختياري)</FormLabel>
+                            <FormControl><Textarea placeholder="وصف قصير يظهر عند مرور الماوس..." {...field} value={field.value || ''} /></FormControl>
                             <FormMessage />
                         </FormItem>
                     )} />
