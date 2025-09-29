@@ -84,17 +84,9 @@ export default function Home() {
     <>
       {popupAd && (
             <Dialog open={isAdModalOpen} onOpenChange={setIsAdModalOpen}>
-                <DialogContent className="p-0 border-0 max-w-lg">
+                <DialogContent className="p-0 border-0 max-w-lg" hideCloseButton={!canCloseAd}>
                      <DialogHeader className="p-4 flex flex-row items-center justify-between">
                         <DialogTitle>عرض خاص!</DialogTitle>
-                         {canCloseAd && (
-                            <DialogClose asChild>
-                                <Button variant="ghost" size="icon">
-                                    <X className="h-5 w-5" />
-                                    <span className="sr-only">إغلاق</span>
-                                </Button>
-                            </DialogClose>
-                         )}
                     </DialogHeader>
                     <div className="relative group">
                          <Link href={popupAd.linkUrl} target="_blank" rel="noopener noreferrer" onClick={() => setIsAdModalOpen(false)}>
