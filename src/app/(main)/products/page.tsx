@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -14,6 +13,7 @@ import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -94,11 +94,13 @@ export default function ProductsPage() {
             </Dialog>
         )}
         
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8">
+        <div className="space-y-8">
             <aside>
                 <h2 className="text-2xl font-bold font-headline mb-4">الفئات</h2>
                 <ProductFilters />
             </aside>
+            
+            <Separator />
 
             <main>
                 <h1 className="text-3xl font-bold font-headline mb-6">منتجاتنا</h1>
@@ -129,4 +131,3 @@ export default function ProductsPage() {
       </div>
   );
 }
-
