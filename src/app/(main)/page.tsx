@@ -39,7 +39,7 @@ export default function Home() {
           getAds(),
           getProducts(),
         ]);
-        setCategories(fetchedCategories.slice(0, 8));
+        setCategories(fetchedCategories);
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
         setBestOfferProducts(allProducts.filter(p => p.isBestOffer));
