@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     'خصومات حصرية', 'الدفع عند الاستلام', 'شحن مجاني', 'تخفيضات اليوم', 'Best Price Online', 'Free Shipping', 'Cash on Delivery', 'Daily Deals',
   ],
    icons: {
-    icon: '/favicon.ico',
+    icon: 'https://res.cloudinary.com/doqltxyb2/image/upload/v1759015201/D_hm7dda.png',
   },
 };
 
