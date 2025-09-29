@@ -105,7 +105,7 @@ export default function ProductsPage() {
             <aside className="w-64 hidden md:block">
                 <ProductFilters />
             </aside>
-            <main className="flex-1">
+            <main className="flex-1 overflow-hidden">
                 <h1 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h1>
                  {loading ? (
                     <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
