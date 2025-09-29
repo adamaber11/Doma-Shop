@@ -145,7 +145,7 @@ export default function ProductsPage() {
                   </form>
                 </div>
                  {loading ? (
-                    <div className="flex flex-wrap gap-4">
+                    <div className="flex flex-wrap gap-4 justify-center">
                         {[...Array(12)].map((_, j) => (
                              <div key={j}>
                                 <Skeleton className="h-96 w-[180px]" />
@@ -155,7 +155,7 @@ export default function ProductsPage() {
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="flex flex-wrap gap-4">
+                        <div className="flex flex-wrap gap-4 justify-center">
                             {filteredProducts.map((product) => (
                                 <div key={product.id}>
                                   <ProductCard product={product} />
