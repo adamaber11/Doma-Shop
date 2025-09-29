@@ -127,7 +127,7 @@ export default function ProductsPage() {
         )}
         
         <div className="flex flex-col md:flex-row gap-8">
-            <aside className="hidden md:block md:w-64">
+            <aside className="md:block md:w-64 flex-shrink-0">
                 <ProductFilters />
             </aside>
             <main className="flex-1 overflow-hidden">
@@ -145,8 +145,8 @@ export default function ProductsPage() {
                   </form>
                 </div>
                  {loading ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {[...Array(8)].map((_, j) => (
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-1">
+                        {[...Array(12)].map((_, j) => (
                              <div key={j} className="flex-shrink-0">
                                 <Skeleton className="h-96 w-[180px] mx-auto" />
                             </div>
@@ -155,7 +155,7 @@ export default function ProductsPage() {
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1">
                             {filteredProducts.map((product) => (
                                 <div key={product.id} className="flex justify-center">
                                   <ProductCard product={product} />
