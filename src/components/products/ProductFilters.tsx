@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -19,6 +18,9 @@ export function ProductFilters() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const activeCategoryId = searchParams.get('category');
+  const activeSubcategoryId = searchParams.get('subcategory');
+
   useEffect(() => {
     const fetchCategories = async () => {
       setLoading(true);
@@ -34,23 +36,32 @@ export function ProductFilters() {
     fetchCategories();
   }, []);
   
-  const selectedCategory = searchParams.get('category');
-
-  const handleCategoryClick = (categoryId: string) => {
+  const handleMainCategoryClick = (categoryId: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (params.get('category') === categoryId) {
+      if (activeCategoryId === categoryId) {
+          // If the same main category is clicked, clear all filters
           params.delete('category');
           params.delete('subcategory');
       } else {
+          // If a new main category is clicked, set it and clear subcategory
           params.set('category', categoryId);
           params.delete('subcategory');
       }
       router.push(pathname + (params.toString() ? '?' + params.toString() : ''));
   }
 
+  const handleSubcategoryClick = (subcategoryId: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('subcategory', subcategoryId);
+      router.push(pathname + (params.toString() ? '?' + params.toString() : ''));
+  }
+
   const clearFilters = () => {
       router.push(pathname);
   }
+
+  const mainCategories = categories.filter(c => !c.parentId);
+  const selectedMainCategory = mainCategories.find(c => c.id === activeCategoryId);
 
   return (
     <div className="relative w-full">
@@ -70,22 +81,22 @@ export function ProductFilters() {
                     <Button
                         variant={'ghost'}
                         onClick={clearFilters}
-                        className={cn('text-sm', !selectedCategory && 'text-primary font-bold')}
+                        className={cn('text-sm', !activeCategoryId && 'text-primary font-bold')}
                     >
                         عرض الكل
                     </Button>
                 </div>
                 <div className="flex items-start gap-6 overflow-x-auto pb-4">
-                    {categories.map(category => (
+                    {mainCategories.map(category => (
                         <button 
                             key={category.id}
-                            onClick={() => handleCategoryClick(category.id)}
+                            onClick={() => handleMainCategoryClick(category.id)}
                             className={cn(
                                 'group flex flex-col items-center gap-2 text-center w-20 flex-shrink-0',
                             )}>
                                 <div className={cn(
                                     "relative h-16 w-16 rounded-full overflow-hidden border-2 transition-all group-hover:border-primary group-hover:scale-105",
-                                    (selectedCategory === category.id) 
+                                    (activeCategoryId === category.id) 
                                         ? 'border-primary' 
                                         : 'border-transparent'
                                 )}>
@@ -98,11 +109,28 @@ export function ProductFilters() {
                                 </div>
                                 <h3 className={cn(
                                     "font-semibold text-xs text-card-foreground transition-colors",
-                                    (selectedCategory === category.id) ? 'text-primary' : 'group-hover:text-primary'
+                                    (activeCategoryId === category.id) ? 'text-primary' : 'group-hover:text-primary'
                                 )}>{category.name}</h3>
                         </button>
                     ))}
                 </div>
+
+                {activeCategoryId && selectedMainCategory && selectedMainCategory.subcategories && selectedMainCategory.subcategories.length > 0 && (
+                    <div className="mt-6 pt-4 border-t">
+                        <h3 className="text-lg font-semibold mb-4 text-center">اختر فئة فرعية من {selectedMainCategory.name}</h3>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            {selectedMainCategory.subcategories.map(sub => (
+                                <Button
+                                    key={sub.id}
+                                    variant={activeSubcategoryId === sub.id ? 'default' : 'outline'}
+                                    onClick={() => handleSubcategoryClick(sub.id)}
+                                >
+                                    {sub.name}
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         )}
     </div>

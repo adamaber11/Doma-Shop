@@ -53,7 +53,7 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
     }
     
     if (!allCategories) {
-        const categorySnapshot = await getDocs(categoriesCollection);
+        const categorySnapshot = await getDocs(query(categoriesCollection, orderBy("name")));
         const categories = categorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
         // This logic is now handled in getCategories to build the hierarchy
         allCategories = categories;
@@ -188,25 +188,25 @@ export async function getCategories(forceRefresh: boolean = false): Promise<Cate
     const categoryMap = new Map<string, Category>();
     const rootCategories: Category[] = [];
 
-    // First pass: add all categories to map
+    // First pass: add all categories to map, initializing subcategories array
     categories.forEach(cat => {
         categoryMap.set(cat.id, { ...cat, subcategories: [] });
     });
 
     // Second pass: build hierarchy
     categories.forEach(cat => {
-        if (cat.parentId && categoryMap.has(cat.parentId)) {
-            const parent = categoryMap.get(cat.parentId)!;
-            parent.subcategories!.push({ id: cat.id, name: cat.name });
+        if (cat.parentId) {
+            const parent = categoryMap.get(cat.parentId);
+            if (parent) {
+                parent.subcategories!.push({ id: cat.id, name: cat.name });
+            }
         } else {
-            // It's a root category
             rootCategories.push(categoryMap.get(cat.id)!);
         }
     });
-    
-    // Return flat list for dashboard, hierarchy for frontend filtering
-    // For now, let's keep it flat as the new dashboard handles hierarchy.
-    return categories;
+
+    // Return the hierarchical structure for the frontend
+    return rootCategories;
 }
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
