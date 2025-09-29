@@ -202,11 +202,14 @@ export default function Home() {
                     loop: bestOfferProducts.length > 4,
                     direction: 'rtl',
                 }}
+                plugins={[plugin.current]}
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.play}
                 className="w-full"
                 >
                 <CarouselContent className="-m-[2.5px]">
                     {bestOfferProducts.map((product) => (
-                    <CarouselItem key={product.id} className="md:basis-1/3 lg:basis-1/5 p-[2.5px]">
+                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-[2.5px]">
                          <div className="h-full">
                             <ProductCard product={product} />
                         </div>
