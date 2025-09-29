@@ -89,28 +89,30 @@ export default function Home() {
               استمتع بصفقات الموسم مع خصومات رائعة وعروض استثنائية لفترة محدودة
             </p>
           </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
              {loading ? (
                 [...Array(3)].map((_, i) => (
-                    <div key={i}>
+                    <div key={i} className="flex-shrink-0 w-full md:w-1/3">
                         <Skeleton className="aspect-video w-full rounded-lg" />
                     </div>
                 ))
             ) : bannerAds.length > 0 ? (
                 bannerAds.slice(0, 3).map((ad) => (
-                    <Link key={ad.id} href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden">
-                        <Image
-                            src={ad.imageUrl}
-                            alt={ad.description || "Advertisement"}
-                            fill
-                            className="object-cover"
-                        />
-                        {ad.description && (
-                             <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-4 text-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <p>{ad.description}</p>
-                            </div>
-                        )}
-                    </Link>
+                     <div key={ad.id} className="flex-shrink-0 w-full md:w-1/3">
+                        <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden">
+                            <Image
+                                src={ad.imageUrl}
+                                alt={ad.description || "Advertisement"}
+                                fill
+                                className="object-cover"
+                            />
+                            {ad.description && (
+                                <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-4 text-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <p>{ad.description}</p>
+                                </div>
+                            )}
+                        </Link>
+                    </div>
                 ))
             ) : (
                 <div className="col-span-3 text-center py-10">
