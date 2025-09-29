@@ -7,8 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { getSocialMediaSettings } from "@/services/settings-service";
+import { addSubscriber } from "@/services/product-service";
 import type { SocialMediaSettings } from "@/lib/types";
 import { Skeleton } from "../ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
+import * as z from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -33,10 +39,19 @@ const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 )
 
+const newsletterSchema = z.object({
+  email: z.string().email("بريد إلكتروني غير صالح"),
+});
 
 export function Footer() {
   const [socialSettings, setSocialSettings] = useState<SocialMediaSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof newsletterSchema>>({
+    resolver: zodResolver(newsletterSchema),
+    defaultValues: { email: "" },
+  });
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -53,6 +68,31 @@ export function Footer() {
     fetchSettings();
   }, []);
 
+  const onNewsletterSubmit = async (values: z.infer<typeof newsletterSchema>) => {
+    try {
+      const result = await addSubscriber(values.email);
+      if ('error' in result) {
+        toast({
+            title: "خطأ",
+            description: "هذا البريد الإلكتروني مشترك بالفعل.",
+            variant: "destructive",
+        });
+      } else {
+         toast({
+            title: "تم الاشتراك بنجاح!",
+            description: "شكرًا لانضمامك إلى نشرتنا الإخبارية.",
+        });
+        form.reset();
+      }
+    } catch (error) {
+        toast({
+            title: "خطأ",
+            description: "فشل الاشتراك. يرجى المحاولة مرة أخرى.",
+            variant: "destructive",
+        });
+    }
+  }
+
   return (
     <footer className="bg-black text-white">
       <div className="container mx-auto px-4 py-12">
@@ -64,10 +104,25 @@ export function Footer() {
             </p>
             <div className="mt-6">
               <h3 className="font-semibold mb-2">اشترك في نشرتنا الإخبارية</h3>
-              <form className="flex gap-2">
-                <Input type="email" placeholder="عنوان بريدك الإلكتروني" className="bg-gray-800 border-gray-700 text-white"/>
-                <Button type="submit">اشترك</Button>
-              </form>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onNewsletterSubmit)} className="flex gap-2">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input type="email" placeholder="عنوان بريدك الإلكتروني" className="bg-gray-800 border-gray-700 text-white" {...field} />
+                        </FormControl>
+                        <FormMessage className="text-red-400 text-xs mt-1" />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" disabled={form.formState.isSubmitting}>
+                    {form.formState.isSubmitting ? '...' : 'اشترك'}
+                  </Button>
+                </form>
+              </Form>
             </div>
           </div>
           <div className="col-span-1">
@@ -97,7 +152,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} دوما. جميع الحقوق محفوظة.</p>
+          <p className="text-sm text-gray-400">&copy; {new Date().getFullYear()} Doma Online Shop. جميع الحقوق محفوظة.</p>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
              {loading ? (
                 <div className="flex items-center gap-4">

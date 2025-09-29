@@ -139,3 +139,9 @@ export type ShippingRate = {
     governorate: string;
     cost: number;
 };
+
+export type Subscriber = {
+    id: string;
+    email: string;
+    subscribedAt: Date;
+};

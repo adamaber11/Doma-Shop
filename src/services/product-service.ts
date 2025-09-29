@@ -2,7 +2,7 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category, Review, Ad, ContactMessage, Order, Customer } from "@/lib/types";
+import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber } from "@/lib/types";
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where } from "firebase/firestore";
 
 const productsCollection = collection(db, 'products');
@@ -12,6 +12,8 @@ const popupAdsCollection = collection(db, 'popupAds');
 const messagesCollection = collection(db, 'contactMessages');
 const ordersCollection = collection(db, 'orders');
 const customersCollection = collection(db, 'customers');
+const subscribersCollection = collection(db, 'subscribers');
+
 
 // Cache variables
 let allProducts: Product[] | null = null;
@@ -21,6 +23,7 @@ let allPopupAds: Ad[] | null = null;
 let allMessages: ContactMessage[] | null = null;
 let allOrders: Order[] | null = null;
 let allCustomers: Customer[] | null = null;
+let allSubscribers: Subscriber[] | null = null;
 
 let lastFetchTime: number = 0;
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
@@ -35,6 +38,7 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         allMessages = null;
         allOrders = null;
         allCustomers = null;
+        allSubscribers = null;
         console.log('Cache cleared, fetching new data...');
     }
 
@@ -92,6 +96,12 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
         const q = query(customersCollection, orderBy("joinedAt", "desc"));
         const snapshot = await getDocs(q);
         allCustomers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), joinedAt: doc.data().joinedAt.toDate() } as Customer));
+    }
+    
+    if (!allSubscribers) {
+        const q = query(subscribersCollection, orderBy("subscribedAt", "desc"));
+        const snapshot = await getDocs(q);
+        allSubscribers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), subscribedAt: doc.data().subscribedAt.toDate() } as Subscriber));
     }
 
 
@@ -440,6 +450,40 @@ export async function getCustomers(forceRefresh: boolean = false): Promise<Custo
     await fetchDataIfNeeded(forceRefresh);
     return allCustomers || [];
 }
+
+// Subscriber Functions
+export async function getSubscribers(forceRefresh: boolean = false): Promise<Subscriber[]> {
+    await fetchDataIfNeeded(forceRefresh);
+    return allSubscribers || [];
+}
+
+export async function addSubscriber(email: string): Promise<Subscriber | { error: string, code: string }> {
+    // Check if email already exists
+    const q = query(subscribersCollection, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+        return { error: "This email is already subscribed.", code: "already-exists" };
+    }
+
+    const subscriberData = {
+        email,
+        subscribedAt: Timestamp.now()
+    };
+    const docRef = await addDoc(subscribersCollection, subscriberData);
+    await fetchDataIfNeeded(true);
+    const newSubscriber = { id: docRef.id, ...subscriberData, subscribedAt: subscriberData.subscribedAt.toDate() };
+    if (allSubscribers) {
+        allSubscribers.unshift(newSubscriber);
+    }
+    return newSubscriber;
+}
+
+export async function deleteSubscriber(subscriberId: string): Promise<void> {
+    const subscriberRef = doc(db, 'subscribers', subscriberId);
+    await deleteDoc(subscriberRef);
+    await fetchDataIfNeeded(true);
+}
+
 
 // Helper to remove a field from a document
 import { deleteField } from 'firebase/firestore';
