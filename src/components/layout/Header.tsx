@@ -12,10 +12,10 @@ import { CartSheetContent } from "@/components/cart/CartSheetContent";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UserAuth } from "./UserAuth";
+import { CategoriesMenu } from "./CategoriesMenu";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
-  { href: "/products", label: "المنتجات" },
   { href: "/offers", label: "العروض" },
   { href: "/about", label: "من نحن" },
   { href: "/contact", label: "اتصل بنا" },
@@ -49,6 +49,7 @@ export function Header() {
                     {label}
                 </Link>
                 ))}
+                 <CategoriesMenu />
             </nav>
             <div className="flex items-center gap-2 md:gap-4">
                 {!isHomePage && (

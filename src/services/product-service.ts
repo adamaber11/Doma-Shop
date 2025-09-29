@@ -181,9 +181,13 @@ export async function addReview(productId: string, review: Omit<Review, 'id' | '
 }
 
 // Category Functions
-export async function getCategories(forceRefresh: boolean = false): Promise<Category[]> {
+export async function getCategories(forceRefresh: boolean = false, flat: boolean = false): Promise<Category[]> {
     await fetchDataIfNeeded(forceRefresh);
     const categories = allCategories || [];
+
+    if (flat) {
+        return categories;
+    }
 
     const categoryMap = new Map<string, Category>();
     const rootCategories: Category[] = [];
@@ -439,5 +443,3 @@ export async function getCustomers(forceRefresh: boolean = false): Promise<Custo
 
 // Helper to remove a field from a document
 import { deleteField } from 'firebase/firestore';
-
-    
