@@ -24,7 +24,7 @@ export function OfferProductCard({ product }: OfferProductCardProps) {
     : 0;
 
   return (
-    <div className="bg-white text-black h-full flex flex-col max-w-[180px] mx-auto">
+    <div className="bg-white text-black h-full flex flex-col max-w-[180px] mx-auto border-2 border-transparent rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-primary">
       <Link href={`/products/${product.id}`} className="flex flex-col h-full">
           <div className="relative w-full aspect-[4/5] bg-white p-4">
               <Image
