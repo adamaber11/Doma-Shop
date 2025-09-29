@@ -109,9 +109,9 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-                 <div className="grid grid-cols-1 md:grid-cols-1 gap-4 items-start">
-                     <Skeleton className="aspect-square w-full rounded-lg order-1" />
-                     <div className="flex flex-row md:flex-col gap-2 justify-center order-2 md:order-first">
+                 <div className="grid grid-cols-1 gap-4 items-start">
+                     <Skeleton className="aspect-square w-full rounded-lg" />
+                     <div className="flex flex-row gap-2 justify-center">
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
                         <Skeleton className="h-20 w-20 rounded-md" />
@@ -148,38 +148,36 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-        <div>
-            <div className="grid grid-cols-1 md:grid-cols-[80px_1fr] gap-4 items-start">
-              <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto justify-start md:justify-center order-2 md:order-first">
-                  {productImages.length > 1 && productImages.map((imageUrl, index) => (
-                    <button
-                      key={index}
-                      className={cn(
-                          "relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all",
-                          index === activeImageIndex ? 'border-primary' : 'border-transparent'
-                      )}
-                      onClick={() => setActiveImageIndex(index)}
-                    >
-                      <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
-                    </button>
-                  ))}
-              </div>
-              <div className="aspect-square relative rounded-lg overflow-hidden border order-1 md:order-last">
-                <Image
-                  src={productImages[activeImageIndex]}
-                  alt={product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-              </div>
+        <div className="grid grid-cols-1 gap-4 items-start">
+            <div className="aspect-square relative rounded-lg overflow-hidden border">
+              <Image
+                src={productImages[activeImageIndex]}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+             <div className="flex flex-row gap-2 overflow-x-auto justify-start">
+                {productImages.length > 1 && productImages.map((imageUrl, index) => (
+                  <button
+                    key={index}
+                    className={cn(
+                        "relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border-2 transition-all",
+                        index === activeImageIndex ? 'border-primary' : 'border-transparent'
+                    )}
+                    onClick={() => setActiveImageIndex(index)}
+                  >
+                    <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
+                  </button>
+                ))}
             </div>
         </div>
 
 
         <div className="flex flex-col">
            <div className="flex items-start justify-between gap-4 mb-2">
-                <h1 className="text-3xl lg:text-4xl font-bold font-headline">{product.name}</h1>
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold font-headline">{product.name}</h1>
                 <Button variant="ghost" size="icon" onClick={handleCopyLink} aria-label="نسخ رابط المنتج">
                     <LinkIcon className="h-6 w-6" />
                 </Button>
@@ -188,11 +186,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
            <div className="flex items-center gap-4 mb-2">
               {hasSale ? (
                   <>
-                      <p className="text-3xl font-semibold text-primary">{formatCurrency(product.salePrice!)}</p>
-                      <p className="text-xl text-red-500 line-through">{formatCurrency(product.price)}</p>
+                      <p className="text-2xl md:text-3xl font-semibold text-primary">{formatCurrency(product.salePrice!)}</p>
+                      <p className="text-lg md:text-xl text-red-500 line-through">{formatCurrency(product.price)}</p>
                   </>
               ) : (
-                  <p className="text-3xl font-semibold text-primary">{formatCurrency(product.price)}</p>
+                  <p className="text-2xl md:text-3xl font-semibold text-primary">{formatCurrency(product.price)}</p>
               )}
           </div>
 
@@ -210,7 +208,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <p className="text-muted-foreground mb-6 leading-relaxed">{product.description}</p>
           
           <div className="mt-6 border rounded-lg p-4 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {features.map((feature, index) => (
                       <div key={index} className="flex items-center gap-3">
                           <feature.icon className="h-8 w-8 text-muted-foreground" />
@@ -301,6 +299,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
+    
+
     
 
     
