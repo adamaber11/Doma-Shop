@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -105,19 +106,19 @@ export default function ProductsPage() {
             <main>
                 <h1 className="text-3xl font-bold font-headline mb-6">منتجاتنا</h1>
                 {loading ? (
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
+                 <div className="flex overflow-x-auto gap-[5px] pb-4">
                     {[...Array(9)].map((_, i) => (
-                    <div key={i} className="w-[180px] mx-auto">
-                        <Skeleton className="w-full h-[240px]" />
-                        <Skeleton className="h-5 w-3/4 mt-2" />
-                        <Skeleton className="h-5 w-1/4 mt-1" />
-                    </div>
+                      <div key={i} className="flex-shrink-0">
+                         <Skeleton className="w-[180px] h-[240px]" />
+                      </div>
                     ))}
                 </div>
                 ) : filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
+                <div className="flex overflow-x-auto gap-[5px] pb-4">
                     {filteredProducts.map((product) => (
-                        <ProductCard key={product.id} product={product} />
+                        <div key={product.id} className="flex-shrink-0">
+                           <ProductCard product={product} />
+                        </div>
                     ))}
                 </div>
                 ) : (
