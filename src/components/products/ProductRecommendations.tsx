@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -88,9 +89,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
       <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
         {recommendations.map(product => (
-          <div key={product.id} className="w-[180px] mx-auto">
-            <ProductCard product={product} />
-          </div>
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
     </div>

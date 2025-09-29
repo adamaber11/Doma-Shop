@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -50,9 +51,7 @@ export default function OffersPage() {
           ) : offerProducts.length > 0 ? (
             <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
               {offerProducts.map(product => (
-                <div key={product.id} className="w-[180px] mx-auto">
-                    <OfferProductCard product={product} />
-                </div>
+                <OfferProductCard key={product.id} product={product} />
               ))}
             </div>
           ) : (

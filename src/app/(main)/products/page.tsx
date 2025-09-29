@@ -115,9 +115,7 @@ export default function ProductsPage() {
                 ) : filteredProducts.length > 0 ? (
                 <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
                     {filteredProducts.map((product) => (
-                        <div key={product.id} className="w-[180px] mx-auto">
-                            <ProductCard product={product} />
-                        </div>
+                        <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
                 ) : (
@@ -131,3 +129,4 @@ export default function ProductsPage() {
       </div>
   );
 }
+
