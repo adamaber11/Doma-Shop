@@ -70,34 +70,31 @@ export default function Home() {
 
   return (
     <>
-      <section className="bg-muted py-12 md:py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-2 items-center gap-8">
-            <div className="text-center md:text-right order-2 md:order-1">
-              <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4">
-                {heroTitle}
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto md:mx-0">
-                {heroSubtitle}
-              </p>
-              <Button asChild size="lg">
-                <Link href="/products">
-                  تسوق الآن <ShoppingBag className="mr-2 h-5 w-5" />
-                </Link>
-              </Button>
-            </div>
-             <div className="relative w-full aspect-square md:aspect-auto md:h-[500px] order-1 md:order-2">
-                {loading ? <Skeleton className="h-full w-full" /> : (
-                    <Image
-                        src={heroImage}
-                        alt="Hero image"
-                        fill
-                        className="object-contain"
-                        priority
-                    />
-                )}
-            </div>
-          </div>
+      <section className="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white">
+        {loading ? (
+            <Skeleton className="absolute inset-0" />
+        ) : (
+          <Image
+            src={heroImage}
+            alt="Hero background"
+            fill
+            className="object-cover"
+            priority
+          />
+        )}
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative container mx-auto px-4">
+          <h1 className="text-4xl md:text-6xl font-bold font-headline mb-4 text-shadow-md">
+            {heroTitle}
+          </h1>
+          <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-2xl mx-auto text-shadow">
+            {heroSubtitle}
+          </p>
+          <Button asChild size="lg">
+            <Link href="/products">
+              تسوق الآن <ShoppingBag className="mr-2 h-5 w-5" />
+            </Link>
+          </Button>
         </div>
       </section>
 
