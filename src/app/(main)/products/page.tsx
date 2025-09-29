@@ -26,7 +26,6 @@ export default function ProductsPage() {
 
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
-  const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
 
 
   useEffect(() => {
@@ -40,7 +39,6 @@ export default function ProductsPage() {
         setProducts(fetchedProducts);
         setFeaturedProducts(fetchedProducts.filter(p => p.isFeatured));
         setBestOfferProducts(fetchedProducts.filter(p => p.isBestOffer));
-        setBestSellingProducts(fetchedProducts.filter(p => p.isBestSeller));
 
         const activeAds = fetchedAds.filter(ad => ad.isActive);
         setPopupAds(activeAds);
@@ -102,7 +100,7 @@ export default function ProductsPage() {
             
             {loading ? (
                 <div className="space-y-12">
-                    {[...Array(3)].map((_, i) => (
+                    {[...Array(2)].map((_, i) => (
                         <div key={i}>
                             <Skeleton className="h-8 w-48 mb-6" />
                             <div className="flex overflow-x-auto gap-[5px] pb-4">
@@ -185,3 +183,5 @@ export default function ProductsPage() {
       </div>
   );
 }
+
+    

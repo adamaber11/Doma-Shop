@@ -28,6 +28,7 @@ export default function Home() {
   const [bannerAds, setBannerAds] = useState<Ad[]>([]);
   const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
   const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
 
   useEffect(() => {
@@ -42,6 +43,7 @@ export default function Home() {
         setBannerAds(ads.filter(ad => ad.isActive));
         setBestOfferProducts(allProducts.filter(p => p.isBestOffer));
         setBestSellingProducts(allProducts.filter(p => p.isBestSeller));
+        setFeaturedProducts(allProducts.filter(p => p.isFeatured));
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -233,6 +235,54 @@ export default function Home() {
             )}
         </div>
       </section>
+
+      <section className="py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold font-headline">المنتجات المميزة</h2>
+             <Button variant="ghost" asChild>
+                <Link href="/products?filter=featured" className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
+                    عرض الكل <ArrowRight className="mr-2 h-4 w-4" />
+                </Link>
+            </Button>
+          </div>
+           {loading ? (
+             <div className="flex space-x-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="min-w-0 flex-shrink-0" style={{flexBasis: 'calc(25% - 12px)'}}>
+                    <Skeleton className="h-96 w-full" />
+                  </div>
+                ))}
+             </div>
+           ) : (
+             <Carousel
+                opts={{
+                    align: "start",
+                    loop: featuredProducts.length > 4,
+                    direction: 'rtl',
+                }}
+                plugins={[plugin.current]}
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.play}
+                className="w-full"
+                >
+                <CarouselContent className="flex gap-x-[5px]">
+                    {featuredProducts.map((product) => (
+                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
+                         <div className="h-full">
+                            <ProductCard product={product} />
+                        </div>
+                    </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 z-10" />
+                <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-10" />
+             </Carousel>
+            )}
+        </div>
+      </section>
     </>
   );
 }
+
+    
