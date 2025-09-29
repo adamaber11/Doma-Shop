@@ -14,7 +14,6 @@ import { cn } from "@/lib/utils";
 import { UserAuth } from "./UserAuth";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
-import { CategoriesMenu } from "./CategoriesMenu";
 import { MobileCategories } from "./MobileCategories";
 
 const navLinks = [
@@ -97,7 +96,12 @@ export function Header() {
                             </div>
                         </SheetHeader>
                         <div className="flex-1 overflow-y-auto">
-                            <nav className="flex flex-col gap-1 p-4">
+                             <div className="p-4">
+                                <Separator className="mb-4" />
+                                <MobileCategories />
+                                <Separator className="my-4" />
+                             </div>
+                            <nav className="flex flex-col gap-1 p-4 pt-0">
                                 {navLinks.map(({ href, label }) => (
                                     <SheetClose key={href} asChild>
                                         <Link href={href} className="text-lg font-medium py-2 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
