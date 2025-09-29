@@ -1,9 +1,15 @@
 
 
+export type SubCategory = {
+  id: string;
+  name: string;
+};
+
 export type Category = {
   id: string;
   name: string;
   imageUrl: string;
+  subcategories?: SubCategory[];
 };
 
 export type Review = {
@@ -26,6 +32,7 @@ export type Product = {
   price: number;
   salePrice?: number | null;
   categoryId: string;
+  subcategoryId?: string; // New field
   stock: number;
   variants: ProductVariant[];
   sizes?: string[];

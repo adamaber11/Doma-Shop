@@ -91,9 +91,13 @@ export default function ProductsPage() {
   const filteredProducts = useMemo(() => {
     let tempProducts = [...products];
     const category = searchParams.get('category');
+    const subcategory = searchParams.get('subcategory');
 
     if (category) {
       tempProducts = tempProducts.filter(p => p.categoryId === category);
+    }
+    if (subcategory) {
+        tempProducts = tempProducts.filter(p => p.subcategoryId === subcategory);
     }
     
     return tempProducts;
@@ -156,7 +160,7 @@ export default function ProductsPage() {
                 </div>
             ) : (
                 <>
-                    {featuredProducts.length > 0 && !searchParams.get('category') && (
+                    {featuredProducts.length > 0 && !searchParams.get('category') && !searchParams.get('subcategory') && (
                         <section>
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-3xl font-bold font-headline">المنتجات المميزة</h2>
@@ -175,7 +179,7 @@ export default function ProductsPage() {
                         </section>
                     )}
 
-                    {bestOfferProducts.length > 0 && !searchParams.get('category') && (
+                    {bestOfferProducts.length > 0 && !searchParams.get('category') && !searchParams.get('subcategory') && (
                          <section>
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-3xl font-bold font-headline">أفضل العروض</h2>
@@ -217,7 +221,7 @@ export default function ProductsPage() {
                         )}
                     </main>
 
-                    {!searchParams.get('category') && (
+                    {!searchParams.get('category') && !searchParams.get('subcategory') && (
                         <div className="space-y-12 mt-12">
                              <Separator />
                              <CategorySection title="الإلكترونيات" products={products} categoryId="electronics" />
@@ -236,4 +240,3 @@ export default function ProductsPage() {
       </div>
   );
 }
-

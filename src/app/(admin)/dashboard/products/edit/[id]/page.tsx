@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useRouter, useParams } from 'next/navigation';
@@ -6,7 +7,7 @@ import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { updateProduct, getProductById, getCategories } from '@/services/product-service';
-import type { Category, Product } from '@/lib/types';
+import type { Category, Product, SubCategory } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -31,6 +32,7 @@ const productSchema = z.object({
   price: z.coerce.number().min(0.01, "السعر مطلوب"),
   salePrice: z.coerce.number().optional().nullable(),
   categoryId: z.string({ required_error: "الفئة مطلوبة" }),
+  subcategoryId: z.string().optional(),
   stock: z.coerce.number().min(0, "المخزون مطلوب"),
   variants: z.array(variantSchema).min(1, "متغير واحد على الأقل مطلوب (لون وصور)"),
   isFeatured: z.boolean().default(false),
@@ -52,6 +54,7 @@ export default function EditProductPage() {
 
   const { toast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<SubCategory[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -69,6 +72,19 @@ export default function EditProductPage() {
   });
   
   const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({ control: form.control, name: "sizes" });
+
+  const selectedCategoryId = form.watch('categoryId');
+
+  useEffect(() => {
+    if (selectedCategoryId) {
+      const selectedCategory = categories.find(c => c.id === selectedCategoryId);
+      setSubcategories(selectedCategory?.subcategories || []);
+      // Don't reset subcategoryId when editing if it already exists
+    } else {
+      setSubcategories([]);
+    }
+  }, [selectedCategoryId, categories]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,6 +104,7 @@ export default function EditProductPage() {
               price: fetchedProduct.price,
               salePrice: fetchedProduct.salePrice || null,
               categoryId: fetchedProduct.categoryId,
+              subcategoryId: fetchedProduct.subcategoryId || undefined,
               stock: fetchedProduct.stock,
               variants: (fetchedProduct.variants || []).map(v => ({
                   color: v.color,
@@ -348,24 +365,47 @@ export default function EditProductPage() {
                     </div>
 
 
-                    <FormField control={form.control} name="categoryId" render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>الفئة</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="اختر فئة" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            {categories.map(cat => (
-                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                            ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                    </FormItem>
-                    )} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField control={form.control} name="categoryId" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>الفئة الرئيسية</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="اختر فئة رئيسية" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                {categories.map(cat => (
+                                    <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                                ))}
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                        </FormItem>
+                        )} />
+                        
+                        {subcategories.length > 0 && (
+                            <FormField control={form.control} name="subcategoryId" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>الفئة الفرعية</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="اختر فئة فرعية" />
+                                    </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                    {subcategories.map(sub => (
+                                        <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                                    ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                            )} />
+                        )}
+                    </div>
 
                      <div className="space-y-4">
                         <FormField

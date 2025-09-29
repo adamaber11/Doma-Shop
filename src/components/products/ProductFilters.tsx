@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -10,6 +11,14 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from '../ui/button';
+import { ChevronDown } from 'lucide-react';
 
 export function ProductFilters() {
   const router = useRouter();
@@ -36,69 +45,78 @@ export function ProductFilters() {
 
   const createQueryString = (name: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (value === 'all') {
-      params.delete(name);
-    } else {
-      params.set(name, value);
+    params.set(name, value);
+    if(name === 'category') {
+        params.delete('subcategory');
     }
     return params.toString();
   };
   
-  const selectedCategory = searchParams.get('category') || 'all';
+  const selectedCategory = searchParams.get('category');
+  const selectedSubCategory = searchParams.get('subcategory');
+
+  const handleFilterClick = (name: string, value: string) => {
+      router.push(pathname + '?' + createQueryString(name, value));
+  }
 
   return (
     <div className="relative">
         {loading ? (
-           <div className="flex space-x-4">
-              {[...Array(8)].map((_, i) => (
-                  <div key={i} className="flex flex-col items-center gap-2 w-16 flex-shrink-0">
-                      <Skeleton className="h-16 w-16 rounded-full" />
-                      <Skeleton className="h-4 w-12" />
-                  </div>
+           <div className="flex items-center gap-4">
+              {[...Array(5)].map((_, i) => (
+                  <Skeleton key={i} className="h-10 w-28" />
               ))}
             </div>
         ) : (
             <ScrollArea className="w-full whitespace-nowrap">
-                <div className="flex w-max space-x-4 pb-4">
-                    <Link 
-                        href={pathname + '?' + createQueryString('category', 'all')} 
-                        className={cn(
-                            "group flex flex-col items-center gap-2 text-center w-16",
-                        )}>
-                    <div className={cn(
-                        "relative h-16 w-16 rounded-full overflow-hidden border-2 flex items-center justify-center bg-muted transition-all",
-                        selectedCategory === 'all' ? 'border-primary scale-105' : 'border-transparent group-hover:border-primary'
-                    )}>
-                            <span className='font-bold text-lg'>الكل</span>
-                        </div>
-                        <h3 className={cn(
-                            "font-semibold text-xs text-card-foreground transition-colors",
-                            selectedCategory === 'all' ? 'text-primary' : 'group-hover:text-primary'
-                        )}>الكل</h3>
-                    </Link>
-                    {categories.map(category => (
-                        <Link 
-                            key={category.id} 
-                            href={pathname + '?' + createQueryString('category', category.id)}
-                            className="group flex flex-col items-center gap-2 text-center w-16"
-                        >
-                        <div className={cn(
-                            "relative h-16 w-16 rounded-full overflow-hidden border-2 transition-all",
-                            selectedCategory === category.id ? 'border-primary scale-105' : 'border-transparent group-hover:border-primary'
-                            )}>
-                                <Image
-                                src={category.imageUrl}
-                                alt={category.name}
-                                fill
-                                className="object-cover"
-                                />
-                            </div>
-                            <h3 className={cn(
-                                "font-semibold text-xs text-card-foreground transition-colors",
-                                selectedCategory === category.id ? 'text-primary' : 'group-hover:text-primary'
-                            )}>{category.name}</h3>
-                        </Link>
-                    ))}
+                <div className="flex w-max items-center gap-2 pb-4">
+                    <Button
+                        variant={!selectedCategory ? 'default' : 'outline'}
+                        onClick={() => router.push(pathname)}
+                    >
+                        الكل
+                    </Button>
+                    {categories.map(category => {
+                        if (!category.subcategories || category.subcategories.length === 0) {
+                            return (
+                                <Button
+                                    key={category.id}
+                                    variant={selectedCategory === category.id ? 'default' : 'outline'}
+                                    onClick={() => handleFilterClick('category', category.id)}
+                                >
+                                    {category.name}
+                                </Button>
+                            )
+                        }
+
+                        return (
+                            <DropdownMenu key={category.id}>
+                                <DropdownMenuTrigger asChild>
+                                    <Button 
+                                        variant={selectedCategory === category.id ? 'default' : 'outline'}
+                                        className="flex items-center gap-2"
+                                    >
+                                        {category.name}
+                                        <ChevronDown className="h-4 w-4" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                    <DropdownMenuItem onClick={() => handleFilterClick('category', category.id)}>
+                                        كل {category.name}
+                                    </DropdownMenuItem>
+                                    {category.subcategories.map(sub => (
+                                        <DropdownMenuItem 
+                                            key={sub.id} 
+                                            onClick={() => handleFilterClick('subcategory', sub.id)}
+                                            className={cn(selectedSubCategory === sub.id && 'bg-accent')}
+                                        >
+                                            {sub.name}
+                                        </DropdownMenuItem>
+                                    ))}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )
+                    })}
                 </div>
                 <ScrollBar orientation="horizontal" />
             </ScrollArea>
