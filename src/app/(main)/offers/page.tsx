@@ -38,7 +38,7 @@ export default function OffersPage() {
         </div>
         <main>
           {loading ? (
-             <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 justify-center">
+             <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
               {[...Array(8)].map((_, i) => (
                  <div key={i} className="w-[180px] mx-auto">
                     <Skeleton className="h-64 w-full" />
@@ -48,7 +48,7 @@ export default function OffersPage() {
               ))}
             </div>
           ) : offerProducts.length > 0 ? (
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 justify-center">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
               {offerProducts.map(product => (
                 <div key={product.id} className="w-[180px] mx-auto">
                     <OfferProductCard product={product} />

@@ -66,7 +66,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
     return (
       <div>
         <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 justify-center">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
           {[...Array(4)].map((_, i) => (
              <div key={i} className="w-[180px] mx-auto">
                 <Skeleton className="w-full h-[240px]" />
@@ -86,7 +86,7 @@ export function ProductRecommendations({ currentProductId }: ProductRecommendati
   return (
     <div>
       <h2 className="text-2xl font-bold mb-6 font-headline">قد يعجبك ايضا</h2>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-2 justify-center">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-[5px] justify-center">
         {recommendations.map(product => (
           <div key={product.id} className="w-[180px] mx-auto">
             <ProductCard product={product} />
