@@ -52,7 +52,7 @@ export function MobileCategories() {
   if (loading) {
     return (
       <div className="space-y-2">
-        {[...Array(3)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <Skeleton key={i} className="h-10 w-full" />
         ))}
       </div>
@@ -60,51 +60,42 @@ export function MobileCategories() {
   }
 
   return (
-    <Accordion type="single" collapsible className="w-full">
-      <AccordionItem value="categories">
-        <AccordionTrigger className="text-lg font-medium py-2 hover:no-underline">
-          الفئات
-        </AccordionTrigger>
-        <AccordionContent>
-          <Accordion type="multiple" className="w-full pr-4">
-            {categories.map(category => (
-              <AccordionItem key={category.id} value={category.id}>
-                <AccordionTrigger 
-                  className="py-2 text-base hover:no-underline justify-start gap-2"
-                >
-                   <SheetClose asChild>
-                     <Link href={`/products?category=${category.id}`} className='flex-1 text-right'>{category.name}</Link>
-                   </SheetClose>
-                </AccordionTrigger>
-                {category.subcategories && category.subcategories.length > 0 && (
-                  <AccordionContent>
-                    <ul className="space-y-1 pr-4">
-                      {category.subcategories.map(sub => (
-                        <li key={sub.id}>
-                           <SheetClose asChild>
-                                <Link
-                                    href={`/products?category=${category.id}&subcategory=${sub.id}`}
-                                    className="flex items-center gap-3 w-full text-right text-muted-foreground hover:text-primary transition-colors py-2 rounded-md"
-                                >
-                                    <Image src={sub.imageUrl} alt={sub.name} width={32} height={32} className="rounded-md object-cover" />
-                                    <span>{sub.name}</span>
-                                </Link>
-                           </SheetClose>
-                        </li>
-                      ))}
-                    </ul>
-                  </AccordionContent>
-                )}
-              </AccordionItem>
-            ))}
+    <Accordion type="multiple" className="w-full">
+      {categories.map(category => (
+        <AccordionItem key={category.id} value={category.id}>
+          <AccordionTrigger 
+            className="py-2 text-lg font-medium hover:no-underline justify-between w-full"
+          >
              <SheetClose asChild>
-                <Link href="/products" className="py-2 text-base font-medium flex justify-between items-center w-full">
-                    جميع المنتجات
-                </Link>
+               <Link href={`/products?category=${category.id}`} className='flex-1 text-right'>{category.name}</Link>
              </SheetClose>
-          </Accordion>
-        </AccordionContent>
-      </AccordionItem>
+          </AccordionTrigger>
+          {category.subcategories && category.subcategories.length > 0 && (
+            <AccordionContent>
+              <ul className="space-y-1 pr-4">
+                {category.subcategories.map(sub => (
+                  <li key={sub.id}>
+                     <SheetClose asChild>
+                          <Link
+                              href={`/products?category=${category.id}&subcategory=${sub.id}`}
+                              className="flex items-center gap-3 w-full text-right text-muted-foreground hover:text-primary transition-colors py-2 rounded-md"
+                          >
+                              <Image src={sub.imageUrl} alt={sub.name} width={32} height={32} className="rounded-md object-cover" />
+                              <span>{sub.name}</span>
+                          </Link>
+                     </SheetClose>
+                  </li>
+                ))}
+              </ul>
+            </AccordionContent>
+          )}
+        </AccordionItem>
+      ))}
+       <SheetClose asChild>
+          <Link href="/products" className="py-2 text-lg font-medium flex justify-between items-center w-full hover:underline">
+              جميع المنتجات
+          </Link>
+       </SheetClose>
     </Accordion>
   );
 }
