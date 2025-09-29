@@ -2,16 +2,18 @@
 "use client";
 
 import Link from "next/link";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Menu, Search, ShoppingCart } from "lucide-react";
+import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UserAuth } from "./UserAuth";
+import { useAuth } from "@/hooks/use-auth";
+import { Separator } from "../ui/separator";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -23,6 +25,7 @@ const navLinks = [
 
 export function Header() {
   const { cartCount } = useCart();
+  const { user } = useAuth();
   const pathname = usePathname();
   
   const isDashboard = pathname.startsWith('/dashboard');
@@ -83,18 +86,44 @@ export function Header() {
                         <span className="sr-only">فتح قائمة التنقل</span>
                     </Button>
                     </SheetTrigger>
-                    <SheetContent side="right">
-                    <SheetTitle className="sr-only">قائمة التنقل</SheetTitle>
-                    <div className="flex flex-col gap-6 p-4">
-                        <Logo />
-                        <nav className="flex flex-col gap-4">
-                        {navLinks.map(({ href, label }) => (
-                            <Link key={href} href={href} className="text-lg font-medium relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
-                            {label}
-                            </Link>
-                        ))}
-                        </nav>
-                    </div>
+                    <SheetContent side="right" className="flex flex-col">
+                        <SheetHeader>
+                            <SheetTitle className="sr-only">قائمة التنقل</SheetTitle>
+                            <div className="p-4">
+                                <Logo />
+                            </div>
+                        </SheetHeader>
+                        <div className="flex-1 overflow-y-auto">
+                            <nav className="flex flex-col gap-4 p-4">
+                                {navLinks.map(({ href, label }) => (
+                                    <SheetClose key={href} asChild>
+                                        <Link href={href} className="text-lg font-medium relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
+                                            {label}
+                                        </Link>
+                                    </SheetClose>
+                                ))}
+                            </nav>
+                        </div>
+                        <Separator />
+                        <div className="p-4">
+                            {user ? (
+                                 <SheetClose asChild>
+                                    <Link href="/profile" className="flex items-center gap-3">
+                                        <User className="h-6 w-6 text-muted-foreground" />
+                                        <div className="flex flex-col">
+                                            <span className="font-semibold">{user.displayName || user.email}</span>
+                                            <span className="text-xs text-muted-foreground">عرض الملف الشخصي</span>
+                                        </div>
+                                    </Link>
+                                 </SheetClose>
+                            ) : (
+                                <SheetClose asChild>
+                                    <Link href="/login">
+                                        <Button className="w-full">تسجيل الدخول</Button>
+                                    </Link>
+                                </SheetClose>
+                            )}
+                        </div>
                     </SheetContent>
                 </Sheet>
             </div>
