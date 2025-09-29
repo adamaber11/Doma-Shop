@@ -207,9 +207,9 @@ export default function Home() {
                 onMouseLeave={plugin.current.play}
                 className="w-full"
                 >
-                <CarouselContent className="-m-2">
+                <CarouselContent className="flex gap-x-[5px]">
                     {bestOfferProducts.map((product) => (
-                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-2">
+                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
                          <div className="h-full">
                             <ProductCard product={product} />
                         </div>
@@ -225,4 +225,3 @@ export default function Home() {
     </>
   );
 }
-
