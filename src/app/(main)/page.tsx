@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShoppingBag, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { getProducts, getAds, getPopupAds } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
 import type { Product, HomepageSettings, Ad } from "@/lib/types";
@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import Autoplay from "embla-carousel-autoplay";
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
 export default function Home() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -25,6 +27,10 @@ export default function Home() {
   const [popupAd, setPopupAd] = useState<Ad | null>(null);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [canCloseAd, setCanCloseAd] = useState(false);
+
+   const plugin = useRef(
+    Autoplay({ delay: 1500, stopOnInteraction: true })
+  );
 
 
   useEffect(() => {
@@ -141,37 +147,51 @@ export default function Home() {
               استمتع بصفقات الموسم مع خصومات رائعة وعروض استثنائية لفترة محدودة
             </p>
           </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-             {loading ? (
-                [...Array(3)].map((_, i) => (
-                    <div key={i} className="flex-shrink-0 w-full">
-                        <Skeleton className="aspect-video w-full rounded-lg" />
-                    </div>
-                ))
+            {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[...Array(3)].map((_, i) => (
+                        <div key={i} className="flex-shrink-0 w-full">
+                            <Skeleton className="aspect-video w-full rounded-lg" />
+                        </div>
+                    ))}
+                </div>
             ) : bannerAds.length > 0 ? (
-                bannerAds.slice(0, 3).map((ad) => (
-                     <div key={ad.id} className="flex-shrink-0 w-full">
-                        <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden">
-                            <Image
-                                src={ad.imageUrl}
-                                alt={ad.description || "Advertisement"}
-                                fill
-                                className="object-cover"
-                            />
-                            {ad.description && (
-                                <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-4 text-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    <p>{ad.description}</p>
-                                </div>
-                            )}
-                        </Link>
-                    </div>
-                ))
+                <Carousel
+                  plugins={[plugin.current]}
+                  className="w-full"
+                  onMouseEnter={() => plugin.current.stop()}
+                  onMouseLeave={() => plugin.current.reset()}
+                  opts={{
+                    loop: true,
+                  }}
+                >
+                  <CarouselContent>
+                    {bannerAds.map((ad) => (
+                      <CarouselItem key={ad.id} className="md:basis-1/2 lg:basis-1/3">
+                        <div className="p-1">
+                           <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden">
+                                <Image
+                                    src={ad.imageUrl}
+                                    alt={ad.description || "Advertisement"}
+                                    fill
+                                    className="object-cover"
+                                />
+                                {ad.description && (
+                                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-4 text-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <p>{ad.description}</p>
+                                    </div>
+                                )}
+                            </Link>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
             ) : (
                 <div className="col-span-3 text-center py-10">
                     <p className="text-muted-foreground">لا توجد بنرات لعرضها حاليًا</p>
                 </div>
             )}
-            </div>
         </div>
       </section>
       
@@ -267,5 +287,3 @@ export default function Home() {
     </>
   );
 }
-
-    
