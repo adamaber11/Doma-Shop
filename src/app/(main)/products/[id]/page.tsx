@@ -273,11 +273,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </Button>
               </div>
               <div className="flex gap-2 w-full flex-1">
-                 <Button size="lg" onClick={handleAddToCart} className="text-base px-6 h-[40px]" style={{width: '80px'}}>
+                 <Button size="lg" onClick={handleAddToCart} className="flex-1 text-base">
                     <ShoppingBag className="ml-2 h-5 w-5" />
                     أضف إلى السلة
                 </Button>
-                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="text-base px-6 h-[40px]" style={{width: '80px'}}>
+                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="flex-1 text-base">
                     اشتري الآن
                 </Button>
               </div>
@@ -297,21 +297,5 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
 
     
