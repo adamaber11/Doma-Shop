@@ -70,7 +70,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="relative w-full h-[60vh] md:h-[80vh] bg-gray-200">
+      <section className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh]">
         {loading ? <Skeleton className="h-full w-full" /> : (
             <Image
                 src={heroImage}
