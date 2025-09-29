@@ -5,7 +5,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from 'next/navigation';
 import { ProductCard } from "@/components/products/ProductCard";
-import { ProductFilters } from "@/components/products/ProductFilters";
 import { getProducts, getPopupAds } from "@/services/product-service";
 import type { Product, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -110,11 +109,6 @@ export default function ProductsPage() {
         )}
         
         <div className="space-y-12">
-            <aside>
-                <ProductFilters />
-            </aside>
-            
-            <Separator />
             
             {loading ? (
                 <div className="space-y-12">
