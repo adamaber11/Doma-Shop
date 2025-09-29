@@ -186,17 +186,17 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0">
-                    <Skeleton className="h-96 w-[180px] mx-auto" />
+                    <Skeleton className="h-96 w-[180px]" />
                   </div>
                 ))}
              </div>
            ) : (
-             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {bestOfferProducts.map((product) => (
-                <div key={product.id} className="flex justify-center">
+                <div key={product.id} className="flex-shrink-0">
                     <ProductCard product={product} />
                 </div>
                 ))}
@@ -216,17 +216,17 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0">
-                    <Skeleton className="h-96 w-[180px] mx-auto" />
+                    <Skeleton className="h-96 w-[180px]" />
                   </div>
                 ))}
              </div>
            ) : (
-             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {bestSellingProducts.map((product) => (
-                <div key={product.id} className="flex justify-center">
+                <div key={product.id} className="flex-shrink-0">
                     <ProductCard product={product} />
                 </div>
                 ))}
@@ -246,17 +246,17 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0">
-                    <Skeleton className="h-96 w-[180px] mx-auto" />
+                    <Skeleton className="h-96 w-[180px]" />
                   </div>
                 ))}
              </div>
            ) : (
-             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
                 {featuredProducts.map((product) => (
-                <div key={product.id} className="flex justify-center">
+                <div key={product.id} className="flex-shrink-0">
                     <ProductCard product={product} />
                 </div>
                 ))}
