@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -119,7 +118,7 @@ export default function ProductsPage() {
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                        <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,1fr))] gap-4">
                             {filteredProducts.map((product) => (
                                 <div key={product.id}>
                                   <ProductCard product={product} />
