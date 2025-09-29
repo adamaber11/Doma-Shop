@@ -257,7 +257,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             )}
           </div>
           
-           <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+           <div className="flex flex-col sm:flex-row items-center gap-4 mb-6 w-full">
               <div className="flex items-center border rounded-md">
                 <Button variant="ghost" size="icon" onClick={() => setQuantity(q => Math.max(1, q - 1))}>
                   <Minus className="h-4 w-4" />
@@ -272,12 +272,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto flex-1">
-                 <Button size="lg" onClick={handleAddToCart} className="flex-1">
+              <div className="flex flex-col sm:flex-row gap-2 w-full flex-1">
+                 <Button size="lg" onClick={handleAddToCart} className="flex-1 w-full">
                     <ShoppingBag className="ml-2 h-5 w-5" />
                     أضف إلى السلة
                 </Button>
-                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="flex-1">
+                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="flex-1 w-full">
                     اشتري الآن
                 </Button>
               </div>
@@ -297,6 +297,8 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     </div>
   );
 }
+    
+
     
 
     
