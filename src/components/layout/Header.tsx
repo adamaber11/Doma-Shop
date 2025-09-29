@@ -49,7 +49,7 @@ export function Header() {
         </div>
         <div className="flex items-center gap-4">
             <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
-                <CategoriesMenu />
+                
                 {navLinks.map(({ href, label }) => (
                 <Link key={href} href={href} className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
                     {label}
@@ -105,8 +105,7 @@ export function Header() {
                                         </Link>
                                     </SheetClose>
                                 ))}
-                                 <Separator className="my-2" />
-                                 <MobileCategories />
+                                 
                             </nav>
                         </div>
                         <Separator />
