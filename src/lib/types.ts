@@ -9,6 +9,7 @@ export type Category = {
   id: string;
   name: string;
   imageUrl: string;
+  parentId?: string; // ID of the parent category
   subcategories?: SubCategory[];
 };
 
@@ -136,3 +137,5 @@ export type ShippingRate = {
     governorate: string;
     cost: number;
 };
+
+    

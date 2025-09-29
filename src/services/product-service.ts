@@ -3,7 +3,7 @@
 "use server";
 import { db } from "@/lib/firebase";
 import type { Product, Category, Review, Ad, ContactMessage, Order, Customer } from "@/lib/types";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where } from "firebase/firestore";
 
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
@@ -54,7 +54,9 @@ async function fetchDataIfNeeded(forceRefresh: boolean = false) {
     
     if (!allCategories) {
         const categorySnapshot = await getDocs(categoriesCollection);
-        allCategories = categorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
+        const categories = categorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
+        // This logic is now handled in getCategories to build the hierarchy
+        allCategories = categories;
     }
 
     if (!allAds) {
@@ -181,14 +183,37 @@ export async function addReview(productId: string, review: Omit<Review, 'id' | '
 // Category Functions
 export async function getCategories(forceRefresh: boolean = false): Promise<Category[]> {
     await fetchDataIfNeeded(forceRefresh);
-    return allCategories || [];
+    const categories = allCategories || [];
+
+    const categoryMap = new Map<string, Category>();
+    const rootCategories: Category[] = [];
+
+    // First pass: add all categories to map
+    categories.forEach(cat => {
+        categoryMap.set(cat.id, { ...cat, subcategories: [] });
+    });
+
+    // Second pass: build hierarchy
+    categories.forEach(cat => {
+        if (cat.parentId && categoryMap.has(cat.parentId)) {
+            const parent = categoryMap.get(cat.parentId)!;
+            parent.subcategories!.push({ id: cat.id, name: cat.name });
+        } else {
+            // It's a root category
+            rootCategories.push(categoryMap.get(cat.id)!);
+        }
+    });
+    
+    // Return flat list for dashboard, hierarchy for frontend filtering
+    // For now, let's keep it flat as the new dashboard handles hierarchy.
+    return categories;
 }
 
 export async function getCategoryById(categoryId: string): Promise<Category | null> {
     const catDocRef = doc(db, 'categories', categoryId);
     const catDoc = await getDoc(catDocRef);
     if (catDoc.exists()) {
-        const category = { id: catDoc.id, ...catDoc.data() } as Category;
+        const category = { id: catDoc.id, ...doc.data() } as Category;
         // Optionally update the cache
         if (allCategories) {
             const index = allCategories.findIndex(c => c.id === categoryId);
@@ -204,27 +229,62 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
 }
 
 
-export async function addCategory(category: Omit<Category, 'id'>): Promise<Category> {
-    const id = category.name.toLowerCase().replace(/\s+/g, '-');
+export async function addCategory(category: Omit<Category, 'id' | 'subcategories'>): Promise<Category> {
+    const id = category.name.toLowerCase().replace(/\s+/g, '-') + '-' + new Date().getTime();
     const categoryRef = doc(db, 'categories', id);
-    await setDoc(categoryRef, category);
+    
+    const newCategoryData: any = { ...category };
+    if (!category.parentId) {
+        delete newCategoryData.parentId; // Ensure parentId is not stored if it's a main category
+    }
+
+    await setDoc(categoryRef, newCategoryData);
+    
     await fetchDataIfNeeded(true);
-    const newCategory = { id, ...category };
+    const newCategory = { id, ...newCategoryData };
     if(allCategories) {
         allCategories.push(newCategory);
     }
     return newCategory;
 }
 
-export async function updateCategory(categoryId: string, categoryUpdate: Partial<Category>): Promise<void> {
+export async function updateCategory(categoryId: string, categoryUpdate: Partial<Omit<Category, 'id' | 'subcategories'>>): Promise<void> {
     const categoryRef = doc(db, 'categories', categoryId);
-    await updateDoc(categoryRef, categoryUpdate);
+    
+    const updateData: any = { ...categoryUpdate };
+     if (updateData.parentId === undefined) {
+        updateData.parentId = deleteField(); // Use FieldValue to remove the field
+    }
+
+    await updateDoc(categoryRef, updateData);
     await fetchDataIfNeeded(true);
 }
 
+
 export async function deleteCategory(categoryId: string): Promise<void> {
-    const categoryRef = doc(db, 'categories', categoryId);
-    await deleteDoc(categoryRef);
+    await runTransaction(db, async (transaction) => {
+        // 1. Delete the main category
+        const categoryRef = doc(db, 'categories', categoryId);
+        transaction.delete(categoryRef);
+
+        // 2. Find and delete all subcategories
+        const subcategoriesQuery = query(collection(db, 'categories'), where('parentId', '==', categoryId));
+        const subcategoriesSnapshot = await getDocs(subcategoriesQuery);
+        subcategoriesSnapshot.forEach(subDoc => {
+            transaction.delete(subDoc.ref);
+        });
+
+        // 3. Optional: Unset categoryId and subcategoryId from products.
+        // This can be heavy. A better approach might be to handle this in the UI or a batch job.
+    });
+
+    await fetchDataIfNeeded(true);
+}
+
+export async function deleteSubCategory(parentId: string, subCategoryId: string): Promise<void> {
+    // This is simplified. In the new structure, subcategories are just categories with a parentId.
+    const subCategoryRef = doc(db, 'categories', subCategoryId);
+    await deleteDoc(subCategoryRef);
     await fetchDataIfNeeded(true);
 }
 
@@ -376,3 +436,8 @@ export async function getCustomers(forceRefresh: boolean = false): Promise<Custo
     await fetchDataIfNeeded(forceRefresh);
     return allCustomers || [];
 }
+
+// Helper to remove a field from a document
+import { deleteField } from 'firebase/firestore';
+
+    
