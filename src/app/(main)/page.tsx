@@ -91,7 +91,7 @@ export default function Home() {
       <section className="py-12 md:py-20 bg-orange-500/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold font-headline">عروض خاصة</h2>
+            <h2 className="text-2xl md:text-3xl font-bold font-headline">أبرز العروض اليوم</h2>
             <p className="mt-2 text-lg text-muted-foreground max-w-2xl mx-auto">
               استمتع بصفقات الموسم مع خصومات رائعة وعروض استثنائية لفترة محدودة
             </p>
