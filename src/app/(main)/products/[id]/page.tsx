@@ -277,7 +277,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <ShoppingBag className="ml-2 h-5 w-5" />
                     أضف إلى السلة
                 </Button>
-                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="text-base px-6 h-[40px]" style={{width: '90px'}}>
+                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="text-base px-6 h-[40px]" style={{width: '80px'}}>
                     اشتري الآن
                 </Button>
               </div>
