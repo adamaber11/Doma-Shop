@@ -24,10 +24,6 @@ export default function ProductsPage() {
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [randomAd, setRandomAd] = useState<Ad | null>(null);
 
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
-
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -37,9 +33,7 @@ export default function ProductsPage() {
           getPopupAds()
         ]);
         setProducts(fetchedProducts);
-        setFeaturedProducts(fetchedProducts.filter(p => p.isFeatured));
-        setBestOfferProducts(fetchedProducts.filter(p => p.isBestOffer));
-
+        
         const activeAds = fetchedAds.filter(ad => ad.isActive);
         setPopupAds(activeAds);
         
@@ -100,7 +94,7 @@ export default function ProductsPage() {
             
             {loading ? (
                 <div className="space-y-12">
-                    {[...Array(2)].map((_, i) => (
+                    {[...Array(1)].map((_, i) => (
                         <div key={i}>
                             <Skeleton className="h-8 w-48 mb-6" />
                             <div className="flex overflow-x-auto gap-[5px] pb-4">
@@ -115,49 +109,6 @@ export default function ProductsPage() {
                 </div>
             ) : (
                 <>
-                    {featuredProducts.length > 0 && (
-                        <section>
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-3xl font-bold font-headline">المنتجات المميزة</h2>
-                            </div>
-                            <Carousel opts={{ align: "start", direction: 'rtl', loop: featuredProducts.length > 5 }}>
-                                <CarouselContent className="flex gap-x-[5px]">
-                                    {featuredProducts.map((product) => (
-                                        <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
-                                            <div className="h-full">
-                                                <ProductCard product={product} />
-                                            </div>
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                            </Carousel>
-                        </section>
-                    )}
-
-                    {bestOfferProducts.length > 0 && (
-                         <section>
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-3xl font-bold font-headline">أفضل العروض</h2>
-                                 <Button variant="ghost" asChild>
-                                    <Link href="/offers" className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
-                                        عرض الكل <ArrowRight className="mr-2 h-4 w-4" />
-                                    </Link>
-                                </Button>
-                            </div>
-                             <Carousel opts={{ align: "start", direction: 'rtl', loop: bestOfferProducts.length > 5 }}>
-                                <CarouselContent className="flex gap-x-[5px]">
-                                    {bestOfferProducts.map((product) => (
-                                        <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
-                                            <div className="h-full">
-                                                <ProductCard product={product} />
-                                            </div>
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                            </Carousel>
-                        </section>
-                    )}
-                    
                     <main>
                         <h2 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h2>
                         {filteredProducts.length > 0 ? (
@@ -175,13 +126,9 @@ export default function ProductsPage() {
                         </div>
                         )}
                     </main>
-
                 </>
             )}
-
         </div>
       </div>
   );
 }
-
-    
