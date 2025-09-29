@@ -102,7 +102,7 @@ export default function Home() {
                 ))
             ) : bannerAds.length > 0 ? (
                 bannerAds.slice(0, 3).map((ad) => (
-                    <Link key={ad.id} href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <Link key={ad.id} href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden">
                         <Image
                             src={ad.imageUrl}
                             alt={ad.description || "Advertisement"}
