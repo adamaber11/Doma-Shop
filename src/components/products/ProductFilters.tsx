@@ -9,6 +9,9 @@ import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Button } from '../ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+import { ChevronDown } from 'lucide-react';
+
 
 export function ProductFilters() {
   const router = useRouter();
@@ -36,10 +39,10 @@ export function ProductFilters() {
     fetchCategories();
   }, []);
   
-  const handleMainCategoryClick = (categoryId: string) => {
+  const handleCategoryClick = (categoryId: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      if (activeCategoryId === categoryId) {
-          // If the same main category is clicked, clear all filters
+      if (activeCategoryId === categoryId && !activeSubcategoryId) {
+          // If the same main category is clicked (and no subcategory), clear all filters
           params.delete('category');
           params.delete('subcategory');
       } else {
@@ -50,8 +53,9 @@ export function ProductFilters() {
       router.push(pathname + (params.toString() ? '?' + params.toString() : ''));
   }
 
-  const handleSubcategoryClick = (subcategoryId: string) => {
+  const handleSubcategoryClick = (categoryId: string, subcategoryId: string) => {
       const params = new URLSearchParams(searchParams.toString());
+      params.set('category', categoryId);
       params.set('subcategory', subcategoryId);
       router.push(pathname + (params.toString() ? '?' + params.toString() : ''));
   }
@@ -61,7 +65,6 @@ export function ProductFilters() {
   }
 
   const mainCategories = categories.filter(c => !c.parentId);
-  const selectedMainCategory = mainCategories.find(c => c.id === activeCategoryId);
 
   return (
     <div className="relative w-full">
@@ -87,50 +90,78 @@ export function ProductFilters() {
                     </Button>
                 </div>
                 <div className="flex items-start gap-6 overflow-x-auto pb-4">
-                    {mainCategories.map(category => (
-                        <button 
-                            key={category.id}
-                            onClick={() => handleMainCategoryClick(category.id)}
-                            className={cn(
-                                'group flex flex-col items-center gap-2 text-center w-20 flex-shrink-0',
-                            )}>
-                                <div className={cn(
-                                    "relative h-16 w-16 rounded-full overflow-hidden border-2 transition-all group-hover:border-primary group-hover:scale-105",
-                                    (activeCategoryId === category.id) 
-                                        ? 'border-primary' 
-                                        : 'border-transparent'
-                                )}>
-                                    <Image
-                                        src={category.imageUrl}
-                                        alt={category.name}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </div>
-                                <h3 className={cn(
-                                    "font-semibold text-xs text-card-foreground transition-colors",
-                                    (activeCategoryId === category.id) ? 'text-primary' : 'group-hover:text-primary'
-                                )}>{category.name}</h3>
-                        </button>
-                    ))}
-                </div>
+                    {mainCategories.map(category => {
+                        const hasSubcategories = category.subcategories && category.subcategories.length > 0;
+                        const isCategoryActive = activeCategoryId === category.id;
 
-                {activeCategoryId && selectedMainCategory && selectedMainCategory.subcategories && selectedMainCategory.subcategories.length > 0 && (
-                    <div className="mt-6 pt-4 border-t">
-                        <h3 className="text-lg font-semibold mb-4 text-center">اختر فئة فرعية من {selectedMainCategory.name}</h3>
-                        <div className="flex flex-wrap justify-center gap-3">
-                            {selectedMainCategory.subcategories.map(sub => (
-                                <Button
-                                    key={sub.id}
-                                    variant={activeSubcategoryId === sub.id ? 'default' : 'outline'}
-                                    onClick={() => handleSubcategoryClick(sub.id)}
-                                >
-                                    {sub.name}
-                                </Button>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                        if (hasSubcategories) {
+                            return (
+                                <DropdownMenu key={category.id}>
+                                    <DropdownMenuTrigger asChild>
+                                        <button 
+                                            className={cn(
+                                                'group flex flex-col items-center gap-2 text-center w-20 flex-shrink-0',
+                                            )}>
+                                                <div className={cn(
+                                                    "relative h-16 w-16 rounded-full overflow-hidden border-2 transition-all group-hover:border-primary group-hover:scale-105",
+                                                    isCategoryActive ? 'border-primary' : 'border-transparent'
+                                                )}>
+                                                    <Image
+                                                        src={category.imageUrl}
+                                                        alt={category.name}
+                                                        fill
+                                                        className="object-cover"
+                                                    />
+                                                </div>
+                                                <h3 className={cn(
+                                                    "font-semibold text-xs text-card-foreground transition-colors flex items-center gap-1",
+                                                    isCategoryActive ? 'text-primary' : 'group-hover:text-primary'
+                                                )}>
+                                                    {category.name}
+                                                    <ChevronDown className="h-3 w-3" />
+                                                </h3>
+                                        </button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem onSelect={() => handleCategoryClick(category.id)}>
+                                            كل منتجات {category.name}
+                                        </DropdownMenuItem>
+                                        {category.subcategories?.map(sub => (
+                                            <DropdownMenuItem key={sub.id} onSelect={() => handleSubcategoryClick(category.id, sub.id)}>
+                                                {sub.name}
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            )
+                        }
+
+                        return (
+                             <button 
+                                key={category.id}
+                                onClick={() => handleCategoryClick(category.id)}
+                                className={cn(
+                                    'group flex flex-col items-center gap-2 text-center w-20 flex-shrink-0',
+                                )}>
+                                    <div className={cn(
+                                        "relative h-16 w-16 rounded-full overflow-hidden border-2 transition-all group-hover:border-primary group-hover:scale-105",
+                                        isCategoryActive ? 'border-primary' : 'border-transparent'
+                                    )}>
+                                        <Image
+                                            src={category.imageUrl}
+                                            alt={category.name}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                    <h3 className={cn(
+                                        "font-semibold text-xs text-card-foreground transition-colors",
+                                        isCategoryActive ? 'text-primary' : 'group-hover:text-primary'
+                                    )}>{category.name}</h3>
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
         )}
     </div>
