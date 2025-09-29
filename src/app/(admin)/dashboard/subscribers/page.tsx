@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { getSubscribers, deleteSubscriber } from '@/services/product-service';
+import { getSubscribers, deleteSubscriber, sendNewsletterToSubscribers } from '@/services/product-service';
 import type { Subscriber } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -22,6 +22,7 @@ export default function DashboardSubscribersPage() {
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [isComposeOpen, setIsComposeOpen] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const { toast } = useToast();
@@ -54,40 +55,28 @@ export default function DashboardSubscribersPage() {
     }
   };
 
-  const handleSendNewsletter = () => {
-    const bcc = subscribers.map(s => s.email).join(',');
-
-    // Simple HTML template for the email body
-    const emailBodyHtml = `
-      <div dir="rtl" style="font-family: Arial, sans-serif; text-align: right; color: #333;">
-        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 8px;">
-          <h2 style="color: #222; border-bottom: 2px solid #007BFF; padding-bottom: 10px;">Doma Online Shop</h2>
-          <p style="font-size: 16px; line-height: 1.6;">
-            ${body.replace(/\n/g, '<br>')}
-          </p>
-          <p style="margin-top: 30px; font-size: 14px; color: #777;">
-            شكرًا لكونك جزءًا من مجتمعنا!
-          </p>
-          <p style="font-size: 12px; color: #aaa; margin-top: 20px;">
-            لقد استلمت هذا البريد الإلكتروني لأنك مشترك في النشرة الإخبارية لمتجر Doma.
-          </p>
-        </div>
-      </div>
-    `;
-
-    const mailtoLink = `mailto:?bcc=${encodeURIComponent(bcc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBodyHtml)}`;
-    
-    // Using window.open to handle potentially long mailto links
-    const newWindow = window.open(mailtoLink, '_blank');
-    if (!newWindow) {
-        // Fallback for pop-up blockers
-        window.location.href = mailtoLink;
+  const handleSendNewsletter = async () => {
+    if (!subject || !body) {
+        toast({ title: 'خطأ', description: 'يرجى ملء حقل الموضوع والرسالة.', variant: 'destructive'});
+        return;
     }
     
-    setIsComposeOpen(false);
-    setSubject('');
-    setBody('');
-    toast({ title: 'جاهز للإرسال!', description: 'تم فتح برنامج البريد الإلكتروني الخاص بك.' });
+    setIsSending(true);
+    try {
+        const subscriberEmails = subscribers.map(s => s.email);
+        await sendNewsletterToSubscribers(subscriberEmails, subject, body);
+        
+        toast({ title: 'تم إرسال الرسائل!', description: 'تمت إضافة رسائلك إلى قائمة انتظار الإرسال.' });
+        setIsComposeOpen(false);
+        setSubject('');
+        setBody('');
+
+    } catch(error) {
+        console.error('Failed to send newsletter', error);
+        toast({ title: 'خطأ', description: 'فشل في إرسال الرسالة الإخبارية. تأكد من تثبيت وتكوين امتداد "Trigger Email".', variant: 'destructive'});
+    } finally {
+        setIsSending(false);
+    }
   };
 
 
@@ -106,7 +95,9 @@ export default function DashboardSubscribersPage() {
           <DialogHeader>
             <DialogTitle>إرسال رسالة للمشتركين</DialogTitle>
             <DialogDescription>
-              سيتم فتح برنامج البريد الإلكتروني الافتراضي لديك مع تعبئة عناوين BCC.
+              سيتم إرسال هذه الرسالة إلى جميع المشتركين ({subscribers.length}) تلقائيًا.
+              <br/>
+              <strong className='text-destructive'>ملاحظة:</strong> يجب تثبيت وتكوين امتداد Firebase "Trigger Email".
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -115,17 +106,23 @@ export default function DashboardSubscribersPage() {
               <Input id="subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
             </div>
             <div>
-              <Label htmlFor="body">نص الرسالة</Label>
+              <Label htmlFor="body">نص الرسالة (يدعم HTML)</Label>
               <Textarea id="body" value={body} onChange={(e) => setBody(e.target.value)} rows={8} />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="secondary">إلغاء</Button>
+              <Button type="button" variant="secondary" disabled={isSending}>إلغاء</Button>
             </DialogClose>
-            <Button onClick={handleSendNewsletter}>
-              <Send className="ml-2 h-4 w-4" />
-              فتح برنامج البريد
+            <Button onClick={handleSendNewsletter} disabled={isSending}>
+              {isSending ? (
+                'جاري الإرسال...'
+              ) : (
+                <>
+                  <Send className="ml-2 h-4 w-4" />
+                  إرسال الآن
+                </>
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
