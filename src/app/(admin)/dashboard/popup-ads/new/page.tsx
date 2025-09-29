@@ -15,11 +15,14 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const adSchema = z.object({
   imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
   linkUrl: z.string().url("يجب أن يكون رابط الانتقال صالحًا"),
   isActive: z.boolean().default(true),
+  displayPages: z.array(z.string()).min(1, "الرجاء اختيار صفحة واحدة على الأقل"),
+  duration: z.coerce.number().min(0, "المدة يجب أن تكون رقمًا موجبًا").default(0),
 });
 
 export default function NewPopupAdPage() {
@@ -32,6 +35,8 @@ export default function NewPopupAdPage() {
       imageUrl: "",
       linkUrl: "",
       isActive: true,
+      displayPages: ['all'],
+      duration: 0,
     }
   });
 
@@ -87,6 +92,45 @@ export default function NewPopupAdPage() {
 
                     <FormField
                         control={form.control}
+                        name="displayPages"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>عرض في الصفحات</FormLabel>
+                                <Select onValueChange={(value) => field.onChange(value === 'all' ? ['all'] : [value])} defaultValue={field.value[0]}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="اختر مكان ظهور الإعلان" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="all">كل الصفحات</SelectItem>
+                                        <SelectItem value="home">الصفحة الرئيسية فقط</SelectItem>
+                                        <SelectItem value="products">صفحة المنتجات فقط</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormDescription>اختر أين يجب أن يظهر هذا الإعلان المنبثق.</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    
+                     <FormField
+                        control={form.control}
+                        name="duration"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>مدة العرض (بالثواني)</FormLabel>
+                                <FormControl><Input type="number" placeholder="0" {...field} /></FormControl>
+                                 <FormDescription>
+                                    كم ثانية يجب أن يظهر الإعلان قبل ظهور زر الإغلاق؟ (0 لإظهاره فورًا).
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
                         name="isActive"
                         render={({ field }) => (
                             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
@@ -113,3 +157,5 @@ export default function NewPopupAdPage() {
     </Card>
   );
 }
+
+    

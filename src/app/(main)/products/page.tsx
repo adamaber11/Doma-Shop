@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -22,10 +23,10 @@ export default function ProductsPage() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
-  const [popupAds, setPopupAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
-  const [randomAd, setRandomAd] = useState<Ad | null>(null);
+  const [popupAd, setPopupAd] = useState<Ad | null>(null);
+  const [canCloseAd, setCanCloseAd] = useState(false);
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
 
   useEffect(() => {
@@ -38,14 +39,20 @@ export default function ProductsPage() {
         ]);
         setProducts(fetchedProducts);
         
-        const activeAds = fetchedAds.filter(ad => ad.isActive);
-        setPopupAds(activeAds);
-        
+        const activeAds = fetchedAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('products')));
         const adShown = sessionStorage.getItem('adShown');
+
         if (!adShown && activeAds.length > 0) {
-            setRandomAd(activeAds[Math.floor(Math.random() * activeAds.length)]);
+            const randomAd = activeAds[Math.floor(Math.random() * activeAds.length)];
+            setPopupAd(randomAd);
             setIsAdModalOpen(true);
             sessionStorage.setItem('adShown', 'true');
+
+             if (randomAd.duration && randomAd.duration > 0) {
+                 setTimeout(() => setCanCloseAd(true), randomAd.duration * 1000);
+            } else {
+                setCanCloseAd(true);
+            }
         }
 
       } catch (error) {
@@ -98,23 +105,25 @@ export default function ProductsPage() {
   return (
       <div className="container mx-auto px-4 py-8">
 
-        {randomAd && (
+        {popupAd && (
             <Dialog open={isAdModalOpen} onOpenChange={setIsAdModalOpen}>
                 <DialogContent className="p-0 border-0 max-w-lg">
                      <DialogHeader className="p-4 flex flex-row items-center justify-between">
                         <DialogTitle>عرض خاص!</DialogTitle>
-                         <DialogClose asChild>
-                            <Button variant="ghost" size="icon">
-                                <X className="h-5 w-5" />
-                                <span className="sr-only">إغلاق</span>
-                            </Button>
-                        </DialogClose>
+                         {canCloseAd && (
+                            <DialogClose asChild>
+                                <Button variant="ghost" size="icon">
+                                    <X className="h-5 w-5" />
+                                    <span className="sr-only">إغلاق</span>
+                                </Button>
+                            </DialogClose>
+                         )}
                     </DialogHeader>
                     <div className="relative group">
-                         <Link href={randomAd.linkUrl} target="_blank" rel="noopener noreferrer" onClick={() => setIsAdModalOpen(false)}>
+                         <Link href={popupAd.linkUrl} target="_blank" rel="noopener noreferrer" onClick={() => setIsAdModalOpen(false)}>
                             <div className="relative aspect-video w-full overflow-hidden">
                                 <Image
-                                src={randomAd.imageUrl}
+                                src={popupAd.imageUrl}
                                 alt="Advertisement"
                                 fill
                                 className="object-cover"
@@ -175,3 +184,5 @@ export default function ProductsPage() {
       </div>
   );
 }
+
+    

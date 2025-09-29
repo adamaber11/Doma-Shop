@@ -1,17 +1,19 @@
 
+
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ShoppingBag } from "lucide-react";
+import { ArrowRight, ShoppingBag, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { getProducts, getAds } from "@/services/product-service";
+import { getProducts, getAds, getPopupAds } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
 import type { Product, HomepageSettings, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 
 export default function Home() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -20,21 +22,42 @@ export default function Home() {
   const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
   const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [popupAd, setPopupAd] = useState<Ad | null>(null);
+  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
+  const [canCloseAd, setCanCloseAd] = useState(false);
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [settings, ads, allProducts] = await Promise.all([
+        const [settings, ads, allProducts, popupAds] = await Promise.all([
           getHomepageSettings(),
           getAds(),
           getProducts(),
+          getPopupAds(),
         ]);
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
         setBestOfferProducts(allProducts.filter(p => p.isBestOffer));
         setBestSellingProducts(allProducts.filter(p => p.isBestSeller));
         setFeaturedProducts(allProducts.filter(p => p.isFeatured));
+        
+        const activePopupAds = popupAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('home')));
+        const adShown = sessionStorage.getItem('adShown');
+
+        if (!adShown && activePopupAds.length > 0) {
+            const randomAd = activePopupAds[Math.floor(Math.random() * activePopupAds.length)];
+            setPopupAd(randomAd);
+            setIsAdModalOpen(true);
+            sessionStorage.setItem('adShown', 'true');
+
+            if (randomAd.duration && randomAd.duration > 0) {
+                 setTimeout(() => setCanCloseAd(true), randomAd.duration * 1000);
+            } else {
+                setCanCloseAd(true);
+            }
+        }
+
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -53,6 +76,35 @@ export default function Home() {
 
   return (
     <>
+      {popupAd && (
+            <Dialog open={isAdModalOpen} onOpenChange={setIsAdModalOpen}>
+                <DialogContent className="p-0 border-0 max-w-lg">
+                     <DialogHeader className="p-4 flex flex-row items-center justify-between">
+                        <DialogTitle>عرض خاص!</DialogTitle>
+                         {canCloseAd && (
+                            <DialogClose asChild>
+                                <Button variant="ghost" size="icon">
+                                    <X className="h-5 w-5" />
+                                    <span className="sr-only">إغلاق</span>
+                                </Button>
+                            </DialogClose>
+                         )}
+                    </DialogHeader>
+                    <div className="relative group">
+                         <Link href={popupAd.linkUrl} target="_blank" rel="noopener noreferrer" onClick={() => setIsAdModalOpen(false)}>
+                            <div className="relative aspect-video w-full overflow-hidden">
+                                <Image
+                                src={popupAd.imageUrl}
+                                alt="Advertisement"
+                                fill
+                                className="object-cover"
+                                />
+                            </div>
+                        </Link>
+                    </div>
+                </DialogContent>
+            </Dialog>
+        )}
       <section className="relative h-[60vh] min-h-[400px] flex items-center justify-center text-center text-white">
         {loading ? (
             <Skeleton className="absolute inset-0" />
@@ -215,3 +267,5 @@ export default function Home() {
     </>
   );
 }
+
+    

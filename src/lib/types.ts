@@ -120,6 +120,8 @@ export type Ad = {
   linkUrl: string;
   isActive: boolean;
   description?: string;
+  displayPages?: ('all' | 'home' | 'products')[];
+  duration?: number;
 };
 
 export type ContactMessage = {
@@ -153,3 +155,5 @@ export type Subscriber = {
     email: string;
     subscribedAt: Date;
 };
+
+    

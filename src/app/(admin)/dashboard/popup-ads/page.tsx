@@ -49,6 +49,13 @@ export default function DashboardPopupAdsPage() {
     }
   };
 
+  const getDisplayPagesText = (pages: string[] = []) => {
+    if (pages.includes('all')) return 'كل الصفحات';
+    if (pages.includes('home')) return 'الرئيسية';
+    if (pages.includes('products')) return 'المنتجات';
+    return '-';
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -67,7 +74,8 @@ export default function DashboardPopupAdsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px] hidden sm:table-cell">الصورة</TableHead>
-                <TableHead>الرابط</TableHead>
+                <TableHead>صفحات العرض</TableHead>
+                <TableHead>المدة (ث)</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead><span className="sr-only">الإجراءات</span></TableHead>
               </TableRow>
@@ -76,7 +84,8 @@ export default function DashboardPopupAdsPage() {
               {[...Array(3)].map((_, i) => (
                 <TableRow key={i}>
                   <TableCell className="hidden sm:table-cell"><Skeleton className="h-12 w-24 rounded-md" /></TableCell>
-                  <TableCell><Skeleton className="h-5 w-48" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                   <TableCell><Skeleton className="h-6 w-16" /></TableCell>
                   <TableCell><Skeleton className="h-8 w-8" /></TableCell>
                 </TableRow>
@@ -90,7 +99,8 @@ export default function DashboardPopupAdsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px] hidden sm:table-cell">الصورة</TableHead>
-                <TableHead>الرابط</TableHead>
+                <TableHead>صفحات العرض</TableHead>
+                <TableHead>المدة (ث)</TableHead>
                 <TableHead>الحالة</TableHead>
                 <TableHead><span className="sr-only">الإجراءات</span></TableHead>
               </TableRow>
@@ -107,9 +117,10 @@ export default function DashboardPopupAdsPage() {
                       width="128"
                     />
                   </TableCell>
-                  <TableCell className="font-medium max-w-xs truncate">
-                    <a href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">{ad.linkUrl}</a>
+                  <TableCell className="font-medium">
+                    {getDisplayPagesText(ad.displayPages)}
                   </TableCell>
+                  <TableCell>{ad.duration ?? 0}</TableCell>
                   <TableCell>
                     <Badge variant={ad.isActive ? 'default' : 'secondary'}>{ad.isActive ? 'نشط' : 'غير نشط'}</Badge>
                   </TableCell>
@@ -159,3 +170,5 @@ export default function DashboardPopupAdsPage() {
     </div>
   );
 }
+
+    

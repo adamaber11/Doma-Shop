@@ -19,11 +19,14 @@ import { ArrowRight } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const adSchema = z.object({
   imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
   linkUrl: z.string().url("يجب أن يكون رابط الانتقال صالحًا"),
   isActive: z.boolean().default(true),
+  displayPages: z.array(z.string()).min(1, "الرجاء اختيار صفحة واحدة على الأقل"),
+  duration: z.coerce.number().min(0, "المدة يجب أن تكون رقمًا موجبًا").default(0),
 });
 
 export default function EditPopupAdPage() {
@@ -50,7 +53,11 @@ export default function EditPopupAdPage() {
 
         if (fetchedAd) {
           setAd(fetchedAd);
-          form.reset(fetchedAd);
+          form.reset({
+              ...fetchedAd,
+              duration: fetchedAd.duration ?? 0,
+              displayPages: fetchedAd.displayPages ?? ['all']
+          });
         } else {
             toast({ title: "خطأ", description: "لم يتم العثور على الإعلان.", variant: "destructive" });
             router.push('/dashboard/popup-ads');
@@ -90,6 +97,8 @@ export default function EditPopupAdPage() {
                 <Skeleton className='h-4 w-64 mt-2' />
             </CardHeader>
             <CardContent className="space-y-6">
+                <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
+                <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                 <div className="space-y-2"><Skeleton className='h-4 w-24' /><Skeleton className='h-10 w-full' /></div>
                 <div className="space-y-2"><Skeleton className='h-24 w-full' /></div>
@@ -148,6 +157,46 @@ export default function EditPopupAdPage() {
                             <FormMessage />
                         </FormItem>
                     )} />
+                    
+                    <FormField
+                        control={form.control}
+                        name="displayPages"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>عرض في الصفحات</FormLabel>
+                                 <Select onValueChange={(value) => field.onChange(value === 'all' ? ['all'] : [value])} defaultValue={field.value.includes('all') ? 'all' : field.value[0]}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="اختر مكان ظهور الإعلان" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="all">كل الصفحات</SelectItem>
+                                        <SelectItem value="home">الصفحة الرئيسية فقط</SelectItem>
+                                        <SelectItem value="products">صفحة المنتجات فقط</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormDescription>اختر أين يجب أن يظهر هذا الإعلان المنبثق.</FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    
+                     <FormField
+                        control={form.control}
+                        name="duration"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>مدة العرض (بالثواني)</FormLabel>
+                                <FormControl><Input type="number" {...field} /></FormControl>
+                                 <FormDescription>
+                                    كم ثانية يجب أن يظهر الإعلان قبل ظهور زر الإغلاق؟ (0 لإظهاره فورًا).
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
 
                      <FormField
                         control={form.control}
@@ -177,3 +226,5 @@ export default function EditPopupAdPage() {
     </Card>
   );
 }
+
+    
