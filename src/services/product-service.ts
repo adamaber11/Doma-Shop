@@ -12,7 +12,6 @@ const messagesCollection = collection(db, 'contactMessages');
 const ordersCollection = collection(db, 'orders');
 const customersCollection = collection(db, 'customers');
 const subscribersCollection = collection(db, 'subscribers');
-const mailCollection = collection(db, 'mail');
 
 
 // Cache variables
@@ -482,23 +481,6 @@ export async function deleteSubscriber(subscriberId: string): Promise<void> {
     const subscriberRef = doc(db, 'subscribers', subscriberId);
     await deleteDoc(subscriberRef);
     await fetchDataIfNeeded(true);
-}
-
-export async function sendNewsletterToSubscribers(emails: string[], subject: string, html: string): Promise<void> {
-    const batch = writeBatch(db);
-
-    for (const email of emails) {
-        const mailDocRef = doc(collection(db, "mail"));
-        batch.set(mailDocRef, {
-            to: email,
-            message: {
-                subject: subject,
-                html: html,
-            },
-        });
-    }
-
-    await batch.commit();
 }
 
 

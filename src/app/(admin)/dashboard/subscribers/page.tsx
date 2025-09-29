@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { getSubscribers, deleteSubscriber, sendNewsletterToSubscribers } from '@/services/product-service';
+import { getSubscribers, deleteSubscriber } from '@/services/product-service';
 import type { Subscriber } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -55,28 +55,38 @@ export default function DashboardSubscribersPage() {
     }
   };
 
-  const handleSendNewsletter = async () => {
-    if (!subject || !body) {
-        toast({ title: 'خطأ', description: 'يرجى ملء حقل الموضوع والرسالة.', variant: 'destructive'});
-        return;
+    const handleSendNewsletter = () => {
+    if (subscribers.length === 0) {
+      toast({ title: 'لا يوجد مشتركين', description: 'لا يوجد مشتركين لإرسال رسالة إليهم.', variant: 'destructive' });
+      return;
+    }
+
+    const recipientEmails = subscribers.map(s => s.email).join(',');
+    const htmlBody = `
+      <div dir="rtl" style="font-family: Arial, sans-serif; text-align: right;">
+        <header style="background-color: #f8f9fa; padding: 20px; text-align: center;">
+          <h1 style="color: #333;">Doma Online Shop</h1>
+        </header>
+        <main style="padding: 20px;">
+          ${body.replace(/\n/g, '<br>')}
+        </main>
+        <footer style="background-color: #f8f9fa; padding: 10px; text-align: center; font-size: 12px; color: #6c757d;">
+          <p>&copy; ${new Date().getFullYear()} Doma Online Shop. جميع الحقوق محفوظة.</p>
+        </footer>
+      </div>
+    `;
+
+    const mailtoLink = `mailto:?bcc=${recipientEmails}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(htmlBody)}`;
+
+    // Using window.open for better compatibility
+    const newWindow = window.open(mailtoLink, '_blank');
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+        // Fallback for browsers that block popup
+        window.location.href = mailtoLink;
     }
     
-    setIsSending(true);
-    try {
-        const subscriberEmails = subscribers.map(s => s.email);
-        await sendNewsletterToSubscribers(subscriberEmails, subject, body);
-        
-        toast({ title: 'تم إرسال الرسائل!', description: 'تمت إضافة رسائلك إلى قائمة انتظار الإرسال.' });
-        setIsComposeOpen(false);
-        setSubject('');
-        setBody('');
-
-    } catch(error) {
-        console.error('Failed to send newsletter', error);
-        toast({ title: 'خطأ', description: 'فشل في إرسال الرسالة الإخبارية. تأكد من تثبيت وتكوين امتداد "Trigger Email".', variant: 'destructive'});
-    } finally {
-        setIsSending(false);
-    }
+    toast({ title: 'جاهز للإرسال!', description: 'تم تجهيز رسالتك في برنامج البريد الإلكتروني الافتراضي لديك.' });
+    setIsComposeOpen(false);
   };
 
 
@@ -95,9 +105,7 @@ export default function DashboardSubscribersPage() {
           <DialogHeader>
             <DialogTitle>إرسال رسالة للمشتركين</DialogTitle>
             <DialogDescription>
-              سيتم إرسال هذه الرسالة إلى جميع المشتركين ({subscribers.length}) تلقائيًا.
-              <br/>
-              <strong className='text-destructive'>ملاحظة:</strong> يجب تثبيت وتكوين امتداد Firebase "Trigger Email".
+              سيتم فتح برنامج البريد الإلكتروني الافتراضي لديك مع تعبئة عناوين المشتركين ({subscribers.length}) تلقائيًا.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -106,7 +114,7 @@ export default function DashboardSubscribersPage() {
               <Input id="subject" value={subject} onChange={(e) => setSubject(e.target.value)} />
             </div>
             <div>
-              <Label htmlFor="body">نص الرسالة (يدعم HTML)</Label>
+              <Label htmlFor="body">نص الرسالة</Label>
               <Textarea id="body" value={body} onChange={(e) => setBody(e.target.value)} rows={8} />
             </div>
           </div>
@@ -116,11 +124,11 @@ export default function DashboardSubscribersPage() {
             </DialogClose>
             <Button onClick={handleSendNewsletter} disabled={isSending}>
               {isSending ? (
-                'جاري الإرسال...'
+                'جاري التجهيز...'
               ) : (
                 <>
                   <Send className="ml-2 h-4 w-4" />
-                  إرسال الآن
+                  تجهيز للإرسال
                 </>
               )}
             </Button>
