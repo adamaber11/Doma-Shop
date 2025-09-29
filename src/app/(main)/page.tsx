@@ -98,7 +98,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-20 bg-muted">
+      <section className="py-12 md:py-20 bg-orange-500/10">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold font-headline">عروض خاصة</h2>
