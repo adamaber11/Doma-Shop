@@ -15,6 +15,7 @@ import { UserAuth } from "./UserAuth";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
 import { CategoriesMenu } from "./CategoriesMenu";
+import { MobileCategories } from "./MobileCategories";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -96,14 +97,16 @@ export function Header() {
                             </div>
                         </SheetHeader>
                         <div className="flex-1 overflow-y-auto">
-                            <nav className="flex flex-col gap-4 p-4">
+                            <nav className="flex flex-col gap-1 p-4">
                                 {navLinks.map(({ href, label }) => (
                                     <SheetClose key={href} asChild>
-                                        <Link href={href} className="text-lg font-medium relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
+                                        <Link href={href} className="text-lg font-medium py-2 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
                                             {label}
                                         </Link>
                                     </SheetClose>
                                 ))}
+                                 <Separator className="my-2" />
+                                 <MobileCategories />
                             </nav>
                         </div>
                         <Separator />
@@ -130,11 +133,6 @@ export function Header() {
                 </Sheet>
             </div>
         </div>
-      </div>
-      <div className="lg:hidden border-t bg-background">
-          <div className="container mx-auto px-4 h-14 flex items-center justify-center">
-            <CategoriesMenu />
-          </div>
       </div>
     </header>
   );
