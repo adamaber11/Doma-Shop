@@ -109,17 +109,17 @@ export default function ProductsPage() {
             <main className="flex-1">
                 <h1 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h1>
                  {loading ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                         {[...Array(12)].map((_, j) => (
                              <div key={j} className="w-full mx-auto">
-                                <Skeleton className="h-64" />
+                                <Skeleton className="h-96" />
                             </div>
                         ))}
                     </div>
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="flex flex-wrap gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                             {filteredProducts.map((product) => (
                                 <div key={product.id}>
                                   <ProductCard product={product} />
