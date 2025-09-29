@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import Image from "next/image";
@@ -104,46 +103,32 @@ export default function Home() {
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold font-headline">عروض خاصة</h2>
           </div>
-          <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-                direction: "rtl",
-              }}
-              plugins={[bannerPlugin.current]}
-              onMouseEnter={bannerPlugin.current.stop}
-              onMouseLeave={bannerPlugin.current.play}
-              className="w-full"
-            >
-              <CarouselContent>
-                {loading ? (
-                  <CarouselItem>
-                    <Skeleton className="aspect-[16/5] w-full" />
-                  </CarouselItem>
-                ) : bannerAds.length > 0 ? (
-                    bannerAds.map((ad) => (
-                    <CarouselItem key={ad.id}>
-                      <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer">
-                        <div className="relative aspect-[16/5] w-full rounded-lg overflow-hidden">
-                          <Image
-                              src={ad.imageUrl}
-                              alt="Advertisement"
-                              fill
-                              className="object-cover"
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             {loading ? (
+                [...Array(3)].map((_, i) => (
+                    <div key={i}>
+                        <Skeleton className="aspect-video w-full rounded-lg" />
+                    </div>
+                ))
+            ) : bannerAds.length > 0 ? (
+                bannerAds.slice(0, 3).map((ad) => (
+                    <Link key={ad.id} href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group">
+                        <div className="relative aspect-video w-full rounded-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
+                            <Image
+                                src={ad.imageUrl}
+                                alt="Advertisement"
+                                fill
+                                className="object-cover"
                             />
                         </div>
-                      </Link>
-                    </CarouselItem>
-                  ))
-                ) : (
-                   <CarouselItem>
-                      <div className="relative aspect-[16/5] w-full rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
-                         <p className="text-muted-foreground">لا توجد بنرات لعرضها حاليًا</p>
-                      </div>
-                    </CarouselItem>
-                )}
-              </CarouselContent>
-            </Carousel>
+                    </Link>
+                ))
+            ) : (
+                <div className="col-span-3 text-center py-10">
+                    <p className="text-muted-foreground">لا توجد بنرات لعرضها حاليًا</p>
+                </div>
+            )}
+            </div>
         </div>
       </section>
       
