@@ -102,24 +102,28 @@ export default function ProductsPage() {
             </Dialog>
         )}
         
-        <div className="flex flex-row-reverse gap-8">
+        <div className="flex flex-row gap-8">
             <aside className="w-64 hidden md:block">
                 <ProductFilters />
             </aside>
             <main className="flex-1">
                 <h1 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h1>
                  {loading ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
                         {[...Array(10)].map((_, j) => (
-                            <Skeleton key={j} className="w-[150px] h-64" />
+                             <div key={j} className="w-[150px] mx-auto">
+                                <Skeleton className="h-64" />
+                            </div>
                         ))}
                     </div>
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <div className="flex flex-wrap gap-2">
                             {filteredProducts.map((product) => (
-                               <ProductCard key={product.id} product={product} />
+                                <div key={product.id}>
+                                  <ProductCard product={product} />
+                                </div>
                             ))}
                         </div>
                         ) : (
