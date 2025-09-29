@@ -112,7 +112,7 @@ export default function ProductsPage() {
                     <main>
                         <h2 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h2>
                         {filteredProducts.length > 0 ? (
-                        <div className="flex overflow-x-auto pb-4 gap-4">
+                        <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
                             {filteredProducts.map((product) => (
                                 <div key={product.id} className="flex-shrink-0">
                                    <ProductCard product={product} />
