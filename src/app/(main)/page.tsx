@@ -159,7 +159,7 @@ export default function Home() {
                 >
                   <CarouselContent>
                     {bannerAds.map((ad) => (
-                      <CarouselItem key={ad.id} className="md:basis-1/2 lg:basis-1/3">
+                      <CarouselItem key={ad.id} className="md:basis-1/1 lg:basis-1/2">
                         <div className="p-1">
                            <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden">
                                 <Image
