@@ -101,6 +101,9 @@ export default function Home() {
 
       <section className="py-12 md:py-20 bg-muted">
         <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold font-headline">عروض خاصة</h2>
+          </div>
           <Carousel
               opts={{
                 align: "start",
@@ -115,13 +118,13 @@ export default function Home() {
               <CarouselContent>
                 {loading ? (
                   <CarouselItem>
-                    <Skeleton className="aspect-[16/6] w-full" />
+                    <Skeleton className="aspect-[16/5] w-full" />
                   </CarouselItem>
                 ) : bannerAds.length > 0 ? (
                     bannerAds.map((ad) => (
                     <CarouselItem key={ad.id}>
                       <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer">
-                        <div className="relative aspect-[16/6] w-full rounded-lg overflow-hidden">
+                        <div className="relative aspect-[16/5] w-full rounded-lg overflow-hidden">
                           <Image
                               src={ad.imageUrl}
                               alt="Advertisement"
@@ -134,7 +137,7 @@ export default function Home() {
                   ))
                 ) : (
                    <CarouselItem>
-                      <div className="relative aspect-[16/6] w-full rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+                      <div className="relative aspect-[16/5] w-full rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
                          <p className="text-muted-foreground">لا توجد بنرات لعرضها حاليًا</p>
                       </div>
                     </CarouselItem>
@@ -284,5 +287,3 @@ export default function Home() {
     </>
   );
 }
-
-    
