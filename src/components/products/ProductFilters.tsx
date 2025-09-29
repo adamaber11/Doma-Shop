@@ -10,6 +10,7 @@ import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Separator } from '../ui/separator';
 
 
 export function ProductFilters() {
@@ -73,13 +74,16 @@ export function ProductFilters() {
     <div className="w-full">
         <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold font-headline">الفئات</h2>
-             <Button
-                variant={'ghost'}
+        </div>
+         <div className='flex flex-col items-start gap-1'>
+            <Button
+                variant={'link'}
                 onClick={() => handleFilterClick()}
-                className={cn('text-sm h-auto p-0', !activeCategoryId && 'text-primary font-bold')}
+                className={cn('text-base h-auto p-1', !activeCategoryId ? 'text-primary font-bold' : 'text-foreground')}
             >
-                إعادة تعيين
+               الكل
             </Button>
+            <Separator className="mb-2" />
         </div>
         <Accordion type="multiple" defaultValue={activeCategoryId ? [activeCategoryId] : []} className="w-full">
             {categories.map(category => (
