@@ -45,9 +45,11 @@ async function seedDatabase() {
     console.log('\nSeeding orders...');
     const orderCollection = db.collection('orders');
     for (const order of allOrders) {
-      const { id, ...orderData } = order;
+      const { id, customerName, customerEmail, ...orderData } = order;
       const dataToSet = {
         ...orderData,
+        customerName: customerName || order.name, // Backward compatibility
+        customerEmail: customerEmail || order.email, // Backward compatibility
         createdAt: Timestamp.fromDate(orderData.createdAt),
       };
       await orderCollection.doc(id).set(dataToSet);

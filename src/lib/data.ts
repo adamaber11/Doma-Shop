@@ -15,7 +15,12 @@ export const allCategories: Category[] = [
   { id: 'handmade', name: 'الأعمال اليدوية', imageUrl: 'https://picsum.photos/seed/product-21/100/100' },
   { id: 'used', name: 'المستعمل', imageUrl: 'https://picsum.photos/seed/product-22/100/100' },
   { id: 'cars-parts', name: 'السيارات وقطع الغيار', imageUrl: 'https://picsum.photos/seed/vehicles-cat/100/100' },
-  { id: 'pet-supplies', name: 'مستلزمات الحيوانات الأليفة', imageUrl: 'https://picsum.photos/seed/product-16/100/100' }
+  { id: 'pet-supplies', name: 'مستلزمات الحيوانات الأليفة', imageUrl: 'https://picsum.photos/seed/product-16/100/100' },
+  { id: 'health-wellness', name: 'الصحة والعافية', imageUrl: 'https://picsum.photos/seed/health-cat/100/100' },
+  { id: 'office-supplies', name: 'مستلزمات مكتبية', imageUrl: 'https://picsum.photos/seed/office-cat/100/100' },
+  { id: 'music-instruments', name: 'الموسيقى والآلات', imageUrl: 'https://picsum.photos/seed/music-cat/100/100' },
+  { id: 'art-crafts', name: 'الفنون والحرف', imageUrl: 'https://picsum.photos/seed/art-cat/100/100' },
+  { id: 'industrial-scientific', name: 'صناعي وعلمي', imageUrl: 'https://picsum.photos/seed/industrial-cat/100/100' }
 ];
 
 const sampleReviews: Review[] = [
@@ -48,8 +53,8 @@ export const allProducts: Product[] = [
 export const allOrders: Order[] = [
     { id: 'order-101', customerName: 'علي حسن', customerEmail: 'ali@example.com', total: 149.99, status: 'delivered', createdAt: new Date('2023-11-10T09:30:00Z'), items: [{productName: 'طقم أواني طهي 10 قطع', quantity: 1, price: 149.99}] },
     { id: 'order-102', customerName: 'منى صالح', customerEmail: 'mona@example.com', total: 65.00, status: 'shipped', createdAt: new Date('2023-11-12T14:00:00Z'), items: [{productName: 'طقم قطار خشبي كلاسيكي', quantity: 1, price: 65.00}] },
-    { id: 'order-103', customerName: 'خالد عبد الله', customerEmail: 'khaled@example.com', total: 349.99, status: 'pending', createdAt: new Date('2023-11-14T11:20:00Z'), items: [{productName: 'سماعات إلغاء الضوضاء', quantity: 1, price: 349.99}] },
-    { id: 'order-104', customerName: 'نورة إبراهيم', customerEmail: 'noura@example.com', total: 89.99, status: 'cancelled', createdAt: new Date('2023-11-13T18:00:00Z'), items: [{productName: 'جاكيت جينز كلاسيك', quantity: 1, price: 89.99}] },
+    { id: 'order-103', name: 'خالد عبد الله', email: 'khaled@example.com', total: 349.99, status: 'pending', createdAt: new Date('2023-11-14T11:20:00Z'), items: [{productName: 'سماعات إلغاء الضوضاء', quantity: 1, price: 349.99}] },
+    { id: 'order-104', name: 'نورة إبراهيم', email: 'noura@example.com', total: 89.99, status: 'cancelled', createdAt: new Date('2023-11-13T18:00:00Z'), items: [{productName: 'جاكيت جينز كلاسيك', quantity: 1, price: 89.99}] },
 ];
 
 export const allCustomers: Customer[] = [
