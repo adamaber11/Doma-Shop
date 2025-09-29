@@ -273,11 +273,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </Button>
               </div>
               <div className="flex flex-col sm:flex-row gap-2 w-full flex-1">
-                 <Button size="lg" onClick={handleAddToCart} className="flex-1 w-full">
+                 <Button size="lg" onClick={handleAddToCart} className="flex-1 w-full h-12 text-base px-6">
                     <ShoppingBag className="ml-2 h-5 w-5" />
                     أضف إلى السلة
                 </Button>
-                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="flex-1 w-full">
+                <Button size="lg" variant="secondary" onClick={handleBuyNow} className="flex-1 w-full h-12 text-base px-6">
                     اشتري الآن
                 </Button>
               </div>
