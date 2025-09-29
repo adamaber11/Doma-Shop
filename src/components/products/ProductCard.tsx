@@ -25,7 +25,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <>
-      <div className="bg-white text-black h-full flex flex-col max-w-[180px] mx-auto border border-transparent rounded-lg overflow-hidden transition-all duration-300 hover:shadow-md hover:border-gray-200">
+      <div className="bg-white text-black h-full flex flex-col max-w-[180px] mx-auto border border-transparent hover:border-gray-200 rounded-lg overflow-hidden transition-all duration-300">
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <div className="relative w-full aspect-[4/5] bg-white p-4">
                 <Image
