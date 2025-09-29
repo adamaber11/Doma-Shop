@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { addProduct } from '@/services/product-service';
-import type { Category, SubCategory } from '@/lib/types';
+import { addProduct, getCategories } from '@/services/product-service';
+import type { Category } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { ArrowRight, PlusCircle, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const variantSchema = z.object({
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "يجب أن يكون اللون صالحًا (hex code)"),
@@ -40,6 +41,8 @@ const productSchema = z.object({
   type: z.string().optional(),
   material: z.string().optional(),
   madeIn: z.string().optional(),
+  categoryId: z.string({ required_error: "الفئة الرئيسية مطلوبة" }),
+  subcategoryId: z.string().optional(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -47,6 +50,9 @@ type ProductFormValues = z.infer<typeof productSchema>;
 export default function NewProductPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Category[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -68,13 +74,37 @@ export default function NewProductPage() {
     }
   });
 
-
   const { fields: variantFields, append: appendVariant, remove: removeVariant } = useFieldArray({
     control: form.control,
     name: "variants",
   });
   
   const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({ control: form.control, name: "sizes" });
+
+  const selectedCategoryId = form.watch('categoryId');
+
+  useEffect(() => {
+    const fetchCats = async () => {
+        setLoadingCategories(true);
+        try {
+            const allCats = await getCategories(true, true);
+            const mainCats = allCats.filter(c => !c.parentId);
+            setCategories(mainCats);
+
+            if (selectedCategoryId) {
+                const subs = allCats.filter(c => c.parentId === selectedCategoryId);
+                setSubcategories(subs);
+            } else {
+                setSubcategories([]);
+            }
+        } catch (error) {
+             console.error("Failed to fetch categories:", error);
+        } finally {
+            setLoadingCategories(false);
+        }
+    };
+    fetchCats();
+}, [selectedCategoryId]);
 
 
   const onSubmit = async (values: ProductFormValues) => {
@@ -135,6 +165,49 @@ export default function NewProductPage() {
                         <FormMessage />
                     </FormItem>
                     )} />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField control={form.control} name="categoryId" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>الفئة الرئيسية</FormLabel>
+                                {loadingCategories ? <Skeleton className="h-10 w-full" /> : (
+                                    <Select onValueChange={(value) => { field.onChange(value); form.setValue('subcategoryId', undefined); }} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="اختر فئة رئيسية" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {categories.map(cat => (
+                                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        {selectedCategoryId && subcategories.length > 0 && (
+                            <FormField control={form.control} name="subcategoryId" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>الفئة الفرعية</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="اختر فئة فرعية" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {subcategories.map(sub => (
+                                                <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        )}
+                    </div>
                     
                     <div className='space-y-6'>
                          <FormLabel>متغيرات المنتج (الألوان والصور)</FormLabel>

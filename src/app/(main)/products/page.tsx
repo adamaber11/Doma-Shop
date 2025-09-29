@@ -14,7 +14,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import { X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { ProductFilters } from "@/components/products/ProductFilters";
+
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -54,9 +55,20 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = useMemo(() => {
-    let tempProducts = [...products];
-    return tempProducts;
-  }, [products]);
+    const categoryId = searchParams.get('category');
+    const subcategoryId = searchParams.get('subcategory');
+
+    if (!categoryId) {
+        return products;
+    }
+
+    if(subcategoryId) {
+        return products.filter(p => p.subcategoryId === subcategoryId);
+    }
+    
+    return products.filter(p => p.categoryId === categoryId);
+
+  }, [products, searchParams]);
 
 
   return (
@@ -90,33 +102,24 @@ export default function ProductsPage() {
             </Dialog>
         )}
         
-        <div className="space-y-12">
-            
-            {loading ? (
-                <div className="space-y-12">
-                    {[...Array(1)].map((_, i) => (
-                        <div key={i}>
-                            <Skeleton className="h-8 w-48 mb-6" />
-                            <div className="flex overflow-x-auto gap-[5px] pb-4">
-                                {[...Array(5)].map((_, j) => (
-                                <div key={j} className="flex-shrink-0">
-                                    <Skeleton className="w-[180px] h-[240px]" />
-                                </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <>
-                    <main>
-                        <h2 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h2>
+        <div className="flex flex-row-reverse gap-8">
+            <aside className="w-64 hidden md:block">
+                <ProductFilters />
+            </aside>
+            <main className="flex-1">
+                <h1 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h1>
+                 {loading ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {[...Array(10)].map((_, j) => (
+                            <Skeleton key={j} className="w-[150px] h-64" />
+                        ))}
+                    </div>
+                ) : (
+                    <>
                         {filteredProducts.length > 0 ? (
-                        <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                             {filteredProducts.map((product) => (
-                                <div key={product.id} className="flex-shrink-0">
-                                   <ProductCard product={product} />
-                                </div>
+                               <ProductCard key={product.id} product={product} />
                             ))}
                         </div>
                         ) : (
@@ -125,9 +128,9 @@ export default function ProductsPage() {
                             <p className="text-muted-foreground">حاول تعديل الفلاتر للعثور على ما تبحث عنه.</p>
                         </div>
                         )}
-                    </main>
-                </>
-            )}
+                    </>
+                )}
+            </main>
         </div>
       </div>
   );

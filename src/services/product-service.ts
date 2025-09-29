@@ -217,7 +217,7 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
     const catDocRef = doc(db, 'categories', categoryId);
     const catDoc = await getDoc(catDocRef);
     if (catDoc.exists()) {
-        const category = { id: catDoc.id, ...doc.data() } as Category;
+        const category = { id: catDoc.id, ...catDoc.data() } as Category;
         // Optionally update the cache
         if (allCategories) {
             const index = allCategories.findIndex(c => c.id === categoryId);

@@ -43,6 +43,8 @@ export type Product = {
   material?: string;
   madeIn?: string;
   reviews?: Review[];
+  categoryId?: string;
+  subcategoryId?: string;
 };
 
 export type CartItem = {

@@ -6,8 +6,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { updateProduct, getProductById } from '@/services/product-service';
-import type { Product } from '@/lib/types';
+import { updateProduct, getProductById, getCategories } from '@/services/product-service';
+import type { Product, Category } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { ArrowRight, PlusCircle, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const variantSchema = z.object({
   color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "يجب أن يكون اللون صالحًا (hex code)"),
@@ -40,6 +41,8 @@ const productSchema = z.object({
   type: z.string().optional(),
   material: z.string().optional(),
   madeIn: z.string().optional(),
+  categoryId: z.string().optional(),
+  subcategoryId: z.string().optional(),
 });
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -53,6 +56,8 @@ export default function EditProductPage() {
   const { toast } = useToast();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Category[]>([]);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -69,50 +74,81 @@ export default function EditProductPage() {
   });
   
   const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({ control: form.control, name: "sizes" });
+  
+  const selectedCategoryId = form.watch('categoryId');
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const fetchedProduct = await getProductById(productId);
+    const fetchInitialData = async () => {
+        setLoading(true);
+        try {
+            const [fetchedProduct, allCategories] = await Promise.all([
+                getProductById(productId),
+                getCategories(true, true), // Fetch flat list
+            ]);
 
-        if (fetchedProduct) {
-          setProduct(fetchedProduct);
-          const defaultValues: Omit<ProductFormValues, 'categoryId' | 'subcategoryId'> & { categoryId?: string; subcategoryId?: string } = {
-              name: fetchedProduct.name,
-              description: fetchedProduct.description,
-              price: fetchedProduct.price,
-              salePrice: fetchedProduct.salePrice || null,
-              stock: fetchedProduct.stock,
-              variants: (fetchedProduct.variants || []).map(v => ({
-                  color: v.color,
-                  imageUrls: v.imageUrls.map(url => ({ value: url })),
-              })),
-              sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
-              isFeatured: fetchedProduct.isFeatured || false,
-              isBestOffer: fetchedProduct.isBestOffer || false,
-              isBestSeller: fetchedProduct.isBestSeller || false,
-              brand: fetchedProduct.brand || "",
-              type: fetchedProduct.type || "",
-              material: fetchedProduct.material || "",
-              madeIn: fetchedProduct.madeIn || "",
-          };
-          form.reset(defaultValues);
-        } else {
-            toast({ title: "خطأ", description: "لم يتم العثور على المنتج.", variant: "destructive" });
-            router.push('/dashboard/products');
+            if (fetchedProduct) {
+                setProduct(fetchedProduct);
+                const mainCategories = allCategories.filter(c => !c.parentId);
+                setCategories(mainCategories);
+
+                const defaultValues = {
+                    ...fetchedProduct,
+                    salePrice: fetchedProduct.salePrice || null,
+                    variants: (fetchedProduct.variants || []).map(v => ({
+                        color: v.color,
+                        imageUrls: v.imageUrls.map(url => ({ value: url })),
+                    })),
+                    sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
+                    brand: fetchedProduct.brand || "",
+                    type: fetchedProduct.type || "",
+                    material: fetchedProduct.material || "",
+                    madeIn: fetchedProduct.madeIn || "",
+                };
+
+                // Find parent category if subcategory is selected
+                if(fetchedProduct.subcategoryId) {
+                     const subCat = allCategories.find(c => c.id === fetchedProduct.subcategoryId);
+                     if(subCat && subCat.parentId) {
+                        defaultValues.categoryId = subCat.parentId;
+                     }
+                }
+                
+                form.reset(defaultValues);
+                
+                // Populate subcategories based on the initial categoryId
+                if (defaultValues.categoryId) {
+                    const subs = allCategories.filter(c => c.parentId === defaultValues.categoryId);
+                    setSubcategories(subs);
+                }
+
+            } else {
+                toast({ title: "خطأ", description: "لم يتم العثور على المنتج.", variant: "destructive" });
+                router.push('/dashboard/products');
+            }
+        } catch (error) {
+            console.error("Failed to fetch data", error);
+            toast({ title: "خطأ", description: "فشل في جلب البيانات.", variant: "destructive" });
+        } finally {
+            setLoading(false);
         }
-      } catch (error) {
-        console.error("Failed to fetch data", error);
-        toast({ title: "خطأ", description: "فشل في جلب البيانات.", variant: "destructive" });
-      } finally {
-        setLoading(false);
-      }
     };
     if (productId) {
-        fetchData();
+        fetchInitialData();
     }
-  }, [productId, form, router, toast]);
+}, [productId, form, router, toast]);
+
+useEffect(() => {
+    const fetchAllCats = async () => {
+        const allCats = await getCategories(true, true);
+        if (selectedCategoryId) {
+            const subs = allCats.filter(c => c.parentId === selectedCategoryId);
+            setSubcategories(subs);
+        } else {
+            setSubcategories([]);
+        }
+    }
+    fetchAllCats();
+}, [selectedCategoryId]);
 
   const onSubmit = async (values: ProductFormValues) => {
      const productData: Partial<Product> = {
@@ -204,6 +240,47 @@ export default function EditProductPage() {
                         <FormMessage />
                     </FormItem>
                     )} />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField control={form.control} name="categoryId" render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>الفئة الرئيسية</FormLabel>
+                                <Select onValueChange={(value) => { field.onChange(value); form.setValue('subcategoryId', undefined); }} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="اختر فئة رئيسية" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {categories.map(cat => (
+                                            <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )} />
+                        {selectedCategoryId && subcategories.length > 0 && (
+                            <FormField control={form.control} name="subcategoryId" render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>الفئة الفرعية</FormLabel>
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="اختر فئة فرعية" />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {subcategories.map(sub => (
+                                                <SelectItem key={sub.id} value={sub.id}>{sub.name}</SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                        )}
+                    </div>
                     
                     <div className='space-y-6'>
                          <FormLabel>متغيرات المنتج (الألوان والصور)</FormLabel>
