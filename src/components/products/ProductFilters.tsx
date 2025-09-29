@@ -9,11 +9,7 @@ import type { Category } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import Link from 'next/link';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from '../ui/button';
-import { ChevronDown, ChevronsUpDown } from 'lucide-react';
 
 export function ProductFilters() {
   const router = useRouter();
@@ -22,7 +18,6 @@ export function ProductFilters() {
   
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openCollapsible, setOpenCollapsible] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -44,6 +39,17 @@ export function ProductFilters() {
 
   const handleFilterClick = (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
+      
+      // If clicking the same filter, remove it (and its children)
+      if (params.get(name) === value) {
+          params.delete(name);
+          if (name === 'category') {
+              params.delete('subcategory');
+          }
+          router.push(pathname + (params.toString() ? '?' + params.toString() : ''));
+          return;
+      }
+      
       params.set(name, value);
       if(name === 'category') {
           params.delete('subcategory');
@@ -51,22 +57,14 @@ export function ProductFilters() {
       router.push(pathname + '?' + params.toString());
   }
 
-  const handleCategoryClick = (category: Category) => {
-    if (!category.subcategories || category.subcategories.length === 0) {
-        handleFilterClick('category', category.id);
-    } else {
-        setOpenCollapsible(openCollapsible === category.id ? null : category.id);
-    }
-  }
-
   return (
     <div className="relative w-full">
         {loading ? (
            <div className="flex items-center gap-8">
-              {[...Array(6)].map((_, i) => (
-                  <div key={i} className="flex flex-col items-center gap-2">
+              {[...Array(8)].map((_, i) => (
+                  <div key={i} className="flex flex-col items-center gap-2 text-center w-24">
                     <Skeleton className="h-20 w-20 rounded-full" />
-                    <Skeleton className="h-5 w-24" />
+                    <Skeleton className="h-5 w-full" />
                   </div>
               ))}
             </div>
@@ -82,53 +80,39 @@ export function ProductFilters() {
                         عرض الكل
                     </Button>
                 </div>
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-x-4 gap-y-8">
+                <div className="space-y-8">
                     {categories.map(category => (
-                         <Collapsible key={category.id} open={openCollapsible === category.id} onOpenChange={() => handleCategoryClick(category)} className="col-span-1">
-                            <div className='flex flex-col items-center gap-2 text-center'>
-                                <CollapsibleTrigger asChild>
-                                    <button className={cn(
-                                        'flex flex-col items-center gap-2 group w-24',
-                                        (selectedCategory === category.id || category.subcategories?.some(s => s.id === selectedSubCategory)) && 'text-primary'
-                                    )}>
-                                        <div className={cn(
-                                            "relative h-20 w-20 rounded-full overflow-hidden border-2 transition-all",
-                                            (selectedCategory === category.id || category.subcategories?.some(s => s.id === selectedSubCategory)) 
-                                                ? 'border-primary' 
-                                                : 'border-transparent group-hover:border-primary/50'
-                                        )}>
-                                            <Image
-                                                src={category.imageUrl}
-                                                alt={category.name}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                        <div className='flex items-center gap-1'>
-                                            <h3 className="font-semibold text-sm">{category.name}</h3>
-                                            {category.subcategories && category.subcategories.length > 0 && <ChevronsUpDown className="h-4 w-4 shrink-0" />}
-                                        </div>
-                                    </button>
-                                </CollapsibleTrigger>
-                            </div>
+                        <div key={category.id}>
+                            <button 
+                                onClick={() => handleFilterClick('category', category.id)}
+                                className={cn(
+                                'flex items-center gap-3 group w-full text-right',
+                                (selectedCategory === category.id) && 'text-primary'
+                            )}>
+                                <div className={cn(
+                                    "relative h-12 w-12 rounded-md overflow-hidden border-2 shrink-0 transition-all",
+                                    (selectedCategory === category.id) 
+                                        ? 'border-primary' 
+                                        : 'border-transparent group-hover:border-primary/50'
+                                )}>
+                                    <Image
+                                        src={category.imageUrl}
+                                        alt={category.name}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <h3 className="font-semibold text-lg">{category.name}</h3>
+                            </button>
 
-                            {category.subcategories && category.subcategories.length > 0 && (
-                                <CollapsibleContent className="absolute z-20 mt-2 w-48 rounded-md border bg-popover p-1 text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95">
-                                    <ul className='space-y-1'>
-                                         <li>
-                                            <Button
-                                                variant="ghost"
-                                                className={cn("w-full justify-start", selectedCategory === category.id && !selectedSubCategory ? "bg-accent" : "")}
-                                                onClick={() => handleFilterClick('category', category.id)}
-                                            >
-                                                كل {category.name}
-                                            </Button>
-                                        </li>
+                            {category.subcategories && category.subcategories.length > 0 && selectedCategory === category.id && (
+                                <div className="mt-4 mr-8 pl-4 border-r-2 border-primary/20">
+                                    <ul className='space-y-2'>
                                         {category.subcategories.map(sub => (
                                             <li key={sub.id}>
                                                 <Button 
                                                     variant="ghost" 
-                                                    className={cn("w-full justify-start", selectedSubCategory === sub.id ? "bg-accent" : "")}
+                                                    className={cn("w-full justify-start", selectedSubCategory === sub.id ? "bg-accent text-accent-foreground" : "")}
                                                     onClick={() => handleFilterClick('subcategory', sub.id)}
                                                 >
                                                     {sub.name}
@@ -136,9 +120,9 @@ export function ProductFilters() {
                                             </li>
                                         ))}
                                     </ul>
-                                </CollapsibleContent>
+                                </div>
                             )}
-                         </Collapsible>
+                        </div>
                     ))}
                 </div>
             </div>
