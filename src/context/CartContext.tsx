@@ -4,6 +4,8 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import type { CartItem, Product } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
 
 export interface CartContextType {
   cartItems: CartItem[];
@@ -20,6 +22,9 @@ export const CartContext = createContext<CartContextType | undefined>(undefined)
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
 
   useEffect(() => {
     const savedCart = localStorage.getItem('cartItems');
@@ -33,6 +38,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cartItems]);
 
   const addToCart = (product: Product, quantity: number, selectedColor?: string, selectedSize?: string) => {
+    if (!user) {
+        toast({
+            title: "يرجى تسجيل الدخول أولاً",
+            description: "يجب عليك تسجيل الدخول لتتمكن من إضافة منتجات إلى السلة.",
+            variant: "destructive"
+        });
+        router.push('/login');
+        return;
+    }
+
     const hasVariants = product.variants && product.variants.length > 0;
     const hasSizes = product.sizes && product.sizes.length > 0;
 
