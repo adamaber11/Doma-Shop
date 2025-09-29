@@ -24,6 +24,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import type { ShippingRate } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
+import Image from 'next/image';
+import { getPlaceholderImage } from '@/lib/placeholder-images';
 
 const shippingSchema = z.object({
   name: z.string().min(2, "الاسم قصير جدًا"),
@@ -242,13 +244,23 @@ export default function CheckoutPage() {
                 <ul className="space-y-4">
                   {cartItems.map(item => {
                     const price = item.product.salePrice ?? item.product.price;
+                    const variant = item.product.variants.find(v => v.color === item.selectedColor);
+                    const itemImage = variant?.imageUrls[0] || getPlaceholderImage('product-1').imageUrl;
                     return (
-                      <li key={item.id} className="flex justify-between items-start">
-                        <div>
-                          <p className="font-semibold">{item.product.name}</p>
-                          <p className="text-sm text-muted-foreground">الكمية: {item.quantity}</p>
+                      <li key={item.id} className="flex items-center gap-4">
+                        <div className="relative h-16 w-16 rounded-md overflow-hidden border flex-shrink-0">
+                            <Image
+                                src={itemImage}
+                                alt={item.product.name}
+                                fill
+                                className="object-cover"
+                            />
                         </div>
-                        <p className="font-medium">{formatCurrency(price * item.quantity)}</p>
+                        <div className="flex-grow">
+                          <p className="font-semibold text-sm">{item.product.name}</p>
+                          <p className="text-xs text-muted-foreground">الكمية: {item.quantity}</p>
+                        </div>
+                        <p className="font-medium text-sm">{formatCurrency(price * item.quantity)}</p>
                       </li>
                     );
                   })}
