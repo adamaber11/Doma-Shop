@@ -27,6 +27,8 @@ export default function ProductsPage() {
 
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
+  const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +41,7 @@ export default function ProductsPage() {
         setProducts(fetchedProducts);
         setFeaturedProducts(fetchedProducts.filter(p => p.isFeatured));
         setBestOfferProducts(fetchedProducts.filter(p => p.isBestOffer));
+        setBestSellingProducts(fetchedProducts.filter(p => p.isBestSeller));
 
         const activeAds = fetchedAds.filter(ad => ad.isActive);
         setPopupAds(activeAds);
@@ -130,6 +133,25 @@ export default function ProductsPage() {
                 </div>
             ) : (
                 <>
+                    {bestSellingProducts.length > 0 && !searchParams.get('category') && !searchParams.get('subcategory') && (
+                        <section>
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-3xl font-bold font-headline">الأكثر مبيعًا</h2>
+                            </div>
+                            <Carousel opts={{ align: "start", direction: 'rtl', loop: bestSellingProducts.length > 5 }}>
+                                <CarouselContent className="flex gap-x-[5px]">
+                                    {bestSellingProducts.map((product) => (
+                                        <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
+                                            <div className="h-full">
+                                                <ProductCard product={product} />
+                                            </div>
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                            </Carousel>
+                        </section>
+                    )}
+
                     {featuredProducts.length > 0 && !searchParams.get('category') && !searchParams.get('subcategory') && (
                         <section>
                             <div className="flex justify-between items-center mb-6">

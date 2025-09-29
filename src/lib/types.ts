@@ -39,6 +39,7 @@ export type Product = {
   sizes?: string[];
   isFeatured?: boolean;
   isBestOffer?: boolean;
+  isBestSeller?: boolean;
   brand?: string;
   type?: string;
   material?: string;

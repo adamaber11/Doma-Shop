@@ -37,6 +37,7 @@ const productSchema = z.object({
   variants: z.array(variantSchema).min(1, "متغير واحد على الأقل مطلوب (لون وصور)"),
   isFeatured: z.boolean().default(false),
   isBestOffer: z.boolean().default(false),
+  isBestSeller: z.boolean().default(false),
   sizes: z.array(z.object({ value: z.string().min(1, "المقاس مطلوب") })).optional(),
   brand: z.string().optional(),
   type: z.string().optional(),
@@ -63,6 +64,7 @@ export default function EditProductPage() {
     defaultValues: {
       isFeatured: false,
       isBestOffer: false,
+      isBestSeller: false,
     }
   });
 
@@ -113,6 +115,7 @@ export default function EditProductPage() {
               sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
               isFeatured: fetchedProduct.isFeatured || false,
               isBestOffer: fetchedProduct.isBestOffer || false,
+              isBestSeller: fetchedProduct.isBestSeller || false,
               brand: fetchedProduct.brand || "",
               type: fetchedProduct.type || "",
               material: fetchedProduct.material || "",
@@ -437,6 +440,23 @@ export default function EditProductPage() {
                                         <FormLabel>أفضل العروض</FormLabel>
                                         <FormDescription>
                                             سيظهر هذا المنتج في قسم "أفضل العروض" في الصفحة الرئيسية.
+                                        </FormDescription>
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={form.control}
+                            name="isBestSeller"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>منتج الأكثر مبيعًا</FormLabel>
+                                        <FormDescription>
+                                           سيظهر هذا المنتج في قسم "الأكثر مبيعًا" في صفحة المنتجات.
                                         </FormDescription>
                                     </div>
                                 </FormItem>
