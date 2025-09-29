@@ -35,36 +35,31 @@ export function ProductFilters() {
   }, []);
   
   const selectedCategory = searchParams.get('category');
-  const selectedSubCategory = searchParams.get('subcategory');
 
-  const handleFilterClick = (name: string, value: string) => {
+  const handleCategoryClick = (categoryId: string) => {
       const params = new URLSearchParams(searchParams.toString());
-      
-      // If clicking the same filter, remove it (and its children)
-      if (params.get(name) === value) {
-          params.delete(name);
-          if (name === 'category') {
-              params.delete('subcategory');
-          }
-          router.push(pathname + (params.toString() ? '?' + params.toString() : ''));
-          return;
-      }
-      
-      params.set(name, value);
-      if(name === 'category') {
+      if (params.get('category') === categoryId) {
+          params.delete('category');
+          params.delete('subcategory');
+      } else {
+          params.set('category', categoryId);
           params.delete('subcategory');
       }
-      router.push(pathname + '?' + params.toString());
+      router.push(pathname + (params.toString() ? '?' + params.toString() : ''));
+  }
+
+  const clearFilters = () => {
+      router.push(pathname);
   }
 
   return (
     <div className="relative w-full">
         {loading ? (
-           <div className="flex items-center gap-8">
+           <div className="flex items-center gap-8 overflow-x-auto pb-4">
               {[...Array(8)].map((_, i) => (
-                  <div key={i} className="flex flex-col items-center gap-2 text-center w-24">
-                    <Skeleton className="h-20 w-20 rounded-full" />
-                    <Skeleton className="h-5 w-full" />
+                  <div key={i} className="flex flex-col items-center gap-2 text-center flex-shrink-0 w-20">
+                    <Skeleton className="h-16 w-16 rounded-full" />
+                    <Skeleton className="h-4 w-16" />
                   </div>
               ))}
             </div>
@@ -74,26 +69,25 @@ export function ProductFilters() {
                     <h2 className="text-2xl font-bold font-headline">الفئات</h2>
                     <Button
                         variant={'ghost'}
-                        onClick={() => router.push(pathname)}
-                        className={cn('text-sm', !selectedCategory && !selectedSubCategory && 'text-primary font-bold')}
+                        onClick={clearFilters}
+                        className={cn('text-sm', !selectedCategory && 'text-primary font-bold')}
                     >
                         عرض الكل
                     </Button>
                 </div>
-                <div className="space-y-8">
+                <div className="flex items-start gap-6 overflow-x-auto pb-4">
                     {categories.map(category => (
-                        <div key={category.id}>
-                            <button 
-                                onClick={() => handleFilterClick('category', category.id)}
-                                className={cn(
-                                'flex items-center gap-3 group w-full text-right',
-                                (selectedCategory === category.id) && 'text-primary'
+                        <button 
+                            key={category.id}
+                            onClick={() => handleCategoryClick(category.id)}
+                            className={cn(
+                                'group flex flex-col items-center gap-2 text-center w-20 flex-shrink-0',
                             )}>
                                 <div className={cn(
-                                    "relative h-12 w-12 rounded-md overflow-hidden border-2 shrink-0 transition-all",
+                                    "relative h-16 w-16 rounded-full overflow-hidden border-2 transition-all group-hover:border-primary group-hover:scale-105",
                                     (selectedCategory === category.id) 
                                         ? 'border-primary' 
-                                        : 'border-transparent group-hover:border-primary/50'
+                                        : 'border-transparent'
                                 )}>
                                     <Image
                                         src={category.imageUrl}
@@ -102,27 +96,11 @@ export function ProductFilters() {
                                         className="object-cover"
                                     />
                                 </div>
-                                <h3 className="font-semibold text-lg">{category.name}</h3>
-                            </button>
-
-                            {category.subcategories && category.subcategories.length > 0 && selectedCategory === category.id && (
-                                <div className="mt-4 mr-8 pl-4 border-r-2 border-primary/20">
-                                    <ul className='space-y-2'>
-                                        {category.subcategories.map(sub => (
-                                            <li key={sub.id}>
-                                                <Button 
-                                                    variant="ghost" 
-                                                    className={cn("w-full justify-start", selectedSubCategory === sub.id ? "bg-accent text-accent-foreground" : "")}
-                                                    onClick={() => handleFilterClick('subcategory', sub.id)}
-                                                >
-                                                    {sub.name}
-                                                </Button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
+                                <h3 className={cn(
+                                    "font-semibold text-xs text-card-foreground transition-colors",
+                                    (selectedCategory === category.id) ? 'text-primary' : 'group-hover:text-primary'
+                                )}>{category.name}</h3>
+                        </button>
                     ))}
                 </div>
             </div>
