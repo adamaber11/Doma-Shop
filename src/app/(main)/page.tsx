@@ -89,16 +89,16 @@ export default function Home() {
               استمتع بصفقات الموسم مع خصومات رائعة وعروض استثنائية لفترة محدودة
             </p>
           </div>
-            <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
              {loading ? (
                 [...Array(3)].map((_, i) => (
-                    <div key={i} className="flex-shrink-0 w-full md:w-1/3">
+                    <div key={i} className="flex-shrink-0 w-full">
                         <Skeleton className="aspect-video w-full rounded-lg" />
                     </div>
                 ))
             ) : bannerAds.length > 0 ? (
                 bannerAds.slice(0, 3).map((ad) => (
-                     <div key={ad.id} className="flex-shrink-0 w-full md:w-1/3">
+                     <div key={ad.id} className="flex-shrink-0 w-full">
                         <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-video w-full rounded-lg overflow-hidden">
                             <Image
                                 src={ad.imageUrl}
@@ -134,17 +134,17 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0">
-                    <Skeleton className="h-96 w-[180px]" />
+                    <Skeleton className="h-96 w-[180px] mx-auto" />
                   </div>
                 ))}
              </div>
            ) : (
-             <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {bestOfferProducts.map((product) => (
-                <div key={product.id} className="flex-shrink-0">
+                <div key={product.id} className="flex justify-center">
                     <ProductCard product={product} />
                 </div>
                 ))}
@@ -164,17 +164,17 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0">
-                    <Skeleton className="h-96 w-[180px]" />
+                    <Skeleton className="h-96 w-[180px] mx-auto" />
                   </div>
                 ))}
              </div>
            ) : (
-             <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {bestSellingProducts.map((product) => (
-                <div key={product.id} className="flex-shrink-0">
+                <div key={product.id} className="flex justify-center">
                     <ProductCard product={product} />
                 </div>
                 ))}
@@ -194,17 +194,17 @@ export default function Home() {
             </Button>
           </div>
            {loading ? (
-             <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex-shrink-0">
-                    <Skeleton className="h-96 w-[180px]" />
+                    <Skeleton className="h-96 w-[180px] mx-auto" />
                   </div>
                 ))}
              </div>
            ) : (
-             <div className="flex overflow-x-auto pb-4 gap-4 no-scrollbar">
+             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                 {featuredProducts.map((product) => (
-                <div key={product.id} className="flex-shrink-0">
+                <div key={product.id} className="flex justify-center">
                     <ProductCard product={product} />
                 </div>
                 ))}
@@ -215,5 +215,3 @@ export default function Home() {
     </>
   );
 }
-
-    

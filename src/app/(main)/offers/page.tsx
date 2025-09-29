@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -39,17 +38,17 @@ export default function OffersPage() {
         </div>
         <main>
           {loading ? (
-             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {[...Array(8)].map((_, i) => (
+             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {[...Array(10)].map((_, i) => (
                  <div key={i} className="flex-shrink-0">
-                    <Skeleton className="h-64 w-full" />
+                    <Skeleton className="h-96 w-[180px] mx-auto" />
                  </div>
               ))}
             </div>
           ) : offerProducts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {offerProducts.map(product => (
-                <div key={product.id}>
+                <div key={product.id} className="flex justify-center">
                   <OfferProductCard product={product} />
                 </div>
               ))}

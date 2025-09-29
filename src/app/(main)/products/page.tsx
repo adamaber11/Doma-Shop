@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ProductCard } from "@/components/products/ProductCard";
 import { getProducts, getPopupAds } from "@/services/product-service";
 import type { Product, Ad } from "@/lib/types";
@@ -10,19 +10,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { X, ArrowRight } from "lucide-react";
+import { X, ArrowRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ProductFilters } from "@/components/products/ProductFilters";
+import { Input } from "@/components/ui/input";
 
 
 export default function ProductsPage() {
+  const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [popupAds, setPopupAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [randomAd, setRandomAd] = useState<Ad | null>(null);
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,18 +60,39 @@ export default function ProductsPage() {
   const filteredProducts = useMemo(() => {
     const categoryId = searchParams.get('category');
     const subcategoryId = searchParams.get('subcategory');
+    const searchQuery = searchParams.get('q');
+
+    let tempProducts = products;
+    
+    if (searchQuery) {
+      tempProducts = tempProducts.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
 
     if (!categoryId) {
-        return products;
+        return tempProducts;
     }
 
     if(subcategoryId) {
-        return products.filter(p => p.subcategoryId === subcategoryId);
+        return tempProducts.filter(p => p.subcategoryId === subcategoryId);
     }
     
-    return products.filter(p => p.categoryId === categoryId);
+    return tempProducts.filter(p => p.categoryId === categoryId);
 
   }, [products, searchParams]);
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const params = new URLSearchParams(searchParams.toString());
+    if (searchTerm) {
+      params.set('q', searchTerm);
+    } else {
+      params.delete('q');
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }
 
 
   return (
@@ -101,26 +126,38 @@ export default function ProductsPage() {
             </Dialog>
         )}
         
-        <div className="flex flex-row gap-8">
-            <aside className="w-64 hidden md:block">
+        <div className="flex flex-col md:flex-row gap-8">
+            <aside className="w-full md:w-64">
                 <ProductFilters />
             </aside>
             <main className="flex-1 overflow-hidden">
-                <h1 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h1>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                  <h1 className="text-3xl font-bold font-headline">كل المنتجات</h1>
+                   <form onSubmit={handleSearch} className="relative w-full sm:w-64">
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input 
+                      type="search" 
+                      placeholder="ابحث في المنتجات..." 
+                      className="pr-10" 
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </form>
+                </div>
                  {loading ? (
-                    <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
-                        {[...Array(12)].map((_, j) => (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {[...Array(8)].map((_, j) => (
                              <div key={j} className="flex-shrink-0">
-                                <Skeleton className="h-96 w-[180px]" />
+                                <Skeleton className="h-96 w-[180px] mx-auto" />
                             </div>
                         ))}
                     </div>
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {filteredProducts.map((product) => (
-                                <div key={product.id} className="flex-shrink-0">
+                                <div key={product.id} className="flex justify-center">
                                   <ProductCard product={product} />
                                 </div>
                             ))}
@@ -128,7 +165,7 @@ export default function ProductsPage() {
                         ) : (
                         <div className="flex flex-col items-center justify-center h-full text-center py-16">
                             <h2 className="text-2xl font-semibold mb-2">لم يتم العثور على منتجات</h2>
-                            <p className="text-muted-foreground">حاول تعديل الفلاتر للعثور على ما تبحث عنه.</p>
+                            <p className="text-muted-foreground">حاول تعديل الفلاتر أو البحث بكلمة أخرى.</p>
                         </div>
                         )}
                     </>

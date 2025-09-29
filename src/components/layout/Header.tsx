@@ -9,12 +9,13 @@ import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UserAuth } from "./UserAuth";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
 import { MobileCategories } from "./MobileCategories";
+import { useState } from "react";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -28,12 +29,20 @@ export function Header() {
   const { cartCount } = useCart();
   const { user } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
   
   const isDashboard = pathname.startsWith('/dashboard');
-  const isHomePage = pathname === '/';
 
   if (isDashboard) {
     return null;
+  }
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/products?q=${encodeURIComponent(searchTerm.trim())}`);
+    }
   }
   
   const headerClasses = cn(
@@ -56,12 +65,16 @@ export function Header() {
                 ))}
             </nav>
             <div className="flex items-center gap-2 md:gap-4">
-                {!isHomePage && (
-                  <div className="relative hidden md:block">
-                      <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <Input type="search" placeholder="ابحث عن منتجات..." className="pr-10 w-48 md:w-64" />
-                  </div>
-                )}
+                <form onSubmit={handleSearch} className="relative hidden md:block">
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input 
+                      type="search" 
+                      placeholder="ابحث عن منتجات..." 
+                      className="pr-10 w-48 md:w-64"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </form>
 
                 <UserAuth />
                 
@@ -97,6 +110,16 @@ export function Header() {
                         </SheetHeader>
                         <div className="flex-1 overflow-y-auto">
                              <div className="p-4">
+                                <form onSubmit={handleSearch} className="relative w-full mb-4">
+                                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Input 
+                                      type="search" 
+                                      placeholder="ابحث عن منتجات..." 
+                                      className="pr-10"
+                                      value={searchTerm}
+                                      onChange={(e) => setSearchTerm(e.target.value)}
+                                    />
+                                </form>
                                 <Separator className="mb-4" />
                                 <MobileCategories />
                                 <Separator className="my-4" />

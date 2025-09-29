@@ -35,11 +35,10 @@ export function ProductCard({ product }: ProductCardProps) {
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                 />
             </div>
-            <div className="p-2 pt-[5px] flex-grow flex flex-col bg-white">
+            <div className="p-3 flex-grow flex flex-col bg-white">
                 {hasSale && (
                     <div className="flex items-center gap-1 mb-2 flex-wrap">
-                      <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5">خصم {discountPercentage}%</span>
-                      <span className="text-red-600 text-[10px] font-bold">عرض لمدة محدودة</span>
+                      <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">خصم {discountPercentage}%</span>
                     </div>
                 )}
                 <h3 className="text-sm font-normal text-black line-clamp-2 mb-2 flex-grow hover:text-primary hover:underline h-[40px]">{product.name}</h3>
@@ -55,7 +54,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     </div>
                 )}
 
-                <div className="mb-3">
+                <div className="mt-auto">
                     {hasSale ? (
                         <div className="flex items-baseline gap-2">
                             <p className="text-lg font-bold">{formatCurrency(product.salePrice!)}</p>
