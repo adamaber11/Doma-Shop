@@ -56,14 +56,40 @@ export default function DashboardSubscribersPage() {
 
   const handleSendNewsletter = () => {
     const bcc = subscribers.map(s => s.email).join(',');
-    const mailtoLink = `mailto:?bcc=${encodeURIComponent(bcc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    // Simple HTML template for the email body
+    const emailBodyHtml = `
+      <div dir="rtl" style="font-family: Arial, sans-serif; text-align: right; color: #333;">
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 8px;">
+          <h2 style="color: #222; border-bottom: 2px solid #007BFF; padding-bottom: 10px;">Doma Online Shop</h2>
+          <p style="font-size: 16px; line-height: 1.6;">
+            ${body.replace(/\n/g, '<br>')}
+          </p>
+          <p style="margin-top: 30px; font-size: 14px; color: #777;">
+            شكرًا لكونك جزءًا من مجتمعنا!
+          </p>
+          <p style="font-size: 12px; color: #aaa; margin-top: 20px;">
+            لقد استلمت هذا البريد الإلكتروني لأنك مشترك في النشرة الإخبارية لمتجر Doma.
+          </p>
+        </div>
+      </div>
+    `;
+
+    const mailtoLink = `mailto:?bcc=${encodeURIComponent(bcc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBodyHtml)}`;
     
-    window.location.href = mailtoLink;
+    // Using window.open to handle potentially long mailto links
+    const newWindow = window.open(mailtoLink, '_blank');
+    if (!newWindow) {
+        // Fallback for pop-up blockers
+        window.location.href = mailtoLink;
+    }
+    
     setIsComposeOpen(false);
     setSubject('');
     setBody('');
     toast({ title: 'جاهز للإرسال!', description: 'تم فتح برنامج البريد الإلكتروني الخاص بك.' });
   };
+
 
   return (
     <div>
