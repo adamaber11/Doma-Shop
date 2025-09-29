@@ -155,7 +155,7 @@ export default function ProductsPage() {
                 ) : (
                     <>
                         {filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-[5px]">
+                        <div className="grid grid-cols-6 gap-[5px]">
                             {filteredProducts.map((product) => (
                                 <div key={product.id} className="flex justify-center">
                                   <ProductCard product={product} />
