@@ -204,10 +204,10 @@ export default function Home() {
                 }}
                 className="w-full"
                 >
-                <CarouselContent>
+                <CarouselContent className="-ml-0.5">
                     {bestOfferProducts.map((product) => (
-                    <CarouselItem key={product.id} className="md:basis-1/3 lg:basis-1/5">
-                         <div className="p-1 h-full">
+                    <CarouselItem key={product.id} className="md:basis-1/3 lg:basis-1/5 pl-0.5">
+                         <div className="h-full">
                             <ProductCard product={product} />
                         </div>
                     </CarouselItem>

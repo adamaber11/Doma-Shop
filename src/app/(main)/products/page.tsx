@@ -103,7 +103,7 @@ export default function ProductsPage() {
             <main>
                 <h1 className="text-3xl font-bold font-headline mb-6">منتجاتنا</h1>
                 {loading ? (
-                <div className="flex flex-wrap justify-center gap-1">
+                <div className="flex flex-wrap justify-center gap-0.5">
                     {[...Array(9)].map((_, i) => (
                     <div key={i} className="space-y-2">
                         <Skeleton className="aspect-[4/3] w-full max-w-[180px]" />
@@ -113,7 +113,7 @@ export default function ProductsPage() {
                     ))}
                 </div>
                 ) : filteredProducts.length > 0 ? (
-                <div className="flex flex-wrap justify-center gap-1">
+                <div className="flex flex-wrap justify-center gap-0.5">
                     {filteredProducts.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
