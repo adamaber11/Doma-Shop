@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { UserAuth } from "./UserAuth";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
+import { CategoriesMenu } from "./CategoriesMenu";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -47,6 +48,7 @@ export function Header() {
         </div>
         <div className="flex items-center gap-4">
             <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
+                <CategoriesMenu />
                 {navLinks.map(({ href, label }) => (
                 <Link key={href} href={href} className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
                     {label}
@@ -128,6 +130,11 @@ export function Header() {
                 </Sheet>
             </div>
         </div>
+      </div>
+      <div className="lg:hidden border-t bg-background">
+          <div className="container mx-auto px-4 h-14 flex items-center justify-center">
+            <CategoriesMenu />
+          </div>
       </div>
     </header>
   );
