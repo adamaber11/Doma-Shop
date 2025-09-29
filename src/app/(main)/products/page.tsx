@@ -127,7 +127,7 @@ export default function ProductsPage() {
         )}
         
         <div className="flex flex-col md:flex-row gap-8">
-            <aside className="w-full md:w-64">
+            <aside className="hidden md:block md:w-64">
                 <ProductFilters />
             </aside>
             <main className="flex-1 overflow-hidden">
