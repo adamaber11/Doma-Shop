@@ -38,19 +38,21 @@ export default function OffersPage() {
         </div>
         <main>
           {loading ? (
-             <div className="flex flex-wrap justify-center gap-0.5">
+             <div className="flex flex-wrap justify-center -m-1">
               {[...Array(8)].map((_, i) => (
-                 <div key={i} className="space-y-2">
-                    <Skeleton className="h-64 w-full" />
-                    <Skeleton className="h-6 w-3/4" />
-                    <Skeleton className="h-6 w-1/4" />
+                 <div key={i} className="p-1">
+                    <Skeleton className="h-64 w-[180px]" />
+                    <Skeleton className="h-6 w-3/4 mt-2" />
+                    <Skeleton className="h-6 w-1/4 mt-1" />
                  </div>
               ))}
             </div>
           ) : offerProducts.length > 0 ? (
-            <div className="flex flex-wrap justify-center gap-0.5">
+            <div className="flex flex-wrap justify-center -m-1">
               {offerProducts.map(product => (
-                <OfferProductCard key={product.id} product={product} />
+                <div key={product.id} className="p-1">
+                    <OfferProductCard product={product} />
+                </div>
               ))}
             </div>
           ) : (
