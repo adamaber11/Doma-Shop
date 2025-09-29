@@ -15,34 +15,33 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import React, { useEffect, useState } from "react";
-import { getProducts, getCategories, getAds } from "@/services/product-service";
+import { getProducts, getAds } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
-import type { Product, Category, HomepageSettings, Ad } from "@/lib/types";
+import type { Product, HomepageSettings, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
 
 export default function Home() {
-  const [categories, setCategories] = useState<Category[]>([]);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [bannerAds, setBannerAds] = useState<Ad[]>([]);
   const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
+  const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [fetchedCategories, settings, ads, allProducts] = await Promise.all([
-          getCategories(),
+        const [settings, ads, allProducts] = await Promise.all([
           getHomepageSettings(),
           getAds(),
           getProducts(),
         ]);
-        setCategories(fetchedCategories);
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
         setBestOfferProducts(allProducts.filter(p => p.isBestOffer));
+        setBestSellingProducts(allProducts.filter(p => p.isBestSeller));
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -175,6 +174,52 @@ export default function Home() {
                 >
                 <CarouselContent className="flex gap-x-[5px]">
                     {bestOfferProducts.map((product) => (
+                    <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
+                         <div className="h-full">
+                            <ProductCard product={product} />
+                        </div>
+                    </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-0 -translate-x-1/2 z-10" />
+                <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-1/2 z-10" />
+             </Carousel>
+            )}
+        </div>
+      </section>
+
+       <section className="py-12 md:py-20 bg-muted">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold font-headline">الأكثر مبيعًا</h2>
+             <Button variant="ghost" asChild>
+                <Link href="/products?filter=best-sellers" className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
+                    عرض الكل <ArrowRight className="mr-2 h-4 w-4" />
+                </Link>
+            </Button>
+          </div>
+           {loading ? (
+             <div className="flex space-x-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="min-w-0 flex-shrink-0" style={{flexBasis: 'calc(25% - 12px)'}}>
+                    <Skeleton className="h-96 w-full" />
+                  </div>
+                ))}
+             </div>
+           ) : (
+             <Carousel
+                opts={{
+                    align: "start",
+                    loop: bestSellingProducts.length > 4,
+                    direction: 'rtl',
+                }}
+                plugins={[plugin.current]}
+                onMouseEnter={plugin.current.stop}
+                onMouseLeave={plugin.current.play}
+                className="w-full"
+                >
+                <CarouselContent className="flex gap-x-[5px]">
+                    {bestSellingProducts.map((product) => (
                     <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
                          <div className="h-full">
                             <ProductCard product={product} />
