@@ -137,7 +137,6 @@ export default function ProductsPage() {
         
         <div className="space-y-12">
             <aside>
-                <h2 className="text-2xl font-bold font-headline mb-4">الفئات</h2>
                 <ProductFilters />
             </aside>
             
