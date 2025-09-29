@@ -109,8 +109,8 @@ export default function ProductsPage() {
             <main className="flex-1">
                 <h1 className="text-3xl font-bold font-headline mb-6">كل المنتجات</h1>
                  {loading ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-                        {[...Array(10)].map((_, j) => (
+                    <div className="flex flex-wrap gap-2">
+                        {[...Array(12)].map((_, j) => (
                              <div key={j} className="w-[150px] mx-auto">
                                 <Skeleton className="h-64" />
                             </div>
