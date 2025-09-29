@@ -17,35 +17,6 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 
-const CategorySection = ({ title, products, categoryId }: { title: string; products: Product[]; categoryId: string }) => {
-    const categoryProducts = products.filter(p => p.categoryId === categoryId);
-    if (categoryProducts.length === 0) return null;
-
-    return (
-        <section>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold font-headline">{title}</h2>
-                <Button variant="ghost" asChild>
-                    <Link href={`/products?category=${categoryId}`} className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-primary after:transition-transform after:duration-300 after:ease-in-out hover:after:origin-bottom-left hover:after:scale-x-100">
-                        عرض الكل <ArrowRight className="mr-2 h-4 w-4" />
-                    </Link>
-                </Button>
-            </div>
-            <Carousel opts={{ align: "start", direction: 'rtl', loop: categoryProducts.length > 5 }}>
-                <CarouselContent className="flex gap-x-[5px]">
-                    {categoryProducts.map((product) => (
-                        <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/5 p-0">
-                            <div className="h-full">
-                                <ProductCard product={product} />
-                            </div>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-            </Carousel>
-        </section>
-    );
-};
-
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
@@ -220,18 +191,6 @@ export default function ProductsPage() {
                         )}
                     </main>
 
-                    {!searchParams.get('category') && !searchParams.get('subcategory') && (
-                        <div className="space-y-12 mt-12">
-                             <Separator />
-                             <CategorySection title="الإلكترونيات" products={products} categoryId="electronics" />
-                             <Separator />
-                             <CategorySection title="الموضة" products={products} categoryId="fashion" />
-                             <Separator />
-                             <CategorySection title="المنزل والمطبخ" products={products} categoryId="home-furniture" />
-                              <Separator />
-                             <CategorySection title="الجمال والعناية الشخصية" products={products} categoryId="beauty-personal-care" />
-                        </div>
-                    )}
                 </>
             )}
 
