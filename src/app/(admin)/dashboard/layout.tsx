@@ -9,12 +9,13 @@ import { onAuthStateChanged, User, updateProfile } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
-import { Home, Package, ShoppingCart, Users, LogOut, Tags, Settings, Megaphone, Annoyed, MessageSquare, Truck, Mail } from "lucide-react";
+import { Home, Package, ShoppingCart, Users, LogOut, Tags, Settings, Megaphone, Annoyed, MessageSquare, Truck, Mail, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 
 
 export default function DashboardLayout({
@@ -79,22 +80,56 @@ export default function DashboardLayout({
     <div className="flex flex-col min-h-screen">
       <header className="sticky top-0 flex items-center h-16 px-4 border-b shrink-0 bg-background z-50 md:px-6">
         <div className="flex items-center gap-4">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">فتح قائمة التنقل</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="sm:max-w-xs">
+              <nav className="grid gap-6 text-lg font-medium">
+                <SheetClose asChild>
+                    <Link href="#" className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base">
+                        <Logo />
+                        <span className="sr-only">Doma Shop</span>
+                    </Link>
+                </SheetClose>
+                {navLinks.map((link) => (
+                  <SheetClose asChild key={link.href}>
+                    <Link
+                      href={link.href}
+                      className={cn(
+                        "flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground",
+                        link.active && "text-foreground"
+                      )}
+                    >
+                      <link.icon className="h-5 w-5" />
+                      {link.label}
+                    </Link>
+                  </SheetClose>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
           <Logo />
-          <nav className="hidden font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-            {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={cn(
-                  "transition-colors text-muted-foreground hover:text-foreground",
-                  link.active && "text-foreground font-semibold"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
         </div>
+
+        <nav className="hidden font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 mx-auto">
+          {navLinks.map(link => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "transition-colors text-muted-foreground hover:text-foreground",
+                link.active && "text-foreground font-semibold"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+        
         <div className="flex items-center gap-4 ml-auto">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
