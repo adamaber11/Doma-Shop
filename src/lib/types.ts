@@ -86,6 +86,14 @@ export type Customer = {
     joinedAt: Date;
 }
 
+export type UserRoleInfo = {
+    uid: string;
+    email: string;
+    displayName: string;
+    photoURL: string;
+    isAdmin: boolean;
+};
+
 export type HomepageSettings = {
     heroTitle: string;
     heroSubtitle: string;
