@@ -48,6 +48,7 @@ export default function DashboardLayout({
   const navLinks = [
     { href: "/dashboard", label: "الرئيسية", icon: Home, active: pathname === '/dashboard' },
     { href: "/dashboard/products", label: "المنتجات", icon: Package, active: pathname.startsWith('/dashboard/products') },
+    { href: "/dashboard/categories", label: "الفئات", icon: Tags, active: pathname.startsWith('/dashboard/categories') },
     { href: "/dashboard/advertisements", label: "البنرات", icon: Megaphone, active: pathname.startsWith('/dashboard/advertisements') },
     { href: "/dashboard/popup-ads", label: "الإعلانات المنبثقة", icon: Annoyed, active: pathname.startsWith('/dashboard/popup-ads') },
     { href: "/dashboard/orders", label: "الطلبات", icon: ShoppingCart, active: pathname.startsWith('/dashboard/orders') },

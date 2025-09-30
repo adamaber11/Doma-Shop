@@ -230,5 +230,4 @@ export default function EditCategoryPage() {
     </Card>
   );
 }
-
     

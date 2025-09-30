@@ -218,5 +218,4 @@ export default function DashboardCategoriesPage() {
     </div>
   );
 }
-
     
