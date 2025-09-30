@@ -18,8 +18,6 @@ const brandsCollection = collection(db, 'brands');
 
 
 // Cache variables
-// Note: Caching is removed for products to allow for dynamic filtering.
-// Consider a more advanced caching strategy if needed.
 let allCategories: Category[] | null = null;
 let allAds: Ad[] | null = null;
 let allPopupAds: Ad[] | null = null;
@@ -92,6 +90,7 @@ interface GetProductsOptions {
     isBestOffer?: boolean;
     isBestSeller?: boolean;
     hasSalePrice?: boolean;
+    brandId?: string;
 }
 
 export async function getProducts(options: GetProductsOptions = {}): Promise<Product[]> {
@@ -107,10 +106,10 @@ export async function getProducts(options: GetProductsOptions = {}): Promise<Pro
         queryConstraints.push(where('isBestSeller', '==', true));
     }
     if (options.hasSalePrice) {
-        // Firestore doesn't support inequality checks on different fields,
-        // so we fetch documents where salePrice exists and is not null.
-        // The check salePrice < price will happen client-side if needed, but this is a good first filter.
         queryConstraints.push(where('salePrice', '!=', null));
+    }
+    if (options.brandId) {
+        queryConstraints.push(where('brandId', '==', options.brandId));
     }
 
     const finalQuery = query(productsCollection, ...queryConstraints);

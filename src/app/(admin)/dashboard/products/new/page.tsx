@@ -6,8 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { addProduct, getCategories } from '@/services/product-service';
-import type { Category } from '@/lib/types';
+import { addProduct, getCategories, getBrands } from '@/services/product-service';
+import type { Category, Brand } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -37,7 +37,7 @@ const productSchema = z.object({
   isBestOffer: z.boolean().default(false),
   isBestSeller: z.boolean().default(false),
   sizes: z.array(z.object({ value: z.string().min(1, "المقاس مطلوب") })).optional(),
-  brand: z.string().optional(),
+  brandId: z.string().optional(),
   type: z.string().optional(),
   material: z.string().optional(),
   madeIn: z.string().optional(),
@@ -52,7 +52,8 @@ export default function NewProductPage() {
   const { toast } = useToast();
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Category[]>([]);
-  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -67,7 +68,7 @@ export default function NewProductPage() {
       isBestOffer: false,
       isBestSeller: false,
       sizes: [],
-      brand: "",
+      brandId: "",
       type: "",
       material: "",
       madeIn: "",
@@ -84,10 +85,15 @@ export default function NewProductPage() {
   const selectedCategoryId = form.watch('categoryId');
 
   useEffect(() => {
-    const fetchCats = async () => {
-        setLoadingCategories(true);
+    const fetchInitialData = async () => {
+        setLoading(true);
         try {
-            const allCats = await getCategories(true, true);
+            const [allCats, fetchedBrands] = await Promise.all([
+                getCategories(true, true),
+                getBrands(true),
+            ]);
+            setBrands(fetchedBrands);
+
             const mainCats = allCats.filter(c => !c.parentId);
             setCategories(mainCats);
 
@@ -98,12 +104,12 @@ export default function NewProductPage() {
                 setSubcategories([]);
             }
         } catch (error) {
-             console.error("Failed to fetch categories:", error);
+             console.error("Failed to fetch initial data:", error);
         } finally {
-            setLoadingCategories(false);
+            setLoading(false);
         }
     };
-    fetchCats();
+    fetchInitialData();
 }, [selectedCategoryId]);
 
 
@@ -170,7 +176,7 @@ export default function NewProductPage() {
                         <FormField control={form.control} name="categoryId" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>الفئة الرئيسية</FormLabel>
-                                {loadingCategories ? <Skeleton className="h-10 w-full" /> : (
+                                {loading ? <Skeleton className="h-10 w-full" /> : (
                                     <Select onValueChange={(value) => { field.onChange(value); form.setValue('subcategoryId', undefined); }} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
@@ -209,6 +215,28 @@ export default function NewProductPage() {
                         )}
                     </div>
                     
+                    <FormField control={form.control} name="brandId" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>العلامة التجارية (اختياري)</FormLabel>
+                            {loading ? <Skeleton className="h-10 w-full" /> : (
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="اختر علامة تجارية" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="">بدون علامة تجارية</SelectItem>
+                                        {brands.map(brand => (
+                                            <SelectItem key={brand.id} value={brand.id}>{brand.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+
                     <div className='space-y-6'>
                          <FormLabel>متغيرات المنتج (الألوان والصور)</FormLabel>
                         {variantFields.map((variantField, variantIndex) => (
@@ -313,14 +341,6 @@ export default function NewProductPage() {
                         )} />
 
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField control={form.control} name="brand" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>الماركة (اختياري)</FormLabel>
-                            <FormControl><Input placeholder="مثال: Nike" {...field} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )} />
-
                         <FormField control={form.control} name="type" render={({ field }) => (
                         <FormItem>
                             <FormLabel>النوع (اختياري)</FormLabel>
@@ -328,8 +348,7 @@ export default function NewProductPage() {
                             <FormMessage />
                         </FormItem>
                         )} />
-                    </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
                         <FormField control={form.control} name="material" render={({ field }) => (
                         <FormItem>
                             <FormLabel>الخامة (اختياري)</FormLabel>
@@ -337,8 +356,9 @@ export default function NewProductPage() {
                             <FormMessage />
                         </FormItem>
                         )} />
-
-                        <FormField control={form.control} name="madeIn" render={({ field }) => (
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <FormField control={form.control} name="madeIn" render={({ field }) => (
                         <FormItem>
                             <FormLabel>بلد الصنع (اختياري)</FormLabel>
                             <FormControl><Input placeholder="مثال: مصر" {...field} /></FormControl>

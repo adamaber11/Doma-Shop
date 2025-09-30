@@ -6,8 +6,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { useForm, useFieldArray, Control } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { updateProduct, getProductById, getCategories } from '@/services/product-service';
-import type { Product, Category } from '@/lib/types';
+import { updateProduct, getProductById, getCategories, getBrands } from '@/services/product-service';
+import type { Product, Category, Brand } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -37,7 +37,7 @@ const productSchema = z.object({
   isBestOffer: z.boolean().default(false),
   isBestSeller: z.boolean().default(false),
   sizes: z.array(z.object({ value: z.string().min(1, "المقاس مطلوب") })).optional(),
-  brand: z.string().optional(),
+  brandId: z.string().optional(),
   type: z.string().optional(),
   material: z.string().optional(),
   madeIn: z.string().optional(),
@@ -54,10 +54,10 @@ export default function EditProductPage() {
   const productId = Array.isArray(id) ? id[0] : id;
 
   const { toast } = useToast();
-  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -81,17 +81,19 @@ export default function EditProductPage() {
     const fetchInitialData = async () => {
         setLoading(true);
         try {
-            const [fetchedProduct, allCategories] = await Promise.all([
+            const [fetchedProduct, allCategories, fetchedBrands] = await Promise.all([
                 getProductById(productId),
-                getCategories(true, true), // Fetch flat list
+                getCategories(true, true),
+                getBrands(true),
             ]);
 
+            setBrands(fetchedBrands);
+
             if (fetchedProduct) {
-                setProduct(fetchedProduct);
                 const mainCategories = allCategories.filter(c => !c.parentId);
                 setCategories(mainCategories);
 
-                const defaultValues = {
+                const defaultValues: Partial<ProductFormValues> = {
                     ...fetchedProduct,
                     salePrice: fetchedProduct.salePrice || null,
                     variants: (fetchedProduct.variants || []).map(v => ({
@@ -99,7 +101,7 @@ export default function EditProductPage() {
                         imageUrls: v.imageUrls.map(url => ({ value: url })),
                     })),
                     sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
-                    brand: fetchedProduct.brand || "",
+                    brandId: fetchedProduct.brandId || "",
                     type: fetchedProduct.type || "",
                     material: fetchedProduct.material || "",
                     madeIn: fetchedProduct.madeIn || "",
@@ -202,10 +204,6 @@ useEffect(() => {
     );
   }
 
-  if (!product) {
-      return null;
-  }
-
   return (
     <Card className="max-w-4xl mx-auto">
         <Form {...form}>
@@ -282,6 +280,26 @@ useEffect(() => {
                         )}
                     </div>
                     
+                    <FormField control={form.control} name="brandId" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>العلامة التجارية (اختياري)</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="اختر علامة تجارية" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="">بدون علامة تجارية</SelectItem>
+                                        {brands.map(brand => (
+                                            <SelectItem key={brand.id} value={brand.id}>{brand.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+
                     <div className='space-y-6'>
                          <FormLabel>متغيرات المنتج (الألوان والصور)</FormLabel>
                         {variantFields.map((variantField, variantIndex) => (
@@ -386,14 +404,6 @@ useEffect(() => {
                     )} />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <FormField control={form.control} name="brand" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>الماركة (اختياري)</FormLabel>
-                            <FormControl><Input {...field} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                        )} />
-
                         <FormField control={form.control} name="type" render={({ field }) => (
                         <FormItem>
                             <FormLabel>النوع (اختياري)</FormLabel>
@@ -401,8 +411,7 @@ useEffect(() => {
                             <FormMessage />
                         </FormItem>
                         )} />
-                    </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
                         <FormField control={form.control} name="material" render={({ field }) => (
                         <FormItem>
                             <FormLabel>الخامة (اختياري)</FormLabel>
@@ -410,8 +419,9 @@ useEffect(() => {
                             <FormMessage />
                         </FormItem>
                         )} />
-
-                        <FormField control={form.control} name="madeIn" render={({ field }) => (
+                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                         <FormField control={form.control} name="madeIn" render={({ field }) => (
                         <FormItem>
                             <FormLabel>بلد الصنع (اختياري)</FormLabel>
                             <FormControl><Input {...field} /></FormControl>

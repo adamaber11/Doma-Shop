@@ -79,9 +79,8 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const heroImage = homepageSettings?.heroImageUrl 
-    ? homepageSettings.heroImageUrl
-    : getPlaceholderImage('hero-1').imageUrl;
+  const heroPlaceholder = getPlaceholderImage("hero-1");
+  const heroImage = homepageSettings?.heroImageUrl || heroPlaceholder.imageUrl;
   
   const heroTitle = homepageSettings?.heroTitle || "اكتشف أسلوبك";
   const heroSubtitle = homepageSettings?.heroSubtitle || "استكشف مجموعتنا المنسقة من أجود المنتجات. الجودة والأناقة تصل إلى عتبة داركم.";
@@ -154,12 +153,12 @@ export default function Home() {
               ) : (
                   <div className="flex gap-8 justify-center overflow-x-auto pb-4 no-scrollbar">
                       {brands.map(brand => (
-                          <div key={brand.id} className="flex flex-col items-center text-center gap-2 flex-shrink-0 w-24">
+                          <Link href={`/brands/${brand.id}`} key={brand.id} className="flex flex-col items-center text-center gap-2 flex-shrink-0 w-24 group">
                               <div className="relative h-20 w-20 rounded-full overflow-hidden border">
-                                   <Image src={brand.imageUrl} alt={brand.name} fill className="object-contain" />
+                                   <Image src={brand.imageUrl} alt={brand.name} fill className="object-contain p-2 group-hover:scale-105 transition-transform" />
                               </div>
-                              <span className="text-sm font-medium truncate w-full">{brand.name}</span>
-                          </div>
+                              <span className="text-sm font-medium truncate w-full group-hover:text-primary">{brand.name}</span>
+                          </Link>
                       ))}
                   </div>
               )}
