@@ -120,7 +120,7 @@ export default function Home() {
             priority
           />
         )}
-        <div className="absolute top-[60%] left-0 w-full z-10">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full z-10">
           <div className="container mx-auto px-4">
             <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
               {loading ? (
