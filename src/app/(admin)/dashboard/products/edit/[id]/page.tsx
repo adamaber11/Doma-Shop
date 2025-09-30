@@ -101,7 +101,7 @@ export default function EditProductPage() {
                         imageUrls: v.imageUrls.map(url => ({ value: url })),
                     })),
                     sizes: fetchedProduct.sizes?.map(s => ({ value: s })) || [],
-                    brandId: fetchedProduct.brandId || "",
+                    brandId: fetchedProduct.brandId || "_none_",
                     type: fetchedProduct.type || "",
                     material: fetchedProduct.material || "",
                     madeIn: fetchedProduct.madeIn || "",
@@ -155,6 +155,7 @@ useEffect(() => {
   const onSubmit = async (values: ProductFormValues) => {
      const productData: Partial<Product> = {
       ...values,
+        brandId: values.brandId === "_none_" ? undefined : values.brandId,
         salePrice: values.salePrice || null,
         variants: values.variants.map(variant => ({
             ...variant,
@@ -283,14 +284,14 @@ useEffect(() => {
                     <FormField control={form.control} name="brandId" render={({ field }) => (
                         <FormItem>
                             <FormLabel>العلامة التجارية (اختياري)</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="اختر علامة تجارية" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="">بدون علامة تجارية</SelectItem>
+                                        <SelectItem value="_none_">بدون علامة تجارية</SelectItem>
                                         {brands.map(brand => (
                                             <SelectItem key={brand.id} value={brand.id}>{brand.name}</SelectItem>
                                         ))}
@@ -534,3 +535,5 @@ function ImageUrlsFieldArray({ variantIndex, control }: { variantIndex: number; 
       </div>
     );
   }
+
+    

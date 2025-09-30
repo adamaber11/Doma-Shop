@@ -68,7 +68,7 @@ export default function NewProductPage() {
       isBestOffer: false,
       isBestSeller: false,
       sizes: [],
-      brandId: "",
+      brandId: "_none_",
       type: "",
       material: "",
       madeIn: "",
@@ -116,6 +116,7 @@ export default function NewProductPage() {
   const onSubmit = async (values: ProductFormValues) => {
     const productData = {
         ...values,
+        brandId: values.brandId === "_none_" ? undefined : values.brandId,
         salePrice: values.salePrice || null,
         variants: values.variants.map(variant => ({
             ...variant,
@@ -226,7 +227,7 @@ export default function NewProductPage() {
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                        <SelectItem value="">بدون علامة تجارية</SelectItem>
+                                        <SelectItem value="_none_">بدون علامة تجارية</SelectItem>
                                         {brands.map(brand => (
                                             <SelectItem key={brand.id} value={brand.id}>{brand.name}</SelectItem>
                                         ))}
@@ -470,3 +471,5 @@ function ImageUrlsFieldArray({ variantIndex, control }: { variantIndex: number; 
     </div>
   );
 }
+
+    
