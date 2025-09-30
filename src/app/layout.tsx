@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { CartProvider } from '@/context/CartContext';
 import { ClientOnly } from '@/components/layout/ClientOnly';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'Doma Online Shop',
@@ -45,7 +46,22 @@ export default function RootLayout({
             <Toaster />
           </ClientOnly>
         </CartProvider>
+
+        {/* Google Analytics */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+        />
+        <Script id="google-analytics">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
+          `}
+        </Script>
       </body>
     </html>
   );
 }
+
