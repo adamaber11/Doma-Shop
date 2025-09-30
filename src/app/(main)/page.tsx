@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import Image from "next/image";
@@ -16,6 +14,7 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { Header } from "@/components/layout/Header";
 
 export default function Home() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -122,6 +121,8 @@ export default function Home() {
         )}
         <div className="absolute inset-0 bg-black/50" />
       </section>
+      
+      <Header />
 
       <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">
