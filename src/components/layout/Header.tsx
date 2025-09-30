@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -32,7 +33,6 @@ export function Header() {
   const [searchTerm, setSearchTerm] = useState('');
   
   const isDashboard = pathname.startsWith('/dashboard');
-  const isHomePage = pathname === '/';
 
   if (isDashboard) {
     return null;
@@ -46,8 +46,7 @@ export function Header() {
   }
   
   const headerClasses = cn(
-    "w-full transition-colors duration-300 border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60",
-    !isHomePage && "sticky top-0 z-50"
+    "sticky top-0 z-50 w-full transition-colors duration-300 border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60"
   );
 
   return (

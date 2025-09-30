@@ -15,7 +15,6 @@ import { ProductCard } from "@/components/products/ProductCard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { Header } from "@/components/layout/Header";
 import { Card } from "@/components/ui/card";
 
 export default function Home() {
@@ -91,7 +90,6 @@ export default function Home() {
 
   return (
     <>
-      <Header />
       {popupAd && (
             <Dialog open={isAdModalOpen} onOpenChange={setIsAdModalOpen}>
                 <DialogContent className="p-0 border-0 max-w-lg" hideCloseButton={!canCloseAd}>
