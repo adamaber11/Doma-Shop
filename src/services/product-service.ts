@@ -3,7 +3,7 @@
 "use server";
 import { db } from "@/lib/firebase";
 import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo } from "@/lib/types";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where, QueryConstraint } from "firebase/firestore";
 import type { User as FirebaseUser } from 'firebase/auth';
 
 const productsCollection = collection(db, 'products');
@@ -17,6 +17,8 @@ const subscribersCollection = collection(db, 'subscribers');
 
 
 // Cache variables
+// Note: Caching is removed for products to allow for dynamic filtering.
+// Consider a more advanced caching strategy if needed.
 let allProducts: Product[] | null = null;
 let allCategories: Category[] | null = null;
 let allAds: Ad[] | null = null;
@@ -29,26 +31,13 @@ let allSubscribers: Subscriber[] | null = null;
 let lastFetchTime: Record<string, number> = {};
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
-async function fetchDataIfNeeded(dataType: 'products' | 'categories' | 'ads' | 'popupAds' | 'messages' | 'orders' | 'customers' | 'subscribers', forceRefresh: boolean = false) {
+async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | 'messages' | 'orders' | 'customers' | 'subscribers', forceRefresh: boolean = false) {
     const now = Date.now();
     if (forceRefresh || !lastFetchTime[dataType] || now - lastFetchTime[dataType] > CACHE_DURATION) {
         console.log(`Cache miss for ${dataType}. Fetching new data...`);
         lastFetchTime[dataType] = now;
         
         switch(dataType) {
-            case 'products':
-                const productSnapshot = await getDocs(productsCollection);
-                allProducts = productSnapshot.docs.map(doc => {
-                    const data = doc.data();
-                    if (data.reviews) {
-                        data.reviews = data.reviews.map((review: any) => ({
-                            ...review,
-                            createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : new Date(review.createdAt)
-                        }));
-                    }
-                    return { id: doc.id, ...data } as Product;
-                });
-                break;
             case 'categories':
                  const categorySnapshot = await getDocs(query(categoriesCollection, orderBy("name")));
                 allCategories = categorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
@@ -93,9 +82,45 @@ async function fetchDataIfNeeded(dataType: 'products' | 'categories' | 'ads' | '
 }
 
 // Product Functions
-export async function getProducts(forceRefresh: boolean = false): Promise<Product[]> {
-  await fetchDataIfNeeded('products', forceRefresh);
-  return allProducts || [];
+interface GetProductsOptions {
+    isFeatured?: boolean;
+    isBestOffer?: boolean;
+    isBestSeller?: boolean;
+    hasSalePrice?: boolean;
+}
+
+export async function getProducts(options: GetProductsOptions = {}): Promise<Product[]> {
+    const queryConstraints: QueryConstraint[] = [];
+
+    if (options.isFeatured) {
+        queryConstraints.push(where('isFeatured', '==', true));
+    }
+    if (options.isBestOffer) {
+        queryConstraints.push(where('isBestOffer', '==', true));
+    }
+    if (options.isBestSeller) {
+        queryConstraints.push(where('isBestSeller', '==', true));
+    }
+    if (options.hasSalePrice) {
+        // Firestore doesn't support inequality checks on different fields,
+        // so we fetch documents where salePrice exists and is not null.
+        // The check salePrice < price will happen client-side if needed, but this is a good first filter.
+        queryConstraints.push(where('salePrice', '!=', null));
+    }
+
+    const finalQuery = query(productsCollection, ...queryConstraints);
+    const productSnapshot = await getDocs(finalQuery);
+    
+    return productSnapshot.docs.map(doc => {
+        const data = doc.data();
+        if (data.reviews) {
+            data.reviews = data.reviews.map((review: any) => ({
+                ...review,
+                createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : new Date(review.createdAt)
+            }));
+        }
+        return { id: doc.id, ...data } as Product;
+    });
 }
 
 export async function getProductById(productId: string): Promise<Product | null> {
@@ -110,18 +135,7 @@ export async function getProductById(productId: string): Promise<Product | null>
                 createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : new Date(review.createdAt)
             }));
         }
-        const product = { id: productDoc.id, ...data } as Product;
-        
-        await fetchDataIfNeeded('products');
-        if (allProducts) {
-            const index = allProducts.findIndex(p => p.id === productId);
-            if (index !== -1) {
-                allProducts[index] = product;
-            } else {
-                allProducts.push(product);
-            }
-        }
-        return product;
+        return { id: productDoc.id, ...data } as Product;
     }
     
     return null;
@@ -133,7 +147,6 @@ export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Prom
         reviews: []
     };
     const docRef = await addDoc(productsCollection, productWithDefaults);
-    await fetchDataIfNeeded('products', true);
     const newProduct = { id: docRef.id, ...productWithDefaults } as Product;
     return newProduct;
 }
@@ -141,13 +154,11 @@ export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Prom
 export async function updateProduct(productId: string, productUpdate: Partial<Product>): Promise<void> {
     const productRef = doc(db, 'products', productId);
     await updateDoc(productRef, productUpdate);
-    await fetchDataIfNeeded('products', true); 
 }
 
 export async function deleteProduct(productId: string): Promise<void> {
     const productRef = doc(db, 'products', productId);
     await deleteDoc(productRef);
-    await fetchDataIfNeeded('products', true); 
 }
 
 export async function addReview(productId: string, review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
@@ -160,7 +171,6 @@ export async function addReview(productId: string, review: Omit<Review, 'id' | '
     await updateDoc(productRef, {
         reviews: arrayUnion(newReview)
     });
-    await fetchDataIfNeeded('products', true);
 
     return {
         ...newReview,
@@ -460,3 +470,5 @@ export async function deleteSubscriber(subscriberId: string): Promise<void> {
 
 // Helper to remove a field from a document
 import { deleteField } from 'firebase/firestore';
+
+    

@@ -35,18 +35,21 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const [settings, ads, allProducts, popupAds] = await Promise.all([
+        const [settings, ads, offerProducts, sellerProducts, featProducts, popupAds] = await Promise.all([
           getHomepageSettings(),
           getAds(),
-          getProducts(),
+          getProducts({ isBestOffer: true }),
+          getProducts({ isBestSeller: true }),
+          getProducts({ isFeatured: true }),
           getPopupAds(),
         ]);
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
-        setBestOfferProducts(allProducts.filter(p => p.isBestOffer));
-        setBestSellingProducts(allProducts.filter(p => p.isBestSeller));
-        setFeaturedProducts(allProducts.filter(p => p.isFeatured));
+        setBestOfferProducts(offerProducts);
+        setBestSellingProducts(sellerProducts);
+        setFeaturedProducts(featProducts);
         
         const activePopupAds = popupAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('home')));
         const adShown = sessionStorage.getItem('adShown');
@@ -279,3 +282,5 @@ export default function Home() {
     </>
   );
 }
+
+    

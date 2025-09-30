@@ -16,8 +16,7 @@ export default function OffersPage() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const allProducts = await getProducts();
-        const productsOnSale = allProducts.filter(p => p.salePrice && p.salePrice < p.price);
+        const productsOnSale = await getProducts({ hasSalePrice: true });
         setOfferProducts(productsOnSale);
       } catch (error) {
         console.error("Failed to fetch products:", error);
@@ -64,3 +63,5 @@ export default function OffersPage() {
       </div>
   );
 }
+
+    
