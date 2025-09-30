@@ -24,7 +24,10 @@ export function ProductCard({ product }: ProductCardProps) {
     : 0;
 
   return (
-      <div className="bg-white text-black h-full flex flex-col w-[180px] border border-gray-200 rounded-lg overflow-hidden transition-all duration-300">
+      <div className="bg-white text-black h-full flex flex-col w-[180px] border border-gray-200 rounded-lg overflow-hidden transition-all duration-300 relative">
+        {product.isBestSeller && (
+          <div className="absolute top-2 left-2 bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm z-10">الأكثر مبيعًا</div>
+        )}
         <Link href={`/products/${product.id}`} className="flex flex-col h-full">
             <div className="relative w-full aspect-[4/5] bg-white p-4">
                 <Image
@@ -36,10 +39,9 @@ export function ProductCard({ product }: ProductCardProps) {
                 />
             </div>
             <div className="p-3 flex-grow flex flex-col bg-white">
-                {(hasSale || product.isBestSeller) && (
+                {hasSale && (
                     <div className="flex items-center gap-1 mb-2 flex-wrap">
-                      {hasSale && <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">خصم {discountPercentage}%</span>}
-                       {product.isBestSeller && <span className="bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">الأكثر مبيعًا</span>}
+                      <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">خصم {discountPercentage}%</span>
                     </div>
                 )}
                 <h3 className="text-sm font-normal text-black line-clamp-2 mb-2 flex-grow hover:text-primary hover:underline h-[40px]">{product.name}</h3>
