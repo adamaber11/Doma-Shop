@@ -156,4 +156,9 @@ export type Subscriber = {
     subscribedAt: Date;
 };
 
+export type Brand = {
+  id: string;
+  name: string;
+  imageUrl: string;
+};
     

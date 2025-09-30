@@ -7,9 +7,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShoppingBag, X } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
-import { getProducts, getAds, getPopupAds } from "@/services/product-service";
+import { getProducts, getAds, getPopupAds, getBrands } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
-import type { Product, HomepageSettings, Ad } from "@/lib/types";
+import type { Product, HomepageSettings, Ad, Brand } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -24,6 +24,7 @@ export default function Home() {
   const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
   const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [popupAd, setPopupAd] = useState<Ad | null>(null);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [canCloseAd, setCanCloseAd] = useState(false);
@@ -37,19 +38,21 @@ export default function Home() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [settings, ads, offerProducts, sellerProducts, featProducts, popupAds] = await Promise.all([
+        const [settings, ads, offerProducts, sellerProducts, featProducts, popupAds, fetchedBrands] = await Promise.all([
           getHomepageSettings(),
           getAds(),
           getProducts({ isBestOffer: true }),
           getProducts({ isBestSeller: true }),
           getProducts({ isFeatured: true }),
           getPopupAds(),
+          getBrands(),
         ]);
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
         setBestOfferProducts(offerProducts);
         setBestSellingProducts(sellerProducts);
         setFeaturedProducts(featProducts);
+        setBrands(fetchedBrands);
         
         const activePopupAds = popupAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('home')));
         const adShown = sessionStorage.getItem('adShown');
@@ -133,6 +136,36 @@ export default function Home() {
           </Button>
         </div>
       </section>
+
+      <section className="py-12 md:py-16">
+          <div className="container mx-auto px-4">
+               <div className="text-center mb-8">
+                  <h2 className="text-2xl md:text-3xl font-bold font-headline">أكبر العلامات التجارية على دوما</h2>
+              </div>
+              {loading ? (
+                  <div className="flex gap-8 justify-center overflow-x-auto pb-4 no-scrollbar">
+                      {[...Array(6)].map((_, i) => (
+                          <div key={i} className="flex flex-col items-center gap-2 flex-shrink-0">
+                              <Skeleton className="h-20 w-20 rounded-full" />
+                              <Skeleton className="h-4 w-16" />
+                          </div>
+                      ))}
+                  </div>
+              ) : (
+                  <div className="flex gap-8 justify-center overflow-x-auto pb-4 no-scrollbar">
+                      {brands.map(brand => (
+                          <div key={brand.id} className="flex flex-col items-center text-center gap-2 flex-shrink-0 w-24">
+                              <div className="relative h-20 w-20 rounded-full overflow-hidden border">
+                                   <Image src={brand.imageUrl} alt={brand.name} fill className="object-contain" />
+                              </div>
+                              <span className="text-sm font-medium truncate w-full">{brand.name}</span>
+                          </div>
+                      ))}
+                  </div>
+              )}
+          </div>
+      </section>
+
 
       <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">

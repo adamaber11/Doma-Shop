@@ -2,7 +2,7 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo } from "@/lib/types";
+import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo, Brand } from "@/lib/types";
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where, QueryConstraint } from "firebase/firestore";
 import type { User as FirebaseUser } from 'firebase/auth';
 
@@ -14,12 +14,12 @@ const messagesCollection = collection(db, 'contactMessages');
 const ordersCollection = collection(db, 'orders');
 const customersCollection = collection(db, 'customers');
 const subscribersCollection = collection(db, 'subscribers');
+const brandsCollection = collection(db, 'brands');
 
 
 // Cache variables
 // Note: Caching is removed for products to allow for dynamic filtering.
 // Consider a more advanced caching strategy if needed.
-let allProducts: Product[] | null = null;
 let allCategories: Category[] | null = null;
 let allAds: Ad[] | null = null;
 let allPopupAds: Ad[] | null = null;
@@ -27,11 +27,12 @@ let allMessages: ContactMessage[] | null = null;
 let allOrders: Order[] | null = null;
 let allCustomers: Customer[] | null = null;
 let allSubscribers: Subscriber[] | null = null;
+let allBrands: Brand[] | null = null;
 
 let lastFetchTime: Record<string, number> = {};
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
-async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | 'messages' | 'orders' | 'customers' | 'subscribers', forceRefresh: boolean = false) {
+async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | 'messages' | 'orders' | 'customers' | 'subscribers' | 'brands', forceRefresh: boolean = false) {
     const now = Date.now();
     if (forceRefresh || !lastFetchTime[dataType] || now - lastFetchTime[dataType] > CACHE_DURATION) {
         console.log(`Cache miss for ${dataType}. Fetching new data...`);
@@ -76,6 +77,10 @@ async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | '
                 const qs = query(subscribersCollection, orderBy("subscribedAt", "desc"));
                 const snapshotS = await getDocs(qs);
                 allSubscribers = snapshotS.docs.map(doc => ({ id: doc.id, ...doc.data(), subscribedAt: doc.data().subscribedAt.toDate() } as Subscriber));
+                break;
+             case 'brands':
+                const brandSnapshot = await getDocs(query(brandsCollection, orderBy("name")));
+                allBrands = brandSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Brand));
                 break;
         }
     }
@@ -276,6 +281,44 @@ export async function deleteSubCategory(parentId: string, subCategoryId: string)
     const subCategoryRef = doc(db, 'categories', subCategoryId);
     await deleteDoc(subCategoryRef);
     await fetchDataIfNeeded('categories', true);
+}
+
+// Brand Functions
+export async function getBrands(forceRefresh: boolean = false): Promise<Brand[]> {
+    await fetchDataIfNeeded('brands', forceRefresh);
+    return allBrands || [];
+}
+
+export async function getBrandById(brandId: string): Promise<Brand | null> {
+    const brandDoc = await getDoc(doc(db, 'brands', brandId));
+    if (brandDoc.exists()) {
+        const brand = { id: brandDoc.id, ...brandDoc.data() } as Brand;
+        await fetchDataIfNeeded('brands');
+        if (allBrands) {
+            const index = allBrands.findIndex(b => b.id === brandId);
+            if (index > -1) allBrands[index] = brand;
+            else allBrands.push(brand);
+        }
+        return brand;
+    }
+    return null;
+}
+
+export async function addBrand(brand: Omit<Brand, 'id'>): Promise<Brand> {
+    const docRef = await addDoc(brandsCollection, brand);
+    await fetchDataIfNeeded('brands', true);
+    return { id: docRef.id, ...brand };
+}
+
+export async function updateBrand(brandId: string, brandUpdate: Partial<Brand>): Promise<void> {
+    const brandRef = doc(db, 'brands', brandId);
+    await updateDoc(brandRef, brandUpdate);
+    await fetchDataIfNeeded('brands', true);
+}
+
+export async function deleteBrand(brandId: string): Promise<void> {
+    await deleteDoc(doc(db, 'brands', brandId));
+    await fetchDataIfNeeded('brands', true);
 }
 
 
