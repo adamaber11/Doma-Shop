@@ -41,7 +41,8 @@ export function CartSheetContent() {
                 <ul className="divide-y divide-border px-6">
                     {cartItems.map(item => {
                     const variant = item.product.variants.find(v => v.color === item.selectedColor);
-                    const itemImage = variant?.imageUrls[0] || getPlaceholderImage('product-1').imageUrl;
+                    const placeholder = getPlaceholderImage('product-1');
+                    const itemImage = variant?.imageUrls[0] || placeholder.imageUrl;
                     const price = item.product.salePrice ?? item.product.price;
                     
                     return (

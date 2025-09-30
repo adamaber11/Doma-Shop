@@ -245,7 +245,8 @@ export default function CheckoutPage() {
                   {cartItems.map(item => {
                     const price = item.product.salePrice ?? item.product.price;
                     const variant = item.product.variants.find(v => v.color === item.selectedColor);
-                    const itemImage = variant?.imageUrls[0] || getPlaceholderImage('product-1').imageUrl;
+                    const placeholder = getPlaceholderImage('product-1');
+                    const itemImage = variant?.imageUrls[0] || placeholder.imageUrl;
                     return (
                       <li key={item.id} className="flex items-center gap-4">
                         <div className="relative h-16 w-16 rounded-md overflow-hidden border flex-shrink-0">

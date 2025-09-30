@@ -4,253 +4,337 @@
       "id": "hero-1",
       "description": "Stylish living room with modern furniture",
       "imageUrl": "https://images.unsplash.com/photo-1616047006789-b7af5afb8c20?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsaXZpbmclMjByb29tfGVufDB8fHx8MTc1ODgwNjQwNXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "living room"
+      "imageHint": "living room",
+      "width": 1080,
+      "height": 720
     },
     {
       "id": "hero-2",
       "description": "A stylish woman in a white coat posing outdoors",
       "imageUrl": "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxmYXNoaW9uJTIwbW9kZWx8ZW58MHx8fHwxNzU4ODU2Njk0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "fashion model"
+      "imageHint": "fashion model",
+      "width": 1080,
+      "height": 1620
     },
     {
       "id": "hero-3",
       "description": "A collection of modern electronic gadgets on a desk",
       "imageUrl": "https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsYXB0b3AlMjBkZXNrfGVufDB8fHx8MTc1ODgxOTYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "laptop desk"
+      "imageHint": "laptop desk",
+      "width": 1080,
+      "height": 720
     },
     {
       "id": "banner-1",
       "description": "A woman shopping with a credit card",
       "imageUrl": "https://images.unsplash.com/photo-1483985988355-763728e1935b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxzaG9wcGluZ3xlbnwwfHx8fDE3NTg5MDkzNjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "shopping fashion"
+      "imageHint": "shopping fashion",
+      "width": 1080,
+      "height": 720
     },
     {
       "id": "banner-2",
       "description": "A happy person in a modern living room",
       "imageUrl": "https://images.unsplash.com/photo-1558005852-a3055106131b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxsaXZpbmclMjByb29tfGVufDB8fHx8MTc1ODgwNjQwNXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "living room"
+      "imageHint": "living room",
+      "width": 1080,
+      "height": 607
     },
     {
       "id": "banner-3",
       "description": "Close up of a person typing on a laptop",
       "imageUrl": "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxsYXB0b3AlMjBkZXNrfGVufDB8fHx8MTc1ODgxOTYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "laptop typing"
+      "imageHint": "laptop typing",
+      "width": 1080,
+      "height": 720
     },
     {
       "id": "electronics-cat",
       "description": "A collection of modern electronic gadgets on a desk",
       "imageUrl": "https://images.unsplash.com/photo-1698338862815-ddb5bd93df27?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnYWRnZXRzJTIwZGVza3xlbnwwfHx8fDE3NTg4OTIyMDZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "gadgets desk"
+      "imageHint": "gadgets desk",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "fashion-cat",
       "description": "Mannequins dressed in trendy outfits",
       "imageUrl": "https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxmYXNoaW9uJTIwc3RvcmV8ZW58MHx8fHwxNzU4ODU2Njk0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "fashion store"
+      "imageHint": "fashion store",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "beauty-cat",
       "description": "Various beauty and personal care products arranged neatly",
       "imageUrl": "https://images.unsplash.com/photo-1617897903246-719242758050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxjb3NtZXRpY3N8ZW58MHx8fHwxNzU4OTA5MzY3fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "cosmetics"
+      "imageHint": "cosmetics",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "home-kitchen-cat",
       "description": "A modern kitchen with clean countertops and appliances",
       "imageUrl": "https://images.unsplash.com/photo-1592506119503-c0b18879bd5a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBraXRjaGVufGVufDB8fHx8MTc1ODgyNjMwM3ww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "modern kitchen"
+      "imageHint": "modern kitchen",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "grocery-cat",
       "description": "A grocery aisle with fresh produce",
-      "imageUrl": "https://images.unsplash.com/photo-1605279682024-5a25531582dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmcmVzaCUyMHByb2R1Y2V8ZW58MHx8fHwxNzU4ODI1NTI0fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "fresh produce"
+      "imageUrl": "https://images.unsplash.com/photo-1605279682024-5a25531582dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxmcmVzaCUyMHByb2R1Y2V8ZW58MHx8fHwxNzU4ODI1NTI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fresh produce",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "sports-cat",
       "description": "Various sports equipment like dumbells and a yoga mat",
-      "imageUrl": "https://images.unsplash.com/photo-1625834317364-b32c140fd360?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzcG9ydHMlMjBlcXVpcG1lbnR8ZW58MHx8fHwxNzU4ODQ5MzY4fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "sports equipment"
+      "imageUrl": "https://images.unsplash.com/photo-1625834317364-b32c140fd360?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzcG9ydHMlMjBlcXVpcG1lbnR8ZW58MHx8fHwxNzU4ODQ5MzY4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sports equipment",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "toys-cat",
       "description": "Colorful toys and building blocks for children",
-      "imageUrl": "https://images.unsplash.com/photo-1545558014-8692077e9b5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaGlsZHJlbiUyMHRveXN8ZW58MHx8fHwxNzU4ODg2NTMxfDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "children toys"
+      "imageUrl": "https://images.unsplash.com/photo-1545558014-8692077e9b5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjaGlsZHJlbiUyMHRveXN8ZW58MHx8fHwxNzU4ODg2NTMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "children toys",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "books-cat",
       "description": "A stack of books on a wooden table",
-      "imageUrl": "https://images.unsplash.com/photo-1705721357357-ab87523248f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxib29rc3xlbnwwfHx8fDE3NTg4MjQyMDl8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "books"
+      "imageUrl": "https://images.unsplash.com/photo-1705721357357-ab87523248f7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxib29rc3xlbnwwfHx8fDE3NTg4MjQyMDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "books",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "vehicles-cat",
       "description": "A shiny new car part on display",
-      "imageUrl": "https://images.unsplash.com/photo-1522598140461-ec9911e01c53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYXIlMjBwYXJ0fGVufDB8fHx8MTc1ODkwOTM2N3ww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "car part"
+      "imageUrl": "https://images.unsplash.com/photo-1522598140461-ec9911e01c53?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjYXIlMjBwYXJ0fGVufDB8fHx8MTc1ODkwOTM2N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "car part",
+      "width": 100,
+      "height": 100
     },
     {
       "id": "product-1",
       "description": "High-performance laptop on a minimalist desk",
-      "imageUrl": "https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsYXB0b3AlMjBkZXNrfGVufDB8fHx8MTc1ODgxOTYwNXww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "laptop desk"
+      "imageUrl": "https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxsYXB0b3AlMjBkZXNrfGVufDB8fHx8MTc1ODgxOTYwNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "laptop desk",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-2",
       "description": "Latest model smartphone with a vibrant screen",
-      "imageUrl": "https://images.unsplash.com/photo-1480694313141-fce5e697ee25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzbWFydHBob25lfGVufDB8fHx8MTc1ODgxOTM5MHww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "smartphone"
+      "imageUrl": "https://images.unsplash.com/photo-1480694313141-fce5e697ee25?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzbWFydHBob25lfGVufDB8fHx8MTc1ODgxOTM5MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "smartphone",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-3",
       "description": "Wireless over-ear headphones in black",
-      "imageUrl": "https://images.unsplash.com/photo-1583394838336-acd977736f90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoZWFkcGhvbmVzfGVufDB8fHx8MTc1ODkwMjI5OHww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "headphones"
+      "imageUrl": "https://images.unsplash.com/photo-1583394838336-acd977736f90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxoZWFkcGhvbmVzfGVufDB8fHx8MTc1ODkwMjI5OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "headphones",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-4",
       "description": "Men's classic denim jacket",
-      "imageUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxkZW5pbSUyMGphY2tldHxlbnwwfHx8fDE3NTg5MDQzMzR8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "denim jacket"
+      "imageUrl": "https://images.unsplash.com/photo-1517841905240-472988babdf9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxkZW5pbSUyMGphY2tldHxlbnwwfHx8fDE3NTg5MDQzMzR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "denim jacket",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-5",
       "description": "Women's elegant summer dress",
-      "imageUrl": "https://images.unsplash.com/photo-1542295669297-4d352b042bca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzdW1tZXIlMjBkcmVzc3xlbnwwfHx8fDE3NTg4Mzc0Nzh8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "summer dress"
+      "imageUrl": "https://images.unsplash.com/photo-1542295669297-4d352b042bca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzdW1tZXIlMjBkcmVzc3xlbnwwfHx8fDE3NTg4Mzc0Nzh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "summer dress",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-6",
       "description": "Leather sneakers for casual wear",
-      "imageUrl": "https://images.unsplash.com/photo-1556906781-9a412961c28c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c25lYWtlcnN8ZW58MHx8fHwxNzU4ODI0MjA5fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "sneakers"
+      "imageUrl": "https://images.unsplash.com/photo-1556906781-9a412961c28c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c25lYWtlcnN8ZW58MHx8fHwxNzU4ODI0MjA5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sneakers",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-7",
       "description": "Organic face serum with vitamin C",
-      "imageUrl": "https://images.unsplash.com/photo-1643747394944-89b11e7fb616?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYWNlJTIwc2VydW18ZW58MHx8fHwxNzU4ODIwMDY4fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "face serum"
+      "imageUrl": "https://images.unsplash.com/photo-1643747394944-89b11e7fb616?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmYWNlJTIwc2VydW18ZW58MHx8fHwxNzU4ODIwMDY4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "face serum",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-8",
       "description": "Natural ingredient hydrating moisturizer",
-      "imageUrl": "https://images.unsplash.com/photo-1556229162-5c63ed9c4efb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtb2lzdHVyaXplcnxlbnwwfHx8fDE3NTg5MDkzNjd8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "moisturizer"
+      "imageUrl": "https://images.unsplash.com/photo-1556229162-5c63ed9c4efb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtb2lzdHVyaXplcnxlbnwwfHx8fDE3NTg5MDkzNjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "moisturizer",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-9",
       "description": "Professional electric toothbrush set",
-      "imageUrl": "https://images.unsplash.com/photo-1559591939-c2d3c204f6da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlbGVjdHJpYyUyMHRvb3RoYnJ1c2h8ZW58MHx8fHwxNzU4OTA0OTA5fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "electric toothbrush"
+      "imageUrl": "https://images.unsplash.com/photo-1559591939-c2d3c204f6da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlbGVjdHJpYyUyMHRvb3RoYnJ1c2h8ZW58MHx8fHwxNzU4OTA0OTA5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electric toothbrush",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-10",
       "description": "Espresso machine for home use",
-      "imageUrl": "https://images.unsplash.com/photo-1531937465322-9909ce13f8ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlc3ByZXNzbyUyMG1hY2hpbmV8ZW58MHx8fHwxNzU4ODY5ODI0fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "espresso machine"
+      "imageUrl": "https://images.unsplash.com/photo-1531937465322-9909ce13f8ca?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlc3ByZXNzbyUyMG1hY2hpbmV8ZW58MHx8fHwxNzU4ODY5ODI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "espresso machine",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-11",
       "description": "Non-stick cookware set",
-      "imageUrl": "https://images.unsplash.com/photo-1588279102567-67db026f11c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29va3dhcmUlMjBzZXR8ZW58MHx8fHwxNzU4ODgxODIzfDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "cookware set"
+      "imageUrl": "https://images.unsplash.com/photo-1588279102567-67db026f11c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Y29va3dhcmUlMjBzZXR8ZW58MHx8fHwxNzU4ODgxODIzfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cookware set",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-12",
       "description": "Robotic vacuum cleaner on a wooden floor",
-      "imageUrl": "https://images.unsplash.com/photo-1757478558372-43c94b3268bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxyb2JvdGljJTIwdmFjdXVtfGVufDB8fHx8MTc1ODg5MjkzNnww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "robotic vacuum"
+      "imageUrl": "https://images.unsplash.com/photo-1757478558372-43c94b3268bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxyb2JvdGljJTIwdmFjdXVtfGVufDB8fHx8MTc1ODg5MjkzNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "robotic vacuum",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-13",
       "description": "Fresh organic apples in a basket",
-      "imageUrl": "https://images.unsplash.com/photo-1603189864361-0cc65b5ecd3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvcmdhbmljJTIwYXBwbGVzfGVufDB8fHx8MTc1ODgwNDk1M3ww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "organic apples"
+      "imageUrl": "https://images.unsplash.com/photo-1603189864361-0cc65b5ecd3a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxvcmdhbmljJTIwYXBwbGVzfGVufDB8fHx8MTc1ODgwNDk1M3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "organic apples",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-14",
       "description": "Artisanal sourdough bread loaf",
       "imageUrl": "https://images.unsplash.com/photo-1591458736923-c06a260e3412?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzb3VyZG91Z2glMjBicmVhZHxlbnwwfHx8fDE3NTg4NDU3MTN8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "sourdough bread"
+      "imageHint": "sourdough bread",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-15",
       "description": "Premium olive oil bottle",
-      "imageUrl": "https://images.unsplash.com/photo-1609763951640-c0d7bd98b257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbGl2ZSUyMG9pbHxlbnwwfHx8fDE3NTg5MDkzNjd8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "olive oil"
+      "imageUrl": "https://images.unsplash.com/photo-1609763951640-c0d7bd98b257?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxvbGl2ZSUyMG9pbHxlbnwwfHx8fDE3NTg5MDkzNjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "olive oil",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-16",
       "description": "Adjustable dumbbells set",
-      "imageUrl": "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkdW1iYmVsbHN8ZW58MHx8fHwxNzU4ODI0MjA5fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "dumbbells"
+      "imageUrl": "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxkdW1iYmVsbHN8ZW58MHx8fHwxNzU4ODI0MjA5fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "dumbbells",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-17",
       "description": "High-quality yoga mat",
-      "imageUrl": "https://images.unsplash.com/photo-1646239646963-b0b9be56d6b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx5b2dhJTIwbWF0fGVufDB8fHx8MTc1ODgzNjg3MXww&ixlibrb-4.1.0&q=80&w=1080",
-      "imageHint": "yoga mat"
+      "imageUrl": "https://images.unsplash.com/photo-1646239646963-b0b9be56d6b5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx5b2dhJTIwbWF0fGVufDB8fHx8MTc1ODgzNjg3MXww&ixlib-rb-4.1.0&q=80&w=1080",
+      "imageHint": "yoga mat",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-18",
       "description": "Multivitamin supplements bottle",
       "imageUrl": "https://images.unsplash.com/photo-1625480498292-631335ea1510?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzdXBwbGVtZW50c3xlbnwwfHx8fDE3NTg5MDkzNjh8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "supplements"
+      "imageHint": "supplements",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-19",
       "description": "Wooden train set for toddlers",
       "imageUrl": "https://images.unsplash.com/photo-1631819441984-f57278471d7f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0cmFpbiUyMHNldHxlbnwwfHx8fDE3NTg5MDkzNjd8MA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "train set"
+      "imageHint": "train set",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-20",
       "description": "LEGO creator expert set box",
       "imageUrl": "https://images.unsplash.com/photo-1591020270735-d4fc1a514a7d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxsZWdvJTIwc2V0fGVufDB8fHx8MTc1ODkwOTM2OHww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "lego set"
+      "imageHint": "lego set",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-21",
       "description": "Soft teddy bear plush toy",
       "imageUrl": "https://images.unsplash.com/photo-1602734846297-9299fc2d4703?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx0ZWRkeSUyMGJlYXJ8ZW58MHx8fHwxNzU4ODcyODYzfDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "teddy bear"
+      "imageHint": "teddy bear",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-22",
       "description": "Hardcover bestseller novel",
       "imageUrl": "https://images.unsplash.com/photo-1671477511036-c1639c6a4555?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoYXJkY292ZXIlMjBib29rfGVufDB8fHx8MTc1ODg3MTAzMnww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "hardcover book"
+      "imageHint": "hardcover book",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-23",
       "description": "Set of colorful gel pens",
       "imageUrl": "https://images.unsplash.com/photo-1598620617148-c9e8ddee6711?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxnZWwlMjBwZW5zfGVufDB8fHx8MTc1ODg3MTc1MXww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "gel pens"
+      "imageHint": "gel pens",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-24",
       "description": "Leather-bound daily planner",
       "imageUrl": "https://images.unsplash.com/photo-1541140911322-98afe66ea6da?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxwbGFubmVyfGVufDB8fHx8MTc1ODgwNzAyM3ww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "planner"
+      "imageHint": "planner",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-25",
       "description": "Premium car wax kit",
       "imageUrl": "https://images.unsplash.com/photo-1755279217102-947755911799?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxjYXIlMjB3YXh8ZW58MHx8fHwxNzU4ODU2NjE2fDA&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "car wax"
+      "imageHint": "car wax",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-26",
       "description": "Motorcycle helmet",
-      "imageUrl": "https://images.unsplash.com/photo-1623343559257-1f3aef3a77e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb3RvcmN5Y2xlJTIwaGVsbWV0fGVufDB8fHx8MTc1ODkwNTk2Mnww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "motorcycle helmet"
+      "imageUrl": "https://images.unsplash.com/photo-1623343559257-1f3aef3a77e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtb3RvcmN5Y2xlJTIwaGVsbWV0fGVufDB8fHx8MTc1ODkwNTk2Mnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "motorcycle helmet",
+      "width": 600,
+      "height": 600
     },
     {
       "id": "product-27",
       "description": "GPS navigation system for vehicles",
-      "imageUrl": "https://images.unsplash.com/photo-1648529739495-d4d8a8abce4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxncHMlMjBuYXZpZ2F0aW9ufGVufDB8fHx8MTc1ODg1MDA3MHww&ixlib-rb-4.1.0&q=80&w=1080",
-      "imageHint": "gps navigation"
+      "imageUrl": "https://images.unsplash.com/photo-1648529739495-d4d8a8abce4e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxncHMlMjBuYXZpZ2F0aW9ufGVufDB8fHx8MTc1ODg1MDA3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gps navigation",
+      "width": 600,
+      "height": 600
     }
   ]
 }

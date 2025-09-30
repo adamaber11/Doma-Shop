@@ -5,6 +5,8 @@ export type ImagePlaceholder = {
   description: string;
   imageUrl: string;
   imageHint: string;
+  width: number;
+  height: number;
 };
 
 const placeholderImages: ImagePlaceholder[] = data.placeholderImages;
@@ -20,6 +22,8 @@ export function getPlaceholderImage(id: string): ImagePlaceholder {
     description: 'Image not found',
     imageUrl: 'https://picsum.photos/seed/notfound/600/400',
     imageHint: 'placeholder',
+    width: 600,
+    height: 400,
   };
 }
 
