@@ -2,13 +2,14 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo, Brand } from "@/lib/types";
+import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo, Brand, PromoCard } from "@/lib/types";
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where, QueryConstraint } from "firebase/firestore";
 import type { User as FirebaseUser } from 'firebase/auth';
 
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
 const adsCollection = collection(db, 'advertisements');
+const promoCardsCollection = collection(db, 'promoCards');
 const popupAdsCollection = collection(db, 'popupAds');
 const messagesCollection = collection(db, 'contactMessages');
 const ordersCollection = collection(db, 'orders');
@@ -20,6 +21,7 @@ const brandsCollection = collection(db, 'brands');
 // Cache variables
 let allCategories: Category[] | null = null;
 let allAds: Ad[] | null = null;
+let allPromoCards: PromoCard[] | null = null;
 let allPopupAds: Ad[] | null = null;
 let allMessages: ContactMessage[] | null = null;
 let allOrders: Order[] | null = null;
@@ -30,7 +32,7 @@ let allBrands: Brand[] | null = null;
 let lastFetchTime: Record<string, number> = {};
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
-async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | 'messages' | 'orders' | 'customers' | 'subscribers' | 'brands', forceRefresh: boolean = false) {
+async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | 'messages' | 'orders' | 'customers' | 'subscribers' | 'brands' | 'promoCards', forceRefresh: boolean = false) {
     const now = Date.now();
     if (forceRefresh || !lastFetchTime[dataType] || now - lastFetchTime[dataType] > CACHE_DURATION) {
         console.log(`Cache miss for ${dataType}. Fetching new data...`);
@@ -44,6 +46,10 @@ async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | '
             case 'ads':
                 const adSnapshot = await getDocs(adsCollection);
                 allAds = adSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
+                break;
+            case 'promoCards':
+                const promoCardSnapshot = await getDocs(promoCardsCollection);
+                allPromoCards = promoCardSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PromoCard));
                 break;
             case 'popupAds':
                 const popupAdSnapshot = await getDocs(popupAdsCollection);
@@ -402,6 +408,44 @@ export async function deletePopupAd(adId: string): Promise<void> {
     const adRef = doc(db, 'popupAds', adId);
     await deleteDoc(adRef);
     await fetchDataIfNeeded('popupAds', true);
+}
+
+// Promo Card Functions
+export async function getPromoCards(forceRefresh: boolean = false): Promise<PromoCard[]> {
+    await fetchDataIfNeeded('promoCards', forceRefresh);
+    if (!allPromoCards || allPromoCards.length < 4) {
+        // Initialize if not present
+        const defaultCards = [
+            { id: 'promo-1', title: 'عروض اليوم', imageUrl: 'https://picsum.photos/seed/promo1/400/400', linkUrl: '/offers', linkText: 'تسوق الآن', isActive: true },
+            { id: 'promo-2', title: 'وصل حديثًا', imageUrl: 'https://picsum.photos/seed/promo2/400/400', linkUrl: '/products', linkText: 'اكتشف المزيد', isActive: true },
+            { id: 'promo-3', title: 'تخفيضات الأزياء', imageUrl: 'https://picsum.photos/seed/promo3/400/400', linkUrl: '/products?category=fashion', linkText: 'عرض الكل', isActive: true },
+            { id: 'promo-4', title: 'أساسيات المنزل', imageUrl: 'https://picsum.photos/seed/promo4/400/400', linkUrl: '/products?category=home-furniture', linkText: 'تسوق الأثاث', isActive: true },
+        ];
+
+        const batch = writeBatch(db);
+        defaultCards.forEach(card => {
+            const docRef = doc(db, 'promoCards', card.id);
+            batch.set(docRef, card);
+        });
+        await batch.commit();
+        allPromoCards = defaultCards;
+        return defaultCards;
+    }
+    return allPromoCards;
+}
+
+export async function getPromoCardById(cardId: string): Promise<PromoCard | null> {
+    const cardDoc = await getDoc(doc(db, 'promoCards', cardId));
+    if (cardDoc.exists()) {
+        return { id: cardDoc.id, ...cardDoc.data() } as PromoCard;
+    }
+    return null;
+}
+
+export async function updatePromoCard(cardId: string, cardUpdate: Partial<PromoCard>): Promise<void> {
+    const cardRef = doc(db, 'promoCards', cardId);
+    await updateDoc(cardRef, cardUpdate);
+    await fetchDataIfNeeded('promoCards', true);
 }
 
 

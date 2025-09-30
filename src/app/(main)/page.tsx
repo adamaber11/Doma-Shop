@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -5,9 +6,9 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ShoppingBag, X } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
-import { getProducts, getAds, getPopupAds, getBrands } from "@/services/product-service";
+import { getProducts, getAds, getPopupAds, getBrands, getPromoCards } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
-import type { Product, HomepageSettings, Ad, Brand } from "@/lib/types";
+import type { Product, HomepageSettings, Ad, Brand, PromoCard } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
@@ -15,11 +16,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Header } from "@/components/layout/Header";
+import { Card } from "@/components/ui/card";
 
 export default function Home() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
   const [bannerAds, setBannerAds] = useState<Ad[]>([]);
+  const [promoCards, setPromoCards] = useState<PromoCard[]>([]);
   const [bestOfferProducts, setBestOfferProducts] = useState<Product[]>([]);
   const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -37,7 +40,7 @@ export default function Home() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const [settings, ads, offerProducts, sellerProducts, featProducts, popupAds, fetchedBrands] = await Promise.all([
+        const [settings, ads, offerProducts, sellerProducts, featProducts, popupAds, fetchedBrands, fetchedPromoCards] = await Promise.all([
           getHomepageSettings(),
           getAds(),
           getProducts({ isBestOffer: true }),
@@ -45,9 +48,11 @@ export default function Home() {
           getProducts({ isFeatured: true }),
           getPopupAds(),
           getBrands(),
+          getPromoCards(),
         ]);
         setHomepageSettings(settings);
         setBannerAds(ads.filter(ad => ad.isActive));
+        setPromoCards(fetchedPromoCards.filter(card => card.isActive));
         setBestOfferProducts(offerProducts);
         setBestSellingProducts(sellerProducts);
         setFeaturedProducts(featProducts);
@@ -119,10 +124,34 @@ export default function Home() {
             priority
           />
         )}
-        <div className="absolute inset-0 bg-black/50" />
       </section>
       
       <Header />
+      
+      <section className="-mt-32 relative z-10 pb-10">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {loading ? (
+              [...Array(4)].map((_, i) => <Skeleton key={i} className="h-96 bg-white" />)
+            ) : (
+              promoCards.map(card => (
+                <Card key={card.id} className="p-4 bg-white flex flex-col">
+                  <h3 className="text-xl font-bold mb-2">{card.title}</h3>
+                  <Link href={card.linkUrl} className="block flex-grow mb-4">
+                    <div className="relative aspect-[0.9] w-full">
+                       <Image src={card.imageUrl} alt={card.title} fill className="object-cover" />
+                    </div>
+                  </Link>
+                  <Link href={card.linkUrl} className="text-sm text-primary hover:underline font-semibold">
+                    {card.linkText}
+                  </Link>
+                </Card>
+              ))
+            )}
+          </div>
+        </div>
+      </section>
+
 
       <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">

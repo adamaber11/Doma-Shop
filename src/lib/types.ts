@@ -124,6 +124,15 @@ export type Ad = {
   duration?: number;
 };
 
+export type PromoCard = {
+  id: string;
+  title: string;
+  imageUrl: string;
+  linkUrl: string;
+  linkText: string;
+  isActive: boolean;
+};
+
 export type ContactMessage = {
   id: string;
   name: string;
