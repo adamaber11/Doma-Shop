@@ -9,12 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, UserCredential } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from '@/lib/firebase';
+import { findOrCreateCustomerFromUser } from '@/services/product-service';
 
 
 const loginSchema = z.object({
@@ -44,11 +45,16 @@ export default function LoginPage() {
     defaultValues: { email: "", password: "" }
   });
 
+  const handleSuccessfulLogin = async (userCredential: UserCredential) => {
+    await findOrCreateCustomerFromUser(userCredential.user);
+    toast({ title: "تم تسجيل الدخول بنجاح!" });
+    router.push('/');
+  }
+
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      toast({ title: "تم تسجيل الدخول بنجاح!" });
-      router.push('/');
+      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
+      await handleSuccessfulLogin(userCredential);
     } catch (error) {
       console.error("Login error", error);
       toast({
@@ -61,9 +67,8 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
-        await signInWithPopup(auth, new GoogleAuthProvider());
-        toast({ title: "تم تسجيل الدخول بنجاح!" });
-        router.push('/');
+        const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
+        await handleSuccessfulLogin(userCredential);
     } catch (error) {
         console.error("Social login error", error);
         toast({

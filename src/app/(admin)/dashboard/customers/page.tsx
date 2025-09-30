@@ -58,7 +58,10 @@ export default function DashboardCustomersPage() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                         <Skeleton className="h-10 w-10 rounded-full" />
-                        <Skeleton className="h-5 w-24" />
+                        <div className='space-y-2'>
+                          <Skeleton className="h-5 w-24" />
+                           <Skeleton className="h-4 w-32" />
+                        </div>
                     </div>
                   </TableCell>
                   <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-40" /></TableCell>
@@ -74,7 +77,6 @@ export default function DashboardCustomersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>العميل</TableHead>
-                <TableHead className="hidden md:table-cell">البريد الإلكتروني</TableHead>
                 <TableHead>تاريخ الانضمام</TableHead>
               </TableRow>
             </TableHeader>
@@ -87,10 +89,12 @@ export default function DashboardCustomersPage() {
                             <AvatarImage src={customer.photoURL} alt={customer.name} />
                             <AvatarFallback><UserCircle /></AvatarFallback>
                         </Avatar>
-                        <span className="font-medium">{customer.name}</span>
+                        <div>
+                          <span className="font-medium">{customer.name}</span>
+                          <div className='text-sm text-muted-foreground'>{customer.email}</div>
+                        </div>
                       </div>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">{customer.email}</TableCell>
                   <TableCell>{format(new Date(customer.joinedAt), "d MMMM yyyy", { locale: ar })}</TableCell>
                 </TableRow>
               ))}

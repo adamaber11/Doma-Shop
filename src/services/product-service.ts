@@ -2,8 +2,9 @@
 
 "use server";
 import { db } from "@/lib/firebase";
-import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber } from "@/lib/types";
+import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo } from "@/lib/types";
 import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where } from "firebase/firestore";
+import type { User as FirebaseUser } from 'firebase/auth';
 
 const productsCollection = collection(db, 'products');
 const categoriesCollection = collection(db, 'categories');
@@ -450,6 +451,23 @@ export async function getCustomers(forceRefresh: boolean = false): Promise<Custo
     await fetchDataIfNeeded(forceRefresh);
     return allCustomers || [];
 }
+
+export async function findOrCreateCustomerFromUser(user: FirebaseUser): Promise<void> {
+    const customerRef = doc(db, 'customers', user.uid);
+    const customerDoc = await getDoc(customerRef);
+
+    if (!customerDoc.exists()) {
+        const newCustomer: Omit<Customer, 'id'> = {
+            name: user.displayName || 'مستخدم جديد',
+            email: user.email || '',
+            photoURL: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`,
+            joinedAt: user.metadata.creationTime ? new Date(user.metadata.creationTime) : new Date(),
+        };
+        await setDoc(customerRef, newCustomer);
+        await fetchDataIfNeeded(true); // Force refresh customer list
+    }
+}
+
 
 // Subscriber Functions
 export async function getSubscribers(forceRefresh: boolean = false): Promise<Subscriber[]> {

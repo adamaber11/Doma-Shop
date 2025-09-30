@@ -10,12 +10,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, updateProfile, UserCredential } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from '@/lib/firebase';
+import { findOrCreateCustomerFromUser } from '@/services/product-service';
 
 
 const signupSchema = z.object({
@@ -46,12 +47,17 @@ export default function SignupPage() {
     defaultValues: { name: "", email: "", password: "" }
   });
 
+  const handleSuccessfulSignup = async (userCredential: UserCredential, displayName: string) => {
+    await updateProfile(userCredential.user, { displayName });
+    await findOrCreateCustomerFromUser(userCredential.user);
+    toast({ title: "تم إنشاء الحساب بنجاح!" });
+    router.push('/');
+  }
+
   const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
-      await updateProfile(userCredential.user, { displayName: values.name });
-      toast({ title: "تم إنشاء الحساب بنجاح!" });
-      router.push('/');
+      await handleSuccessfulSignup(userCredential, values.name);
     } catch (error) {
       console.error("Signup error", error);
       toast({
@@ -64,7 +70,8 @@ export default function SignupPage() {
 
   const handleGoogleLogin = async () => {
     try {
-        await signInWithPopup(auth, new GoogleAuthProvider());
+        const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
+        await findOrCreateCustomerFromUser(userCredential.user);
         toast({ title: "تم تسجيل الدخول بنجاح!" });
         router.push('/');
     } catch (error) {
