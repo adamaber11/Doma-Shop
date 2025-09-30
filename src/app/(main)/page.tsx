@@ -85,9 +85,6 @@ export default function Home() {
   const heroPlaceholder = getPlaceholderImage("hero-1");
   const heroImage = homepageSettings?.heroImageUrl || heroPlaceholder.imageUrl;
   
-  const heroTitle = homepageSettings?.heroTitle || "اكتشف أسلوبك";
-  const heroSubtitle = homepageSettings?.heroSubtitle || "استكشف مجموعتنا المنسقة من أجود المنتجات. الجودة والأناقة تصل إلى عتبة داركم.";
-
   return (
     <>
       {popupAd && (
@@ -123,34 +120,15 @@ export default function Home() {
             priority
           />
         )}
-        <div className="absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full z-10">
+        <div className="absolute top-[60%] left-0 w-full z-10">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
               {loading ? (
-                [...Array(4)].map((_, i) => <Skeleton key={i} className="h-96 bg-white/80" />)
+                [...Array(4)].map((_, i) => <Skeleton key={i} className="h-96 w-64 flex-shrink-0 bg-white/80" />)
               ) : (
-                promoCards.slice(0, 4).map(card => (
-                  <Card key={card.id} className="p-4 bg-white/90 backdrop-blur-sm flex flex-col shadow-2xl">
-                    <h3 className="text-xl font-bold mb-2">{card.title}</h3>
-                    <Link href={card.linkUrl} className="block flex-grow mb-4">
-                      <div className="relative aspect-[0.9] w-full">
-                         <Image src={card.imageUrl} alt={card.title} fill className="object-cover rounded-md" />
-                      </div>
-                    </Link>
-                    <Link href={card.linkUrl} className="text-sm text-primary hover:underline font-semibold">
-                      {card.linkText}
-                    </Link>
-                  </Card>
-                ))
-              )}
-            </div>
-            {promoCards.length > 4 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                {loading ? (
-                  [...Array(4)].map((_, i) => <Skeleton key={i} className="h-96 bg-white/80" />)
-                ) : (
-                  promoCards.slice(4, 8).map(card => (
-                    <Card key={card.id} className="p-4 bg-white/90 backdrop-blur-sm flex flex-col shadow-2xl">
+                promoCards.map(card => (
+                  <div key={card.id} className="w-64 flex-shrink-0">
+                    <Card className="p-4 bg-white/90 backdrop-blur-sm flex flex-col shadow-2xl h-full">
                       <h3 className="text-xl font-bold mb-2">{card.title}</h3>
                       <Link href={card.linkUrl} className="block flex-grow mb-4">
                         <div className="relative aspect-[0.9] w-full">
@@ -161,10 +139,10 @@ export default function Home() {
                         {card.linkText}
                       </Link>
                     </Card>
-                  ))
-                )}
-              </div>
-            )}
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </section>
