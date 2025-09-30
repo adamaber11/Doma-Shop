@@ -6,11 +6,18 @@ import type { UserRoleInfo } from '@/lib/types';
 
 async function getAdminAuth() {
     const adminApp = await initializeAdminApp();
+    if (!adminApp) {
+        return null;
+    }
     return getAuth(adminApp);
 }
 
 export async function getUsers(): Promise<UserRoleInfo[]> {
     const auth = await getAdminAuth();
+    if (!auth) {
+        console.warn("Admin Auth is not initialized. Cannot fetch users.");
+        return [];
+    }
     const userRecords = await auth.listUsers();
     
     return userRecords.users.map(user => ({
@@ -24,5 +31,8 @@ export async function getUsers(): Promise<UserRoleInfo[]> {
 
 export async function setUserAdminRole(uid: string, isAdmin: boolean): Promise<void> {
     const auth = await getAdminAuth();
+    if (!auth) {
+        throw new Error("Admin Auth is not initialized. Cannot set user role.");
+    }
     await auth.setCustomUserClaims(uid, { admin: isAdmin });
 }
