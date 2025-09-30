@@ -131,7 +131,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-12 md:py-20 bg-orange-500/10">
+      <section className="py-12 md:py-20">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold font-headline">أبرز العروض اليوم</h2>
@@ -159,7 +159,7 @@ export default function Home() {
                 >
                   <CarouselContent>
                     {bannerAds.map((ad) => (
-                      <CarouselItem key={ad.id} className="basis-full">
+                      <CarouselItem key={ad.id} className="md:basis-1/1 lg:basis-1/1">
                         <div className="p-1">
                            <Link href={ad.linkUrl} target="_blank" rel="noopener noreferrer" className="block group relative aspect-[2.5/1] w-full rounded-lg overflow-hidden">
                                 <Image
