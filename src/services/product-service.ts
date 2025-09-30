@@ -26,94 +26,75 @@ let allOrders: Order[] | null = null;
 let allCustomers: Customer[] | null = null;
 let allSubscribers: Subscriber[] | null = null;
 
-let lastFetchTime: number = 0;
+let lastFetchTime: Record<string, number> = {};
 const CACHE_DURATION = 1 * 60 * 1000; // 1 minute for dashboard freshness
 
-async function fetchDataIfNeeded(forceRefresh: boolean = false) {
+async function fetchDataIfNeeded(dataType: 'products' | 'categories' | 'ads' | 'popupAds' | 'messages' | 'orders' | 'customers' | 'subscribers', forceRefresh: boolean = false) {
     const now = Date.now();
-    if (forceRefresh || now - lastFetchTime > CACHE_DURATION) {
-        allProducts = null;
-        allCategories = null;
-        allAds = null;
-        allPopupAds = null;
-        allMessages = null;
-        allOrders = null;
-        allCustomers = null;
-        allSubscribers = null;
-        console.log('Cache cleared, fetching new data...');
-    }
-
-    if (!allProducts) {
-        const productSnapshot = await getDocs(productsCollection);
-        allProducts = productSnapshot.docs.map(doc => {
-            const data = doc.data();
-            if (data.reviews) {
-                data.reviews = data.reviews.map((review: any) => ({
-                    ...review,
-                    createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : new Date(review.createdAt)
-                }));
-            }
-            return { id: doc.id, ...data } as Product;
-        });
-    }
-    
-    if (!allCategories) {
-        const categorySnapshot = await getDocs(query(categoriesCollection, orderBy("name")));
-        const categories = categorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
-        // This logic is now handled in getCategories to build the hierarchy
-        allCategories = categories;
-    }
-
-    if (!allAds) {
-        const adSnapshot = await getDocs(adsCollection);
-        allAds = adSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
-    }
-
-    if (!allPopupAds) {
-        const popupAdSnapshot = await getDocs(popupAdsCollection);
-        allPopupAds = popupAdSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
-    }
-
-    if (!allMessages) {
-        const q = query(messagesCollection, orderBy("createdAt", "desc"));
-        const messageSnapshot = await getDocs(q);
-        allMessages = messageSnapshot.docs.map(doc => {
-             const data = doc.data();
-             return { 
-                 id: doc.id, 
-                 ...data,
-                 createdAt: data.createdAt.toDate() 
-            } as ContactMessage;
-        });
-    }
-
-    if (!allOrders) {
-        const q = query(ordersCollection, orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        allOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), createdAt: doc.data().createdAt.toDate() } as Order));
-    }
-
-    if (!allCustomers) {
-        const q = query(customersCollection, orderBy("joinedAt", "desc"));
-        const snapshot = await getDocs(q);
-        allCustomers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), joinedAt: doc.data().joinedAt.toDate() } as Customer));
-    }
-    
-    if (!allSubscribers) {
-        const q = query(subscribersCollection, orderBy("subscribedAt", "desc"));
-        const snapshot = await getDocs(q);
-        allSubscribers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), subscribedAt: doc.data().subscribedAt.toDate() } as Subscriber));
-    }
-
-
-    if (forceRefresh || !lastFetchTime) {
-      lastFetchTime = now;
+    if (forceRefresh || !lastFetchTime[dataType] || now - lastFetchTime[dataType] > CACHE_DURATION) {
+        console.log(`Cache miss for ${dataType}. Fetching new data...`);
+        lastFetchTime[dataType] = now;
+        
+        switch(dataType) {
+            case 'products':
+                const productSnapshot = await getDocs(productsCollection);
+                allProducts = productSnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    if (data.reviews) {
+                        data.reviews = data.reviews.map((review: any) => ({
+                            ...review,
+                            createdAt: review.createdAt instanceof Timestamp ? review.createdAt.toDate() : new Date(review.createdAt)
+                        }));
+                    }
+                    return { id: doc.id, ...data } as Product;
+                });
+                break;
+            case 'categories':
+                 const categorySnapshot = await getDocs(query(categoriesCollection, orderBy("name")));
+                allCategories = categorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Category));
+                break;
+            case 'ads':
+                const adSnapshot = await getDocs(adsCollection);
+                allAds = adSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
+                break;
+            case 'popupAds':
+                const popupAdSnapshot = await getDocs(popupAdsCollection);
+                allPopupAds = popupAdSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
+                break;
+            case 'messages':
+                const qm = query(messagesCollection, orderBy("createdAt", "desc"));
+                const messageSnapshot = await getDocs(qm);
+                allMessages = messageSnapshot.docs.map(doc => {
+                     const data = doc.data();
+                     return { 
+                         id: doc.id, 
+                         ...data,
+                         createdAt: data.createdAt.toDate() 
+                    } as ContactMessage;
+                });
+                break;
+            case 'orders':
+                const qo = query(ordersCollection, orderBy("createdAt", "desc"));
+                const snapshotO = await getDocs(qo);
+                allOrders = snapshotO.docs.map(doc => ({ id: doc.id, ...doc.data(), createdAt: doc.data().createdAt.toDate() } as Order));
+                break;
+            case 'customers':
+                const qc = query(customersCollection, orderBy("joinedAt", "desc"));
+                const snapshotC = await getDocs(qc);
+                allCustomers = snapshotC.docs.map(doc => ({ id: doc.id, ...doc.data(), joinedAt: doc.data().joinedAt.toDate() } as Customer));
+                break;
+            case 'subscribers':
+                const qs = query(subscribersCollection, orderBy("subscribedAt", "desc"));
+                const snapshotS = await getDocs(qs);
+                allSubscribers = snapshotS.docs.map(doc => ({ id: doc.id, ...doc.data(), subscribedAt: doc.data().subscribedAt.toDate() } as Subscriber));
+                break;
+        }
     }
 }
 
 // Product Functions
 export async function getProducts(forceRefresh: boolean = false): Promise<Product[]> {
-  await fetchDataIfNeeded(forceRefresh);
+  await fetchDataIfNeeded('products', forceRefresh);
   return allProducts || [];
 }
 
@@ -123,7 +104,6 @@ export async function getProductById(productId: string): Promise<Product | null>
 
     if (productDoc.exists()) {
         const data = productDoc.data();
-        // Ensure reviews have Date objects
         if (data.reviews) {
             data.reviews = data.reviews.map((review: any) => ({
                 ...review,
@@ -132,7 +112,7 @@ export async function getProductById(productId: string): Promise<Product | null>
         }
         const product = { id: productDoc.id, ...data } as Product;
         
-        // Update cache if it exists
+        await fetchDataIfNeeded('products');
         if (allProducts) {
             const index = allProducts.findIndex(p => p.id === productId);
             if (index !== -1) {
@@ -153,24 +133,21 @@ export async function addProduct(product: Omit<Product, 'id' | 'reviews'>): Prom
         reviews: []
     };
     const docRef = await addDoc(productsCollection, productWithDefaults);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('products', true);
     const newProduct = { id: docRef.id, ...productWithDefaults } as Product;
-    if (allProducts) {
-        allProducts.push(newProduct);
-    }
     return newProduct;
 }
 
 export async function updateProduct(productId: string, productUpdate: Partial<Product>): Promise<void> {
     const productRef = doc(db, 'products', productId);
     await updateDoc(productRef, productUpdate);
-    await fetchDataIfNeeded(true); 
+    await fetchDataIfNeeded('products', true); 
 }
 
 export async function deleteProduct(productId: string): Promise<void> {
     const productRef = doc(db, 'products', productId);
     await deleteDoc(productRef);
-    await fetchDataIfNeeded(true); 
+    await fetchDataIfNeeded('products', true); 
 }
 
 export async function addReview(productId: string, review: Omit<Review, 'id' | 'createdAt'>): Promise<Review> {
@@ -183,7 +160,7 @@ export async function addReview(productId: string, review: Omit<Review, 'id' | '
     await updateDoc(productRef, {
         reviews: arrayUnion(newReview)
     });
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('products', true);
 
     return {
         ...newReview,
@@ -193,7 +170,7 @@ export async function addReview(productId: string, review: Omit<Review, 'id' | '
 
 // Category Functions
 export async function getCategories(forceRefresh: boolean = false, flat: boolean = false): Promise<Category[]> {
-    await fetchDataIfNeeded(forceRefresh);
+    await fetchDataIfNeeded('categories', forceRefresh);
     const categories = allCategories || [];
 
     if (flat) {
@@ -203,12 +180,10 @@ export async function getCategories(forceRefresh: boolean = false, flat: boolean
     const categoryMap = new Map<string, Category>();
     const rootCategories: Category[] = [];
 
-    // First pass: add all categories to map, initializing subcategories array
     categories.forEach(cat => {
         categoryMap.set(cat.id, { ...cat, subcategories: [] });
     });
 
-    // Second pass: build hierarchy
     categories.forEach(cat => {
         if (cat.parentId) {
             const parent = categoryMap.get(cat.parentId);
@@ -220,7 +195,6 @@ export async function getCategories(forceRefresh: boolean = false, flat: boolean
         }
     });
 
-    // Return the hierarchical structure for the frontend
     return rootCategories;
 }
 
@@ -229,7 +203,7 @@ export async function getCategoryById(categoryId: string): Promise<Category | nu
     const catDoc = await getDoc(catDocRef);
     if (catDoc.exists()) {
         const category = { id: catDoc.id, ...catDoc.data() } as Category;
-        // Optionally update the cache
+        await fetchDataIfNeeded('categories');
         if (allCategories) {
             const index = allCategories.findIndex(c => c.id === categoryId);
             if (index > -1) {
@@ -250,16 +224,13 @@ export async function addCategory(category: Omit<Category, 'id' | 'subcategories
     
     const newCategoryData: any = { ...category };
     if (!category.parentId) {
-        delete newCategoryData.parentId; // Ensure parentId is not stored if it's a main category
+        delete newCategoryData.parentId;
     }
 
     await setDoc(categoryRef, newCategoryData);
     
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('categories', true);
     const newCategory = { id, ...newCategoryData };
-    if(allCategories) {
-        allCategories.push(newCategory);
-    }
     return newCategory;
 }
 
@@ -268,45 +239,39 @@ export async function updateCategory(categoryId: string, categoryUpdate: Partial
     
     const updateData: any = { ...categoryUpdate };
      if (updateData.parentId === undefined) {
-        updateData.parentId = deleteField(); // Use FieldValue to remove the field
+        updateData.parentId = deleteField();
     }
 
     await updateDoc(categoryRef, updateData);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('categories', true);
 }
 
 
 export async function deleteCategory(categoryId: string): Promise<void> {
     await runTransaction(db, async (transaction) => {
-        // 1. Delete the main category
         const categoryRef = doc(db, 'categories', categoryId);
         transaction.delete(categoryRef);
 
-        // 2. Find and delete all subcategories
         const subcategoriesQuery = query(collection(db, 'categories'), where('parentId', '==', categoryId));
         const subcategoriesSnapshot = await getDocs(subcategoriesQuery);
         subcategoriesSnapshot.forEach(subDoc => {
             transaction.delete(subDoc.ref);
         });
-
-        // 3. Optional: Unset categoryId and subcategoryId from products.
-        // This can be heavy. A better approach might be to handle this in the UI or a batch job.
     });
 
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('categories', true);
 }
 
 export async function deleteSubCategory(parentId: string, subCategoryId: string): Promise<void> {
-    // This is simplified. In the new structure, subcategories are just categories with a parentId.
     const subCategoryRef = doc(db, 'categories', subCategoryId);
     await deleteDoc(subCategoryRef);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('categories', true);
 }
 
 
 // Advertisement Functions (Banners)
 export async function getAds(forceRefresh: boolean = false): Promise<Ad[]> {
-    await fetchDataIfNeeded(forceRefresh);
+    await fetchDataIfNeeded('ads', forceRefresh);
     return allAds || [];
 }
 
@@ -314,6 +279,7 @@ export async function getAdById(adId: string): Promise<Ad | null> {
     const adDoc = await getDoc(doc(db, 'advertisements', adId));
      if (adDoc.exists()) {
         const newAd = { id: adDoc.id, ...adDoc.data() } as Ad;
+        await fetchDataIfNeeded('ads');
         if(allAds){
              const index = allAds.findIndex(ad => ad.id === adId);
             if(index !== -1) allAds[index] = newAd;
@@ -327,28 +293,27 @@ export async function getAdById(adId: string): Promise<Ad | null> {
 
 export async function addAd(ad: Omit<Ad, 'id'>): Promise<Ad> {
     const docRef = await addDoc(adsCollection, ad);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('ads', true);
     const newAd = { id: docRef.id, ...ad } as Ad;
-    if(allAds) allAds.push(newAd);
     return newAd;
 }
 
 export async function updateAd(adId: string, adUpdate: Partial<Ad>): Promise<void> {
     const adRef = doc(db, 'advertisements', adId);
     await updateDoc(adRef, adUpdate);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('ads', true);
 }
 
 export async function deleteAd(adId: string): Promise<void> {
     const adRef = doc(db, 'advertisements', adId);
     await deleteDoc(adRef);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('ads', true);
 }
 
 
 // Popup Ad Functions
 export async function getPopupAds(forceRefresh: boolean = false): Promise<Ad[]> {
-    await fetchDataIfNeeded(forceRefresh);
+    await fetchDataIfNeeded('popupAds', forceRefresh);
     return allPopupAds || [];
 }
 
@@ -356,6 +321,7 @@ export async function getPopupAdById(adId: string): Promise<Ad | null> {
     const adDoc = await getDoc(doc(db, 'popupAds', adId));
      if (adDoc.exists()) {
         const newAd = { id: adDoc.id, ...adDoc.data() } as Ad;
+        await fetchDataIfNeeded('popupAds');
         if(allPopupAds) {
             const index = allPopupAds.findIndex(ad => ad.id === adId);
             if(index !== -1) allPopupAds[index] = newAd;
@@ -369,22 +335,21 @@ export async function getPopupAdById(adId: string): Promise<Ad | null> {
 
 export async function addPopupAd(ad: Omit<Ad, 'id'>): Promise<Ad> {
     const docRef = await addDoc(popupAdsCollection, ad);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('popupAds', true);
     const newAd = { id: docRef.id, ...ad } as Ad;
-    if(allPopupAds) allPopupAds.push(newAd);
     return newAd;
 }
 
 export async function updatePopupAd(adId: string, adUpdate: Partial<Ad>): Promise<void> {
     const adRef = doc(db, 'popupAds', adId);
     await updateDoc(adRef, adUpdate);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('popupAds', true);
 }
 
 export async function deletePopupAd(adId: string): Promise<void> {
     const adRef = doc(db, 'popupAds', adId);
     await deleteDoc(adRef);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('popupAds', true);
 }
 
 
@@ -395,28 +360,25 @@ export async function addContactMessage(message: Omit<ContactMessage, 'id' | 'cr
         createdAt: Timestamp.now()
     }
     const docRef = await addDoc(messagesCollection, messageData);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('messages', true);
     const newMessage = { id: docRef.id, ...messageData, createdAt: messageData.createdAt.toDate() };
-    if (allMessages) {
-        allMessages.unshift(newMessage);
-    }
     return newMessage;
 }
 
 export async function getContactMessages(forceRefresh: boolean = false): Promise<ContactMessage[]> {
-    await fetchDataIfNeeded(forceRefresh);
+    await fetchDataIfNeeded('messages', forceRefresh);
     return allMessages || [];
 }
 
 export async function deleteContactMessage(messageId: string): Promise<void> {
     const messageRef = doc(db, 'contactMessages', messageId);
     await deleteDoc(messageRef);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('messages', true);
 }
 
 // Order Functions
 export async function getOrders(forceRefresh: boolean = false): Promise<Order[]> {
-    await fetchDataIfNeeded(forceRefresh);
+    await fetchDataIfNeeded('orders', forceRefresh);
     return allOrders || [];
 }
 
@@ -427,28 +389,25 @@ export async function addOrder(order: Omit<Order, 'id' | 'createdAt' | 'status'>
         createdAt: Timestamp.now(),
     };
     const docRef = await addDoc(ordersCollection, orderData);
-    await fetchDataIfNeeded(true); // Force refresh of orders
+    await fetchDataIfNeeded('orders', true);
     const newOrder: Order = {
         id: docRef.id,
         ...order,
         status: 'pending',
         createdAt: orderData.createdAt.toDate()
     };
-    if (allOrders) {
-        allOrders.unshift(newOrder); // Add to the top of the list
-    }
     return newOrder;
 }
 
 export async function updateOrderStatus(orderId: string, status: Order['status']): Promise<void> {
     const orderRef = doc(db, 'orders', orderId);
     await updateDoc(orderRef, { status });
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('orders', true);
 }
 
 // Customer Functions
 export async function getCustomers(forceRefresh: boolean = false): Promise<Customer[]> {
-    await fetchDataIfNeeded(forceRefresh);
+    await fetchDataIfNeeded('customers', forceRefresh);
     return allCustomers || [];
 }
 
@@ -464,19 +423,18 @@ export async function findOrCreateCustomerFromUser(user: FirebaseUser): Promise<
             joinedAt: user.metadata.creationTime ? new Date(user.metadata.creationTime) : new Date(),
         };
         await setDoc(customerRef, newCustomer);
-        await fetchDataIfNeeded(true); // Force refresh customer list
+        await fetchDataIfNeeded('customers', true);
     }
 }
 
 
 // Subscriber Functions
 export async function getSubscribers(forceRefresh: boolean = false): Promise<Subscriber[]> {
-    await fetchDataIfNeeded(forceRefresh);
+    await fetchDataIfNeeded('subscribers', forceRefresh);
     return allSubscribers || [];
 }
 
 export async function addSubscriber(email: string): Promise<Subscriber | { error: string, code: string }> {
-    // Check if email already exists
     const q = query(subscribersCollection, where("email", "==", email));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
@@ -488,18 +446,15 @@ export async function addSubscriber(email: string): Promise<Subscriber | { error
         subscribedAt: Timestamp.now()
     };
     const docRef = await addDoc(subscribersCollection, subscriberData);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('subscribers', true);
     const newSubscriber = { id: docRef.id, ...subscriberData, subscribedAt: subscriberData.subscribedAt.toDate() };
-    if (allSubscribers) {
-        allSubscribers.unshift(newSubscriber);
-    }
     return newSubscriber;
 }
 
 export async function deleteSubscriber(subscriberId: string): Promise<void> {
     const subscriberRef = doc(db, 'subscribers', subscriberId);
     await deleteDoc(subscriberRef);
-    await fetchDataIfNeeded(true);
+    await fetchDataIfNeeded('subscribers', true);
 }
 
 

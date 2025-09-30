@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import { getProducts } from '@/services/product-service';
 import {z} from 'genkit';
 
 const ProductRecommendationsInputSchema = z.object({
@@ -27,32 +28,25 @@ const ProductRecommendationsOutputSchema = z.object({
 export type ProductRecommendationsOutput = z.infer<typeof ProductRecommendationsOutputSchema>;
 
 export async function getProductRecommendations(input: ProductRecommendationsInput): Promise<ProductRecommendationsOutput> {
-  return productRecommendationsFlow(input);
+  const allProducts = await getProducts();
+  const productInfo = allProducts.map(p => `ID: ${p.id}, Name: ${p.name}, Description: ${p.description}`).join('\n');
+
+  const prompt = `You are an expert product recommendation engine. Based on the user's browsing history, cart items, and the following list of all available products, recommend other products they might be interested in.
+
+  Available Products:
+  ${productInfo}
+
+  User's Browsing History (Product IDs): ${input.browsingHistory}
+  User's Cart Items (Product IDs): ${input.cartItems}
+
+  Return a list of recommended product IDs.`;
+
+  const llmResponse = await ai.generate({
+      prompt: prompt,
+      output: {
+          schema: ProductRecommendationsOutputSchema
+      }
+  });
+
+  return llmResponse.output || { recommendedProducts: [] };
 }
-
-const productRecommendationsPrompt = ai.definePrompt({
-  name: 'productRecommendationsPrompt',
-  input: {schema: ProductRecommendationsInputSchema},
-  output: {schema: ProductRecommendationsOutputSchema},
-  prompt: `أنت محرك توصية منتجات خبير.
-
-  بناءً على سجل تصفح المستخدم والعناصر الموجودة في عربة التسوق الخاصة به ، أوصي بمنتجات أخرى قد يكون مهتمًا بها.
-
-  سجل التصفح: {{{browsingHistory}}}
-  عناصر سلة التسوق: {{{cartItems}}}
-
-  إرجاع قائمة بمعرفات المنتج.
-  `,
-});
-
-const productRecommendationsFlow = ai.defineFlow(
-  {
-    name: 'productRecommendationsFlow',
-    inputSchema: ProductRecommendationsInputSchema,
-    outputSchema: ProductRecommendationsOutputSchema,
-  },
-  async input => {
-    const {output} = await productRecommendationsPrompt(input);
-    return output!;
-  }
-);

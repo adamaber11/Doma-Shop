@@ -3,7 +3,13 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { CartProvider } from '@/context/CartContext';
 import { ClientOnly } from '@/components/layout/ClientOnly';
+<<<<<<< HEAD
 import Script from 'next/script';
+=======
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+>>>>>>> 8f8db34 (الموقع تقيل جدا جدا جدا)
 
 export const metadata: Metadata = {
   title: 'Doma Online Shop',
@@ -24,6 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+<<<<<<< HEAD
     <html lang="ar" dir="rtl">
       <head>
         {/* كود التحقق من جوجل */}
@@ -39,6 +46,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
+=======
+    <html lang="ar" dir="rtl" className={`${inter.variable}`}>
+>>>>>>> 8f8db34 (الموقع تقيل جدا جدا جدا)
       <body>
         <CartProvider>
           <ClientOnly>

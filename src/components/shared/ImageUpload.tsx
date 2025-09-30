@@ -1,4 +1,5 @@
 
+
 'use client';
 
 // This component is no longer used for product images, but is kept for the settings page.
@@ -83,7 +84,8 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
                         <Image
                             src={getCloudinaryImageUrl(publicId)}
                             alt="صورة المنتج"
-                            fill
+                            width={200}
+                            height={200}
                             sizes="200px"
                             className="object-cover rounded-md border"
                         />

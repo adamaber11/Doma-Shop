@@ -88,16 +88,6 @@ export const allProducts: Product[] = [
   { id: 'prod-12', name: 'مكنسة روبو-فاكيوم برو', description: 'حافظ على نظافة أرضياتك مع هذه المكنسة الكهربائية الروبوتية الذكية. متصلة بشبكة Wi-Fi وتشحن ذاتيًا.', price: 299.00, salePrice: 249.00, categoryId: 'home-appliances', stock: 35, variants: [{color: '#000000', imageUrls: ['https://picsum.photos/seed/prod12/600/600']}], isBestOffer: true },
 ];
 
-export const allOrders: Order[] = [
-    { id: 'order-101', customerName: 'علي حسن', customerEmail: 'ali@example.com', total: 149.99, status: 'delivered', createdAt: new Date('2023-11-10T09:30:00Z'), items: [{productName: 'طقم أواني طهي 10 قطع', quantity: 1, price: 149.99}] },
-    { id: 'order-102', customerName: 'منى صالح', customerEmail: 'mona@example.com', total: 65.00, status: 'shipped', createdAt: new Date('2023-11-12T14:00:00Z'), items: [{productName: 'طقم قطار خشبي كلاسيكي', quantity: 1, price: 65.00}] },
-    { id: 'order-103', name: 'خالد عبد الله', email: 'khaled@example.com', total: 349.99, status: 'pending', createdAt: new Date('2023-11-14T11:20:00Z'), items: [{productName: 'سماعات إلغاء الضوضاء', quantity: 1, price: 349.99}] },
-    { id: 'order-104', name: 'نورة إبراهيم', email: 'noura@example.com', total: 89.99, status: 'cancelled', createdAt: new Date('2023-11-13T18:00:00Z'), items: [{productName: 'جاكيت جينز كلاسيك', quantity: 1, price: 89.99}] },
-];
+export const allOrders: Order[] = [];
 
-export const allCustomers: Customer[] = [
-    { id: 'cust-1', name: 'علي حسن', email: 'ali@example.com', photoURL: 'https://i.pravatar.cc/150?u=ali@example.com', joinedAt: new Date('2023-01-15T10:00:00Z')},
-    { id: 'cust-2', name: 'منى صالح', email: 'mona@example.com', photoURL: 'https://i.pravatar.cc/150?u=mona@example.com', joinedAt: new Date('2023-02-20T11:30:00Z')},
-    { id: 'cust-3', name: 'خالد عبد الله', email: 'khaled@example.com', photoURL: 'https://i.pravatar.cc/150?u=khaled@example.com', joinedAt: new Date('2023-03-05T16:45:00Z')},
-    { id: 'cust-4', name: 'نورة إبراهيم', email: 'noura@example.com', photoURL: 'https://i.pravatar.cc/150?u=noura@example.com', joinedAt: new Date('2023-04-10T09:00:00Z')},
-];
+export const allCustomers: Customer[] = [];
