@@ -149,12 +149,13 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     <div className="container mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         <div className="grid grid-cols-1 gap-4 items-start">
-            <div className="aspect-square relative rounded-lg overflow-hidden border">
+            <div className="aspect-square relative w-full rounded-lg overflow-hidden border">
               <Image
                 src={productImages[activeImageIndex]}
                 alt={product.name}
-                fill
-                className="object-cover"
+                width={600}
+                height={600}
+                className="object-cover w-full h-full"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
@@ -168,7 +169,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     )}
                     onClick={() => setActiveImageIndex(index)}
                   >
-                    <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} fill className="object-cover" />
+                    <Image src={imageUrl} alt={`${product.name} thumbnail ${index + 1}`} width={80} height={80} className="object-cover w-full h-full" />
                   </button>
                 ))}
             </div>
