@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
+import { Header } from "@/components/layout/Header";
 
 export default function Home() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
@@ -87,6 +88,7 @@ export default function Home() {
   
   return (
     <>
+      <Header />
       {popupAd && (
             <Dialog open={isAdModalOpen} onOpenChange={setIsAdModalOpen}>
                 <DialogContent className="p-0 border-0 max-w-lg" hideCloseButton={!canCloseAd}>
@@ -325,3 +327,5 @@ export default function Home() {
     </>
   );
 }
+
+    
