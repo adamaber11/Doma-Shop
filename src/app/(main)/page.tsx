@@ -123,13 +123,13 @@ export default function Home() {
             priority
           />
         )}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full z-10">
+        <div className="absolute top-[60%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full z-10">
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {loading ? (
                 [...Array(4)].map((_, i) => <Skeleton key={i} className="h-96 bg-white/80" />)
               ) : (
-                promoCards.map(card => (
+                promoCards.slice(0, 4).map(card => (
                   <Card key={card.id} className="p-4 bg-white/90 backdrop-blur-sm flex flex-col shadow-2xl">
                     <h3 className="text-xl font-bold mb-2">{card.title}</h3>
                     <Link href={card.linkUrl} className="block flex-grow mb-4">
@@ -144,25 +144,27 @@ export default function Home() {
                 ))
               )}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-              {loading ? (
-                [...Array(4)].map((_, i) => <Skeleton key={i} className="h-96 bg-white/80" />)
-              ) : (
-                promoCards.map(card => (
-                  <Card key={`${card.id}-clone`} className="p-4 bg-white/90 backdrop-blur-sm flex flex-col shadow-2xl">
-                    <h3 className="text-xl font-bold mb-2">{card.title}</h3>
-                    <Link href={card.linkUrl} className="block flex-grow mb-4">
-                      <div className="relative aspect-[0.9] w-full">
-                         <Image src={card.imageUrl} alt={card.title} fill className="object-cover rounded-md" />
-                      </div>
-                    </Link>
-                    <Link href={card.linkUrl} className="text-sm text-primary hover:underline font-semibold">
-                      {card.linkText}
-                    </Link>
-                  </Card>
-                ))
-              )}
-            </div>
+            {promoCards.length > 4 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                {loading ? (
+                  [...Array(4)].map((_, i) => <Skeleton key={i} className="h-96 bg-white/80" />)
+                ) : (
+                  promoCards.slice(4, 8).map(card => (
+                    <Card key={card.id} className="p-4 bg-white/90 backdrop-blur-sm flex flex-col shadow-2xl">
+                      <h3 className="text-xl font-bold mb-2">{card.title}</h3>
+                      <Link href={card.linkUrl} className="block flex-grow mb-4">
+                        <div className="relative aspect-[0.9] w-full">
+                           <Image src={card.imageUrl} alt={card.title} fill className="object-cover rounded-md" />
+                        </div>
+                      </Link>
+                      <Link href={card.linkUrl} className="text-sm text-primary hover:underline font-semibold">
+                        {card.linkText}
+                      </Link>
+                    </Card>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>

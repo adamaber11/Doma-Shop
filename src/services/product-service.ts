@@ -1,5 +1,4 @@
 
-
 "use server";
 import { db } from "@/lib/firebase";
 import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo, Brand, PromoCard } from "@/lib/types";
@@ -48,7 +47,7 @@ async function fetchDataIfNeeded(dataType: 'categories' | 'ads' | 'popupAds' | '
                 allAds = adSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Ad));
                 break;
             case 'promoCards':
-                const promoCardSnapshot = await getDocs(promoCardsCollection);
+                const promoCardSnapshot = await getDocs(query(promoCardsCollection));
                 allPromoCards = promoCardSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as PromoCard));
                 break;
             case 'popupAds':
@@ -412,26 +411,8 @@ export async function deletePopupAd(adId: string): Promise<void> {
 
 // Promo Card Functions
 export async function getPromoCards(forceRefresh: boolean = false): Promise<PromoCard[]> {
-    await fetchDataIfNeeded('promoCards', forceRefresh);
-    if (!allPromoCards || allPromoCards.length < 4) {
-        // Initialize if not present
-        const defaultCards = [
-            { id: 'promo-1', title: 'عروض اليوم', imageUrl: 'https://picsum.photos/seed/promo1/400/400', linkUrl: '/offers', linkText: 'تسوق الآن', isActive: true },
-            { id: 'promo-2', title: 'وصل حديثًا', imageUrl: 'https://picsum.photos/seed/promo2/400/400', linkUrl: '/products', linkText: 'اكتشف المزيد', isActive: true },
-            { id: 'promo-3', title: 'تخفيضات الأزياء', imageUrl: 'https://picsum.photos/seed/promo3/400/400', linkUrl: '/products?category=fashion', linkText: 'عرض الكل', isActive: true },
-            { id: 'promo-4', title: 'أساسيات المنزل', imageUrl: 'https://picsum.photos/seed/promo4/400/400', linkUrl: '/products?category=home-furniture', linkText: 'تسوق الأثاث', isActive: true },
-        ];
-
-        const batch = writeBatch(db);
-        defaultCards.forEach(card => {
-            const docRef = doc(db, 'promoCards', card.id);
-            batch.set(docRef, card);
-        });
-        await batch.commit();
-        allPromoCards = defaultCards;
-        return defaultCards;
-    }
-    return allPromoCards;
+    await fetchDataIfNeeded('promoCards', true); // Always refresh for this one
+    return allPromoCards || [];
 }
 
 export async function getPromoCardById(cardId: string): Promise<PromoCard | null> {
@@ -442,9 +423,21 @@ export async function getPromoCardById(cardId: string): Promise<PromoCard | null
     return null;
 }
 
+export async function addPromoCard(card: Omit<PromoCard, 'id'>): Promise<PromoCard> {
+    const docRef = await addDoc(promoCardsCollection, card);
+    await fetchDataIfNeeded('promoCards', true);
+    const newCard = { id: docRef.id, ...card } as PromoCard;
+    return newCard;
+}
+
 export async function updatePromoCard(cardId: string, cardUpdate: Partial<PromoCard>): Promise<void> {
     const cardRef = doc(db, 'promoCards', cardId);
     await updateDoc(cardRef, cardUpdate);
+    await fetchDataIfNeeded('promoCards', true);
+}
+
+export async function deletePromoCard(cardId: string): Promise<void> {
+    await deleteDoc(doc(db, 'promoCards', cardId));
     await fetchDataIfNeeded('promoCards', true);
 }
 
@@ -556,5 +549,3 @@ export async function deleteSubscriber(subscriberId: string): Promise<void> {
 
 // Helper to remove a field from a document
 import { deleteField } from 'firebase/firestore';
-
-    
