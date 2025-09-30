@@ -149,8 +149,6 @@ export default function Home() {
         </div>
       </section>
       
-      <Header />
-      
       <section className="py-12 md:py-16">
           <div className="container mx-auto px-4">
                <div className="text-center mb-8">
@@ -329,5 +327,3 @@ export default function Home() {
     </>
   );
 }
-
-    
