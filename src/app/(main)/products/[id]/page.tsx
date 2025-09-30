@@ -61,11 +61,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
   
   const productImages = useMemo(() => {
     if (!product) return [];
+    const placeholder = getPlaceholderImage('product-1');
     if (!product.variants || product.variants.length === 0) {
-       return [getPlaceholderImage('product-1').imageUrl];
+       return [placeholder.imageUrl];
     }
     const variant = product.variants.find(v => v.color === selectedColor);
-    return variant?.imageUrls || [getPlaceholderImage('product-1').imageUrl];
+    return variant?.imageUrls.length ? variant.imageUrls : [placeholder.imageUrl];
   }, [selectedColor, product]);
   
   useEffect(() => {
@@ -153,10 +154,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
               <Image
                 src={productImages[activeImageIndex]}
                 alt={product.name}
-                width={600}
-                height={600}
-                className="object-cover w-full h-full"
+                fill
+                className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
+                priority
               />
             </div>
              <div className="flex flex-row gap-2 overflow-x-auto justify-start">
@@ -217,10 +218,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                       </div>
                   ))}
               </div>
-              {(product.brand || product.type || product.material || product.madeIn) && <Separator />}
+              {(product.brandId || product.type || product.material || product.madeIn) && <Separator />}
               <div>
                   <ul className="space-y-2 text-sm text-muted-foreground">
-                      {product.brand && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brand}</li>}
+                      {product.brandId && <li><span className="font-semibold text-foreground">الماركة:</span> {product.brandId}</li>}
                       {product.type && <li><span className="font-semibold text-foreground">النوع:</span> {product.type}</li>}
                       {product.material && <li><span className="font-semibold text-foreground">الخامة:</span> {product.material}</li>}
                       {product.madeIn && <li><span className="font-semibold text-foreground">بلد الصنع:</span> {product.madeIn}</li>}

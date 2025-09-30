@@ -112,17 +112,13 @@ export default function EditProductPage() {
                      const subCat = allCategories.find(c => c.id === fetchedProduct.subcategoryId);
                      if(subCat && subCat.parentId) {
                         defaultValues.categoryId = subCat.parentId;
+                        const subs = allCategories.filter(c => c.parentId === subCat.parentId);
+                        setSubcategories(subs);
                      }
                 }
                 
                 form.reset(defaultValues);
                 
-                // Populate subcategories based on the initial categoryId
-                if (defaultValues.categoryId) {
-                    const subs = allCategories.filter(c => c.parentId === defaultValues.categoryId);
-                    setSubcategories(subs);
-                }
-
             } else {
                 toast({ title: "خطأ", description: "لم يتم العثور على المنتج.", variant: "destructive" });
                 router.push('/dashboard/products');
@@ -244,7 +240,7 @@ useEffect(() => {
                         <FormField control={form.control} name="categoryId" render={({ field }) => (
                             <FormItem>
                                 <FormLabel>الفئة الرئيسية</FormLabel>
-                                <Select onValueChange={(value) => { field.onChange(value); form.setValue('subcategoryId', undefined); }} defaultValue={field.value}>
+                                <Select onValueChange={(value) => { field.onChange(value); form.setValue('subcategoryId', undefined); }} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="اختر فئة رئيسية" />
@@ -263,7 +259,7 @@ useEffect(() => {
                             <FormField control={form.control} name="subcategoryId" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>الفئة الفرعية</FormLabel>
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <Select onValueChange={field.onChange} value={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
                                                 <SelectValue placeholder="اختر فئة فرعية" />

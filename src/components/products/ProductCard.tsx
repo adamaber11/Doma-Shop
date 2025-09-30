@@ -13,7 +13,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const imageUrl = product.variants?.[0]?.imageUrls?.[0] || getPlaceholderImage('product-1').imageUrl;
+  const placeholder = getPlaceholderImage('product-1');
+  const imageUrl = product.variants?.[0]?.imageUrls?.[0] || placeholder.imageUrl;
   
   const hasSale = product.salePrice && product.salePrice < product.price;
   const discountPercentage = hasSale ? Math.round(((product.price - product.salePrice!) / product.price) * 100) : 0;

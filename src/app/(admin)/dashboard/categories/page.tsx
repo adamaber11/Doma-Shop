@@ -42,6 +42,7 @@ export default function DashboardCategoriesPage() {
   const handleDelete = async (categoryId: string, subCategoryId?: string) => {
     try {
       if (subCategoryId) {
+        // The parentId is needed for some backend logic, but here we just need to delete the subcategory itself
         await deleteSubCategory(categoryId, subCategoryId);
         toast({ title: "نجاح", description: "تم حذف الفئة الفرعية بنجاح." });
       } else {

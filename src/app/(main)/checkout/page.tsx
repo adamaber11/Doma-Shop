@@ -246,7 +246,7 @@ export default function CheckoutPage() {
                     const price = item.product.salePrice ?? item.product.price;
                     const variant = item.product.variants.find(v => v.color === item.selectedColor);
                     const placeholder = getPlaceholderImage('product-1');
-                    const itemImage = variant?.imageUrls[0] || placeholder.imageUrl;
+                    const itemImage = variant?.imageUrls[0] || item.product.variants[0]?.imageUrls[0] || placeholder.imageUrl;
                     return (
                       <li key={item.id} className="flex items-center gap-4">
                         <div className="relative h-16 w-16 rounded-md overflow-hidden border flex-shrink-0">
@@ -274,7 +274,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>الشحن</span>
-                    <span>{shippingCost > 0 ? formatCurrency(shippingCost) : (selectedGovernorateId ? 'مجاني' : 'اختر محافظة')}</span>
+                    <span>{loadingRates ? <Skeleton className="h-5 w-12" /> : (shippingCost > 0 ? formatCurrency(shippingCost) : (selectedGovernorateId ? 'مجاني' : 'اختر محافظة'))}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">

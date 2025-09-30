@@ -68,6 +68,7 @@ export default function ProductsPage() {
     const categoryId = searchParams.get('category');
     const subcategoryId = searchParams.get('subcategory');
     const searchQuery = searchParams.get('q');
+    const filter = searchParams.get('filter');
 
     let tempProducts = products;
     
@@ -76,6 +77,13 @@ export default function ProductsPage() {
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.toLowerCase())
       );
+    }
+    
+    if (filter === 'best-sellers') {
+        tempProducts = tempProducts.filter(p => p.isBestSeller);
+    }
+    if (filter === 'featured') {
+        tempProducts = tempProducts.filter(p => p.isFeatured);
     }
 
     if (!categoryId) {
@@ -86,6 +94,7 @@ export default function ProductsPage() {
         return tempProducts.filter(p => p.subcategoryId === subcategoryId);
     }
     
+    // This will filter by main category, and also include products that might only have a main category.
     return tempProducts.filter(p => p.categoryId === categoryId);
 
   }, [products, searchParams]);
