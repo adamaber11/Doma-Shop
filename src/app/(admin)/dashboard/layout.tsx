@@ -117,20 +117,22 @@ export default function DashboardLayout({
           <Logo />
         </div>
 
-        <nav className="hidden font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6 mx-auto">
-          {navLinks.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "transition-colors text-muted-foreground hover:text-foreground",
-                link.active && "text-foreground font-semibold"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="hidden md:flex flex-1 items-center justify-center overflow-x-auto no-scrollbar">
+            <nav className="flex items-center gap-5 text-sm font-medium lg:gap-6 whitespace-nowrap">
+            {navLinks.map(link => (
+                <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                    "transition-colors text-muted-foreground hover:text-foreground px-2 py-1",
+                    link.active && "text-foreground font-semibold"
+                )}
+                >
+                {link.label}
+                </Link>
+            ))}
+            </nav>
+        </div>
         
         <div className="flex items-center gap-4 ml-auto">
             <DropdownMenu>
