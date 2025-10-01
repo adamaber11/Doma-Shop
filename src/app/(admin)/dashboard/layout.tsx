@@ -114,10 +114,12 @@ export default function DashboardLayout({
                 </ScrollArea>
             </SheetContent>
           </Sheet>
-          <Logo />
+          <div className="hidden md:block">
+            <Logo />
+          </div>
         </div>
 
-        <div className="hidden md:flex flex-1 items-center justify-center overflow-x-auto no-scrollbar">
+        <div className="hidden md:flex flex-1 items-center justify-start overflow-x-auto no-scrollbar px-4">
             <nav className="flex items-center gap-5 text-sm font-medium lg:gap-6 whitespace-nowrap">
             {navLinks.map(link => (
                 <Link
@@ -134,7 +136,7 @@ export default function DashboardLayout({
             </nav>
         </div>
         
-        <div className="flex items-center gap-4 ml-auto">
+        <div className="flex items-center gap-4">
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="rounded-full">
