@@ -7,7 +7,7 @@ import { getOrders, updateOrderStatus, deleteOrder } from '@/services/product-se
 import type { Order } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MoreHorizontal, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Trash2, Eye } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -16,11 +16,15 @@ import { formatCurrency } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Separator } from '@/components/ui/separator';
 
 
 export default function DashboardOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const { toast } = useToast();
 
   const fetchOrders = async () => {
@@ -60,6 +64,11 @@ export default function DashboardOrdersPage() {
         console.error('Failed to delete order:', error);
         toast({ title: "خطأ", description: "فشل في حذف الطلب.", variant: "destructive" });
     }
+  };
+  
+  const handleViewDetails = (order: Order) => {
+    setSelectedOrder(order);
+    setIsDetailsOpen(true);
   };
   
   const getStatusVariant = (status: Order['status']) => {
@@ -168,7 +177,10 @@ export default function DashboardOrdersPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
-                            <DropdownMenuItem>عرض التفاصيل</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleViewDetails(order)}>
+                                <Eye className="ml-2 h-4 w-4" />
+                                عرض التفاصيل
+                            </DropdownMenuItem>
                             <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>تغيير الحالة</DropdownMenuSubTrigger>
                                 <DropdownMenuSubContent>
@@ -213,6 +225,76 @@ export default function DashboardOrdersPage() {
             <p className="text-muted-foreground mt-2">لم يتم إنشاء أي طلبات بعد.</p>
          </div>
         )}
+        
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+            <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                    <DialogTitle>تفاصيل الطلب</DialogTitle>
+                    <DialogDescription>
+                        رقم الطلب: <span className="font-mono">{selectedOrder?.id}</span>
+                    </DialogDescription>
+                </DialogHeader>
+                {selectedOrder && (
+                    <div className="space-y-6 max-h-[70vh] overflow-y-auto pr-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 className="font-semibold mb-2">معلومات العميل</h3>
+                                <p className="text-sm"><strong>الاسم:</strong> {selectedOrder.customerName}</p>
+                                <p className="text-sm"><strong>البريد الإلكتروني:</strong> {selectedOrder.customerEmail}</p>
+                            </div>
+                             <div>
+                                <h3 className="font-semibold mb-2">عنوان الشحن</h3>
+                                <p className="text-sm">{selectedOrder.shippingAddress.address}, {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.governorate}</p>
+                                <p className="text-sm">{selectedOrder.shippingAddress.country}, {selectedOrder.shippingAddress.zip}</p>
+                            </div>
+                        </div>
+                        
+                        <Separator />
+                        
+                        <div>
+                             <h3 className="font-semibold mb-2">المنتجات المطلوبة</h3>
+                             <Table>
+                                 <TableHeader>
+                                     <TableRow>
+                                         <TableHead>المنتج</TableHead>
+                                         <TableHead>الكمية</TableHead>
+                                         <TableHead>السعر</TableHead>
+                                         <TableHead className="text-left">الإجمالي</TableHead>
+                                     </TableRow>
+                                 </TableHeader>
+                                 <TableBody>
+                                     {selectedOrder.items.map((item, index) => (
+                                         <TableRow key={index}>
+                                             <TableCell>{item.productName}</TableCell>
+                                             <TableCell>{item.quantity}</TableCell>
+                                             <TableCell>{formatCurrency(item.price)}</TableCell>
+                                             <TableCell className="text-left">{formatCurrency(item.price * item.quantity)}</TableCell>
+                                         </TableRow>
+                                     ))}
+                                 </TableBody>
+                             </Table>
+                        </div>
+                        
+                        <Separator />
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                           <div className="space-y-2 text-sm">
+                              <p className="flex justify-between"><span>المجموع الفرعي:</span> <span>{formatCurrency(selectedOrder.total - selectedOrder.shippingCost)}</span></p>
+                              <p className="flex justify-between"><span>تكلفة الشحن:</span> <span>{formatCurrency(selectedOrder.shippingCost)}</span></p>
+                              <Separator />
+                              <p className="flex justify-between font-bold text-base"><span>الإجمالي الكلي:</span> <span>{formatCurrency(selectedOrder.total)}</span></p>
+                           </div>
+                           <div className="space-y-2 text-sm">
+                              <p><strong>طريقة الدفع:</strong> {getPaymentMethodText(selectedOrder.paymentMethod)}</p>
+                              <p><strong>حالة الطلب:</strong> <Badge variant={getStatusVariant(selectedOrder.status)}>{getStatusText(selectedOrder.status)}</Badge></p>
+                              <p><strong>تاريخ الطلب:</strong> {format(new Date(selectedOrder.createdAt), "d MMMM yyyy, h:mm a", { locale: ar })}</p>
+                           </div>
+                        </div>
+                    </div>
+                )}
+            </DialogContent>
+        </Dialog>
     </div>
   );
 }
+
