@@ -3,18 +3,20 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { getOrders, updateOrderStatus } from '@/services/product-service';
+import { getOrders, updateOrderStatus, deleteOrder } from '@/services/product-service';
 import type { Order } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MoreHorizontal } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, Trash2 } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+
 
 export default function DashboardOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -46,6 +48,17 @@ export default function DashboardOrdersPage() {
     } catch (error) {
        console.error('Failed to update order status:', error);
        toast({ title: "خطأ", description: "فشل في تحديث حالة الطلب.", variant: "destructive" });
+    }
+  };
+
+  const handleDelete = async (orderId: string) => {
+    try {
+        await deleteOrder(orderId);
+        toast({ title: "نجاح", description: "تم حذف الطلب بنجاح." });
+        fetchOrders();
+    } catch (error) {
+        console.error('Failed to delete order:', error);
+        toast({ title: "خطأ", description: "فشل في حذف الطلب.", variant: "destructive" });
     }
   };
   
@@ -145,27 +158,48 @@ export default function DashboardOrdersPage() {
                     <Badge variant={getStatusVariant(order.status)}>{getStatusText(order.status)}</Badge>
                   </TableCell>
                   <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">فتح القائمة</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
-                        <DropdownMenuItem>عرض التفاصيل</DropdownMenuItem>
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>تغيير الحالة</DropdownMenuSubTrigger>
-                            <DropdownMenuSubContent>
-                                <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'pending')}>قيد الانتظار</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'shipped')}>تم الشحن</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'delivered')}>تم التوصيل</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'cancelled')}>ملغي</DropdownMenuItem>
-                            </DropdownMenuSubContent>
-                        </DropdownMenuSub>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                     <AlertDialog>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">فتح القائمة</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>الإجراءات</DropdownMenuLabel>
+                            <DropdownMenuItem>عرض التفاصيل</DropdownMenuItem>
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>تغيير الحالة</DropdownMenuSubTrigger>
+                                <DropdownMenuSubContent>
+                                    <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'pending')}>قيد الانتظار</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'shipped')}>تم الشحن</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'delivered')}>تم التوصيل</DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => handleStatusChange(order.id, 'cancelled')}>ملغي</DropdownMenuItem>
+                                </DropdownMenuSubContent>
+                            </DropdownMenuSub>
+                            <DropdownMenuSeparator />
+                            <AlertDialogTrigger asChild>
+                                <DropdownMenuItem className="text-destructive focus:text-destructive">
+                                    <Trash2 className="ml-2 h-4 w-4" />
+                                    حذف
+                                </DropdownMenuItem>
+                            </AlertDialogTrigger>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                         <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>هل أنت متأكد تمامًا؟</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                هذا الإجراء لا يمكن التراجع عنه. سيؤدي هذا إلى حذف الطلب نهائيًا.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDelete(order.id)}>متابعة</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                   </TableCell>
                 </TableRow>
               ))}

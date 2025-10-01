@@ -1,4 +1,5 @@
 
+
 "use server";
 import { db } from "@/lib/firebase";
 import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo, Brand, PromoCard } from "@/lib/types";
@@ -487,6 +488,13 @@ export async function updateOrderStatus(orderId: string, status: Order['status']
     await updateDoc(orderRef, { status });
     await fetchDataIfNeeded('orders', true);
 }
+
+export async function deleteOrder(orderId: string): Promise<void> {
+    const orderRef = doc(db, 'orders', orderId);
+    await deleteDoc(orderRef);
+    await fetchDataIfNeeded('orders', true);
+}
+
 
 // Customer Functions
 export async function getCustomers(forceRefresh: boolean = false): Promise<Customer[]> {
