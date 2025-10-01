@@ -45,20 +45,20 @@ export const allCategories: Category[] = [
         { id: 'decor', name: 'ديكور' },
     ]
   },
-  { id: 'home-appliances', name: 'الأجهزة المنزلية', imageUrl: 'https://picsum.photos/seed/product-12/100/100' },
-  { id: 'sports-outdoors', name: 'الرياضة والهواء الطلق', imageUrl: 'https://picsum.photos/seed/sports-cat/100/100' },
-  { id: 'toys-kids', name: 'الألعاب والأطفال', imageUrl: 'https://picsum.photos/seed/toys-cat/100/100' },
-  { id: 'books-stationery', name: 'الكتب والأدوات المكتبية', imageUrl: 'https://picsum.photos/seed/books-cat/100/100' },
-  { id: 'grocery-food', name: 'البقالة والأطعمة', imageUrl: 'https://picsum.photos/seed/grocery-cat/100/100' },
-  { id: 'handmade', name: 'الأعمال اليدوية', imageUrl: 'https://picsum.photos/seed/product-21/100/100' },
-  { id: 'used', name: 'المستعمل', imageUrl: 'https://picsum.photos/seed/product-22/100/100' },
-  { id: 'cars-parts', name: 'السيارات وقطع الغيار', imageUrl: 'https://picsum.photos/seed/vehicles-cat/100/100' },
-  { id: 'pet-supplies', name: 'مستلزمات الحيوانات الأليفة', imageUrl: 'https://picsum.photos/seed/product-16/100/100' },
-  { id: 'health-wellness', name: 'الصحة والعافية', imageUrl: 'https://picsum.photos/seed/health-cat/100/100' },
-  { id: 'office-supplies', name: 'مستلزمات مكتبية', imageUrl: 'https://picsum.photos/seed/office-cat/100/100' },
-  { id: 'music-instruments', name: 'الموسيقى والآلات', imageUrl: 'https://picsum.photos/seed/music-cat/100/100' },
-  { id: 'art-crafts', name: 'الفنون والحرف', imageUrl: 'https://picsum.photos/seed/art-cat/100/100' },
-  { id: 'industrial-scientific', name: 'صناعي وعلمي', imageUrl: 'https://picsum.photos/seed/industrial-cat/100/100' }
+  { id: 'home-appliances', name: 'الأجهزة المنزلية', imageUrl: 'https://picsum.photos/seed/product-12/100/100', subcategories: [] },
+  { id: 'sports-outdoors', name: 'الرياضة والهواء الطلق', imageUrl: 'https://picsum.photos/seed/sports-cat/100/100', subcategories: [] },
+  { id: 'toys-kids', name: 'الألعاب والأطفال', imageUrl: 'https://picsum.photos/seed/toys-cat/100/100', subcategories: [] },
+  { id: 'books-stationery', name: 'الكتب والأدوات المكتبية', imageUrl: 'https://picsum.photos/seed/books-cat/100/100', subcategories: [] },
+  { id: 'grocery-food', name: 'البقالة والأطعمة', imageUrl: 'https://picsum.photos/seed/grocery-cat/100/100', subcategories: [] },
+  { id: 'handmade', name: 'الأعمال اليدوية', imageUrl: 'https://picsum.photos/seed/product-21/100/100', subcategories: [] },
+  { id: 'used', name: 'المستعمل', imageUrl: 'https://picsum.photos/seed/product-22/100/100', subcategories: [] },
+  { id: 'cars-parts', name: 'السيارات وقطع الغيار', imageUrl: 'https://picsum.photos/seed/vehicles-cat/100/100', subcategories: [] },
+  { id: 'pet-supplies', name: 'مستلزمات الحيوانات الأليفة', imageUrl: 'https://picsum.photos/seed/product-16/100/100', subcategories: [] },
+  { id: 'health-wellness', name: 'الصحة والعافية', imageUrl: 'https://picsum.photos/seed/health-cat/100/100', subcategories: [] },
+  { id: 'office-supplies', name: 'مستلزمات مكتبية', imageUrl: 'https://picsum.photos/seed/office-cat/100/100', subcategories: [] },
+  { id: 'music-instruments', name: 'الموسيقى والآلات', imageUrl: 'https://picsum.photos/seed/music-cat/100/100', subcategories: [] },
+  { id: 'art-crafts', name: 'الفنون والحرف', imageUrl: 'https://picsum.photos/seed/art-cat/100/100', subcategories: [] },
+  { id: 'industrial-scientific', name: 'صناعي وعلمي', imageUrl: 'https://picsum.photos/seed/industrial-cat/100/100', subcategories: [] }
 ];
 
 const sampleReviews: Review[] = [

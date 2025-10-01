@@ -10,7 +10,7 @@ export type Category = {
   name: string;
   imageUrl: string;
   parentId?: string | null; // ID of the parent category
-  subcategories: SubCategory[];
+  subcategories?: SubCategory[];
 };
 
 export type Review = {

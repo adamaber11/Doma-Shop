@@ -98,7 +98,8 @@ export default function NewProductPage() {
             setCategories(mainCats);
 
             if (selectedCategoryId) {
-                const subs = allCats.filter(c => c.parentId === selectedCategoryId);
+                const mainCat = mainCats.find(c => c.id === selectedCategoryId);
+                const subs = allCats.filter(c => c.parentId === mainCat?.id);
                 setSubcategories(subs);
             } else {
                 setSubcategories([]);

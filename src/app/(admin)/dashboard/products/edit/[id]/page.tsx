@@ -118,7 +118,8 @@ export default function EditProductPage() {
 
   const fetchAndSetSubcategories = useCallback((categoryId?: string) => {
     if (categoryId && allCategories.length > 0) {
-      const subs = allCategories.filter(c => c.parentId === categoryId);
+      const mainCat = allCategories.find(c => c.id === categoryId);
+      const subs = mainCat?.subcategories?.map(sub => allCategories.find(c => c.id === sub.id)).filter(Boolean) as Category[] || [];
       setSubcategories(subs);
     } else {
       setSubcategories([]);
@@ -165,15 +166,18 @@ export default function EditProductPage() {
                      }
                 } else if (fetchedProduct.categoryId) {
                     const cat = allCats.find(c => c.id === fetchedProduct.categoryId);
-                    if (cat && !cat.parentId) { // It's a main category
+                    if (cat && !cat.parentId) { 
                         parentId = cat.id;
                     }
                 }
                 
                 if (parentId) {
                     defaultValues.categoryId = parentId;
-                    const subs = allCats.filter(c => c.parentId === parentId);
-                    setSubcategories(subs);
+                    const mainCat = allCats.find(c => c.id === parentId);
+                    if (mainCat) {
+                      const subs = allCats.filter(c => c.parentId === mainCat.id);
+                      setSubcategories(subs);
+                    }
                 }
 
                 form.reset(defaultValues);
