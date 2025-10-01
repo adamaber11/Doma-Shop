@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -43,7 +44,7 @@ export default function LoginPage() {
 
   const handleSuccessfulLogin = async (userCredential: UserCredential) => {
     await findOrCreateCustomerFromUser(userCredential.user);
-    toast({ title: "تم تسجيل الدخول بنجاح!" });
+    toast({ title: "أهلاً بك!", description: "تم تسجيل الدخول بنجاح." });
     router.push('/');
   }
 

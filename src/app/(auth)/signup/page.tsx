@@ -42,10 +42,12 @@ export default function SignupPage() {
     defaultValues: { name: "", email: "", password: "" }
   });
 
-  const handleSuccessfulSignup = async (userCredential: UserCredential, displayName: string) => {
-    await updateProfile(userCredential.user, { displayName });
+  const handleSuccessfulSignup = async (userCredential: UserCredential, displayName?: string) => {
+    if (displayName) {
+        await updateProfile(userCredential.user, { displayName });
+    }
     await findOrCreateCustomerFromUser(userCredential.user);
-    toast({ title: "تم إنشاء الحساب بنجاح!" });
+    toast({ title: "أهلاً بك!", description: "تم إنشاء حسابك وتسجيل دخولك بنجاح." });
     router.push('/');
   }
 
@@ -66,9 +68,7 @@ export default function SignupPage() {
   const handleGoogleLogin = async () => {
     try {
         const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
-        await findOrCreateCustomerFromUser(userCredential.user);
-        toast({ title: "تم تسجيل الدخول بنجاح!" });
-        router.push('/');
+        await handleSuccessfulSignup(userCredential);
     } catch (error) {
         console.error("Social login error", error);
         toast({
