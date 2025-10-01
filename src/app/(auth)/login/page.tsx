@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from '@/lib/firebase';
 import { findOrCreateCustomerFromUser } from '@/services/product-service';
 import { useAuth } from "@/hooks/use-auth";
+import { FirebaseError } from "firebase/app";
 
 
 const loginSchema = z.object({
@@ -43,29 +44,42 @@ export default function LoginPage() {
   });
 
   const handleSuccessfulLogin = async (userCredential: UserCredential) => {
-    await findOrCreateCustomerFromUser(userCredential.user);
+    try {
+        await findOrCreateCustomerFromUser(userCredential.user);
+    } catch (dbError) {
+        console.error("Database error after login:", dbError);
+        toast({
+            title: "خطأ في الحساب",
+            description: "تم تسجيل الدخول ولكن فشل تحديث بيانات الحساب.",
+            variant: "destructive",
+        });
+    }
+    
     toast({ title: "أهلاً بك!", description: "تم تسجيل الدخول بنجاح." });
     router.push('/');
   }
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    let userCredential: UserCredential;
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-      await handleSuccessfulLogin(userCredential);
+        userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
     } catch (error) {
-      console.error("Login error", error);
-      toast({
-        title: "حدث خطأ",
-        description: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-        variant: "destructive",
-      });
+        console.error("Login error", error);
+        toast({
+            title: "فشل تسجيل الدخول",
+            description: "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+            variant: "destructive",
+        });
+        return;
     }
+
+    await handleSuccessfulLogin(userCredential);
   };
 
   const handleGoogleLogin = async () => {
+    let userCredential: UserCredential;
     try {
-        const userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
-        await handleSuccessfulLogin(userCredential);
+        userCredential = await signInWithPopup(auth, new GoogleAuthProvider());
     } catch (error) {
         console.error("Social login error", error);
         toast({
@@ -73,7 +87,9 @@ export default function LoginPage() {
             description: "لم نتمكن من تسجيل دخولك باستخدام جوجل.",
             variant: "destructive",
         });
+        return;
     }
+    await handleSuccessfulLogin(userCredential);
   };
 
   if (loading || user) {
