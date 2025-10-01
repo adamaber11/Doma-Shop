@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Skeleton } from "../ui/skeleton"
 
-interface CategoryWithSubImages extends MainCategory {
+type CategoryWithSubImages = Omit<MainCategory, 'subcategories'> & {
     subcategories?: (SubCategory & { imageUrl: string })[];
-}
+};
 
 export function CategoriesMenu() {
     const [categories, setCategories] = React.useState<CategoryWithSubImages[]>([]);
