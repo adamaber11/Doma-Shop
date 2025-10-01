@@ -5,8 +5,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { onAuthStateChanged, User, updateProfile } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { User } from "firebase/auth";
+import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
 import { Home, Package, ShoppingCart, Users, LogOut, Tags, Settings, Megaphone, Annoyed, MessageSquare, Truck, Mail, Menu, Shield, Star, CreditCard } from "lucide-react";
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { auth } from "@/lib/firebase";
 
 
 export default function DashboardLayout({
@@ -24,22 +25,17 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser || currentUser.email !== 'adamaber50@gmail.com') {
+    if (!loading) {
+      if (!user || user.email !== 'adamaber50@gmail.com') {
         router.push('/login');
-      } else {
-        setUser(currentUser);
-        setLoading(false);
       }
-    });
-    return () => unsubscribe();
-  }, [router]);
+    }
+  }, [user, loading, router]);
 
   const handleLogout = async () => {
     await auth.signOut();
@@ -63,7 +59,7 @@ export default function DashboardLayout({
     { href: "/dashboard/settings", label: "الإعدادات", icon: Settings, active: pathname.startsWith('/dashboard/settings') },
   ]
 
-  if (loading) {
+  if (loading || !user) {
     return (
        <div className="flex flex-col h-screen">
           <header className="flex items-center h-16 px-4 border-b shrink-0 md:px-6">

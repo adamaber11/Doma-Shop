@@ -2,10 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose, SheetHeader } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Menu, Search, ShoppingCart, User } from "lucide-react";
+import { Menu, ShoppingCart, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
@@ -30,19 +29,11 @@ export function Header() {
   const { user } = useAuth();
   const pathname = usePathname();
   const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState('');
   
   const isDashboard = pathname.startsWith('/dashboard');
 
   if (isDashboard) {
     return null;
-  }
-
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (searchTerm.trim()) {
-      router.push(`/products?q=${encodeURIComponent(searchTerm.trim())}`);
-    }
   }
   
   const headerClasses = cn(

@@ -10,10 +10,9 @@ import type { Product, Ad } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { X, ArrowRight, Search } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { Input } from "@/components/ui/input";
 
@@ -28,6 +27,11 @@ export default function ProductsPage() {
   const [popupAd, setPopupAd] = useState<Ad | null>(null);
   const [canCloseAd, setCanCloseAd] = useState(false);
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,19 +43,21 @@ export default function ProductsPage() {
         ]);
         setProducts(fetchedProducts);
         
-        const activeAds = fetchedAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('products')));
-        const adShown = sessionStorage.getItem('adShown');
+        if (isMounted) {
+            const activeAds = fetchedAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('products')));
+            const adShown = sessionStorage.getItem('adShown');
 
-        if (!adShown && activeAds.length > 0) {
-            const randomAd = activeAds[Math.floor(Math.random() * activeAds.length)];
-            setPopupAd(randomAd);
-            setIsAdModalOpen(true);
-            sessionStorage.setItem('adShown', 'true');
+            if (!adShown && activeAds.length > 0) {
+                const randomAd = activeAds[Math.floor(Math.random() * activeAds.length)];
+                setPopupAd(randomAd);
+                setIsAdModalOpen(true);
+                sessionStorage.setItem('adShown', 'true');
 
-             if (randomAd.duration && randomAd.duration > 0) {
-                 setTimeout(() => setCanCloseAd(true), randomAd.duration * 1000);
-            } else {
-                setCanCloseAd(true);
+                if (randomAd.duration && randomAd.duration > 0) {
+                    setTimeout(() => setCanCloseAd(true), randomAd.duration * 1000);
+                } else {
+                    setCanCloseAd(true);
+                }
             }
         }
 
@@ -62,7 +68,7 @@ export default function ProductsPage() {
       }
     };
     fetchData();
-  }, []);
+  }, [isMounted]);
 
   const filteredProducts = useMemo(() => {
     const categoryId = searchParams.get('category');
@@ -89,13 +95,20 @@ export default function ProductsPage() {
     if (!categoryId) {
         return tempProducts;
     }
+    
+    // Find all subcategories for the given main category
+    const mainCategory = products.find(p => p.categoryId === categoryId);
 
-    if(subcategoryId) {
+    if (subcategoryId) {
         return tempProducts.filter(p => p.subcategoryId === subcategoryId);
     }
     
-    // This will filter by main category, and also include products that might only have a main category.
-    return tempProducts.filter(p => p.categoryId === categoryId);
+    // Filter by main category ID, which also includes products that have this category as parent.
+    // This logic needs to be careful. Let's assume a product can have a categoryId and a subcategoryId.
+    // If only categoryId is provided, we should show all products in that category, including all its subcategories.
+    const allCategoryProducts = tempProducts.filter(p => p.categoryId === categoryId);
+
+    return allCategoryProducts;
 
   }, [products, searchParams]);
 
@@ -185,5 +198,3 @@ export default function ProductsPage() {
       </div>
   );
 }
-
-    

@@ -12,7 +12,7 @@ import type { Product, HomepageSettings, Ad, Brand, PromoCard } from "@/lib/type
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
@@ -29,10 +29,15 @@ export default function Home() {
   const [popupAd, setPopupAd] = useState<Ad | null>(null);
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
   const [canCloseAd, setCanCloseAd] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
    const plugin = useRef(
     Autoplay({ delay: 1500, stopOnInteraction: true })
   );
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
 
   useEffect(() => {
@@ -57,19 +62,21 @@ export default function Home() {
         setFeaturedProducts(featProducts);
         setBrands(fetchedBrands);
         
-        const activePopupAds = popupAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('home')));
-        const adShown = sessionStorage.getItem('adShown');
+        if (isMounted) {
+            const activePopupAds = popupAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('home')));
+            const adShown = sessionStorage.getItem('adShown');
 
-        if (!adShown && activePopupAds.length > 0) {
-            const randomAd = activePopupAds[Math.floor(Math.random() * activePopupAds.length)];
-            setPopupAd(randomAd);
-            setIsAdModalOpen(true);
-            sessionStorage.setItem('adShown', 'true');
+            if (!adShown && activePopupAds.length > 0) {
+                const randomAd = activePopupAds[Math.floor(Math.random() * activePopupAds.length)];
+                setPopupAd(randomAd);
+                setIsAdModalOpen(true);
+                sessionStorage.setItem('adShown', 'true');
 
-            if (randomAd.duration && randomAd.duration > 0) {
-                 setTimeout(() => setCanCloseAd(true), randomAd.duration * 1000);
-            } else {
-                setCanCloseAd(true);
+                if (randomAd.duration && randomAd.duration > 0) {
+                    setTimeout(() => setCanCloseAd(true), randomAd.duration * 1000);
+                } else {
+                    setCanCloseAd(true);
+                }
             }
         }
 
@@ -80,7 +87,7 @@ export default function Home() {
       }
     };
     fetchData();
-  }, []);
+  }, [isMounted]);
 
   const heroPlaceholder = getPlaceholderImage("hero-1");
   const heroImage = homepageSettings?.heroImageUrl || heroPlaceholder.imageUrl;

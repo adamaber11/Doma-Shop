@@ -22,11 +22,12 @@ export const CartContext = createContext<CartContextType | undefined>(undefined)
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const { toast } = useToast();
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
       setCartItems(JSON.parse(savedCart));
@@ -34,8 +35,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (isMounted) {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }
+  }, [cartItems, isMounted]);
 
   const addToCart = (product: Product, quantity: number, selectedColor?: string, selectedSize?: string) => {
     if (!user) {
@@ -104,11 +107,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         selectedColor,
         selectedSize
       };
+      toast({
+        title: "أضيف إلى السلة",
+        description: `${product.name} تمت إضافته إلى سلة التسوق الخاصة بك.`,
+      });
       return [...prevItems, newItem];
-    });
-    toast({
-      title: "أضيف إلى السلة",
-      description: `${product.name} تمت إضافته إلى سلة التسوق الخاصة بك.`,
     });
   };
 
@@ -151,7 +154,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const cartTotal = cartItems.reduce((total, item) => {
     const price = item.product.salePrice ?? item.product.price;
-    return total + price! * item.quantity;
+    return total + price * item.quantity;
   }, 0);
 
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);

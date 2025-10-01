@@ -274,7 +274,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>الشحن</span>
-                    <span>{loadingRates ? <Skeleton className="h-5 w-12" /> : (shippingCost > 0 ? formatCurrency(shippingCost) : (selectedGovernorateId ? 'مجاني' : 'اختر محافظة'))}</span>
+                    <span>{loadingRates ? <Skeleton className="h-5 w-12" /> : (selectedGovernorateId ? (shippingCost > 0 ? formatCurrency(shippingCost) : 'مجاني') : 'اختر محافظة')}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">
@@ -292,5 +292,3 @@ export default function CheckoutPage() {
       </div>
   );
 }
-
-    

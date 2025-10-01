@@ -9,13 +9,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, UserCredential } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, UserCredential } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from '@/lib/firebase';
 import { findOrCreateCustomerFromUser } from '@/services/product-service';
+import { useAuth } from "@/hooks/use-auth";
 
 
 const loginSchema = z.object({
@@ -26,19 +27,14 @@ const loginSchema = z.object({
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
+
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.push('/');
-      } else {
-        setLoading(false);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [router]);
+    if (!loading && user) {
+      router.push('/');
+    }
+  }, [user, loading, router]);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -79,29 +75,31 @@ export default function LoginPage() {
     }
   };
 
-  if (loading) {
+  if (loading || user) {
     return (
-        <Card className="w-full max-w-sm">
-            <CardHeader>
-                <Skeleton className="h-8 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-1/4" />
+        <div className="flex flex-col min-h-screen items-center justify-center p-4">
+             <Card className="w-full max-w-sm">
+                <CardHeader>
+                    <Skeleton className="h-8 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                        <Skeleton className="h-4 w-1/4" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
+                    <div className="space-y-2">
+                        <Skeleton className="h-4 w-1/4" />
+                        <Skeleton className="h-10 w-full" />
+                    </div>
                     <Skeleton className="h-10 w-full" />
-                </div>
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-1/4" />
+                </CardContent>
+                <CardFooter className="flex flex-col gap-4">
                     <Skeleton className="h-10 w-full" />
-                </div>
-                 <Skeleton className="h-10 w-full" />
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-                 <Skeleton className="h-10 w-full" />
-                 <Skeleton className="h-5 w-full" />
-            </CardFooter>
-        </Card>
+                    <Skeleton className="h-5 w-full" />
+                </CardFooter>
+            </Card>
+        </div>
     )
   }
 
