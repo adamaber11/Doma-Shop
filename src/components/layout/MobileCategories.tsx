@@ -11,9 +11,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { SheetClose } from '../ui/sheet';
 import Image from 'next/image';
 
-interface CategoryWithSubImages extends Category {
+type CategoryWithSubImages = Omit<Category, 'subcategories'> & {
     subcategories?: (Category['subcategories'][number] & { imageUrl: string })[];
-}
+};
 
 export function MobileCategories() {
   const [categories, setCategories] = useState<CategoryWithSubImages[]>([]);
