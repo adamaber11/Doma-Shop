@@ -21,7 +21,7 @@ export default function DashboardPage() {
       try {
         setLoading(true);
         const [products, categories, orders, customers] = await Promise.all([
-          getProducts(true),
+          getProducts(),
           getCategories(true),
           getOrders(true),
           getCustomers(true),
