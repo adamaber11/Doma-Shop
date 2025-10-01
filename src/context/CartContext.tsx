@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import type { CartItem, Product } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
