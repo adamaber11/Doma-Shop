@@ -87,7 +87,9 @@ export function Header() {
                         <div className="flex-1 overflow-y-auto">
                              <div className="p-4">
                                 <Separator className="mb-4" />
-                                <MobileCategories />
+                                <ClientOnly>
+                                  <MobileCategories />
+                                </ClientOnly>
                                 <Separator className="my-4" />
                              </div>
                             <nav className="flex flex-col gap-1 p-4 pt-0">
