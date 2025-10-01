@@ -38,7 +38,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('signature', signature);
-                formData.append('timestamp', timestamp);
+                formData.append('timestamp', String(timestamp));
                 formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!);
 
                 const endpoint = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
