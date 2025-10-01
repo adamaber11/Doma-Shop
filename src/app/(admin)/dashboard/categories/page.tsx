@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getCategories, deleteCategory, deleteSubCategory } from '@/services/product-service';
+import { getCategories, deleteCategory } from '@/services/product-service';
 import type { Category } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -15,7 +15,6 @@ import Image from 'next/image';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 
 export default function DashboardCategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -39,17 +38,11 @@ export default function DashboardCategoriesPage() {
     fetchCategories();
   }, []);
 
-  const handleDelete = async (categoryId: string, subCategoryId?: string) => {
+  const handleDelete = async (categoryId: string, isSub: boolean = false) => {
     try {
-      if (subCategoryId) {
-        // The parentId is needed for some backend logic, but here we just need to delete the subcategory itself
-        await deleteSubCategory(categoryId, subCategoryId);
-        toast({ title: "نجاح", description: "تم حذف الفئة الفرعية بنجاح." });
-      } else {
         await deleteCategory(categoryId);
-        toast({ title: "نجاح", description: "تم حذف الفئة الرئيسية بنجاح." });
-      }
-      fetchCategories(); // Refresh the list
+        toast({ title: "نجاح", description: `تم حذف الفئة ${isSub ? 'الفرعية' : 'الرئيسية'} بنجاح.` });
+        fetchCategories(); // Refresh the list
     } catch (error) {
       console.error('Failed to delete category:', error);
       toast({ title: "خطأ", description: "فشل في حذف الفئة.", variant: "destructive" });
@@ -97,7 +90,7 @@ export default function DashboardCategoriesPage() {
       </div>
 
        <div className="border rounded-lg">
-          {categories.filter(c => !c.parentId).map(category => (
+          {categories.map(category => (
              <Collapsible key={category.id} defaultOpen className="border-b last:border-b-0">
                 <div className="flex items-center p-4">
                     <CollapsibleTrigger asChild>
@@ -150,21 +143,17 @@ export default function DashboardCategoriesPage() {
                 </div>
                  <CollapsibleContent>
                     <div className="bg-muted/50 px-4 pb-4">
-                         {categories.filter(sub => sub.parentId === category.id).length > 0 ? (
+                         {category.subcategories && category.subcategories.length > 0 ? (
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[60px]">الصورة</TableHead>
                                         <TableHead>اسم الفئة الفرعية</TableHead>
                                         <TableHead className="text-left">الإجراءات</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {categories.filter(sub => sub.parentId === category.id).map(subCategory => (
+                                    {category.subcategories.map(subCategory => (
                                         <TableRow key={subCategory.id}>
-                                            <TableCell>
-                                                <Image alt={subCategory.name} className="aspect-square rounded-md object-cover" height="40" src={subCategory.imageUrl} width="40" />
-                                            </TableCell>
                                             <TableCell className="font-medium">{subCategory.name}</TableCell>
                                             <TableCell className="text-left">
                                                 <AlertDialog>
@@ -190,7 +179,7 @@ export default function DashboardCategoriesPage() {
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
                                                             <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleDelete(category.id, subCategory.id)}>حذف</AlertDialogAction>
+                                                            <AlertDialogAction onClick={() => handleDelete(subCategory.id, true)}>حذف</AlertDialogAction>
                                                         </AlertDialogFooter>
                                                     </AlertDialogContent>
                                                 </AlertDialog>

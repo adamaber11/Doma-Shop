@@ -9,7 +9,7 @@ export type Category = {
   id: string;
   name: string;
   imageUrl: string;
-  parentId?: string; // ID of the parent category
+  parentId?: string | null; // ID of the parent category
   subcategories: SubCategory[];
 };
 

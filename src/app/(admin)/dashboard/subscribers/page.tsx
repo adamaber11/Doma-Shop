@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
-import { formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -171,7 +171,7 @@ export default function DashboardSubscribersPage() {
               {subscribers.map((subscriber) => (
                 <TableRow key={subscriber.id}>
                   <TableCell className="font-medium">{subscriber.email}</TableCell>
-                  <TableCell className="hidden md:table-cell">{formatDistanceToNow(new Date(subscriber.subscribedAt), { addSuffix: true, locale: ar })}</TableCell>
+                  <TableCell className="hidden md:table-cell">{format(new Date(subscriber.subscribedAt), "d MMMM yyyy", { locale: ar })}</TableCell>
                   <TableCell>
                     <AlertDialog>
                       <DropdownMenu>

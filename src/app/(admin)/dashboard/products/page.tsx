@@ -26,7 +26,7 @@ export default function DashboardProductsPage() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const fetchedProducts = await getProducts(true); // Force refresh
+      const fetchedProducts = await getProducts();
       setProducts(fetchedProducts);
     } catch (error) {
       console.error('Failed to fetch products:', error);

@@ -48,7 +48,6 @@ export default function DashboardCustomersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>العميل</TableHead>
-                <TableHead className="hidden md:table-cell">البريد الإلكتروني</TableHead>
                 <TableHead>تاريخ الانضمام</TableHead>
               </TableRow>
             </TableHeader>
@@ -64,7 +63,6 @@ export default function DashboardCustomersPage() {
                         </div>
                     </div>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-40" /></TableCell>
                   <TableCell><Skeleton className="h-5 w-20" /></TableCell>
                 </TableRow>
               ))}

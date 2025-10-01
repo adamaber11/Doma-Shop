@@ -67,7 +67,7 @@ export default function EditCategoryPage() {
               name: fetchedCategory.name,
               imageUrl: fetchedCategory.imageUrl,
               type: fetchedCategory.parentId ? 'sub' : 'main',
-              parentId: fetchedCategory.parentId,
+              parentId: fetchedCategory.parentId || undefined,
           });
         } else {
             toast({ title: "خطأ", description: "لم يتم العثور على الفئة.", variant: "destructive" });
@@ -90,7 +90,7 @@ export default function EditCategoryPage() {
        const categoryUpdate = {
           name: values.name,
           imageUrl: values.imageUrl,
-          parentId: values.type === 'sub' ? values.parentId : undefined,
+          parentId: values.type === 'sub' ? values.parentId : null,
       };
       await updateCategory(categoryId, categoryUpdate);
       toast({ title: "نجاح", description: "تم تحديث الفئة بنجاح." });

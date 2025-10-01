@@ -30,7 +30,6 @@ export default function EditBrandPage() {
   const brandId = Array.isArray(id) ? id[0] : id;
 
   const { toast } = useToast();
-  const [brand, setBrand] = useState<Brand | null>(null);
   const [loading, setLoading] = useState(true);
 
   const form = useForm<z.infer<typeof brandSchema>>({
@@ -45,7 +44,6 @@ export default function EditBrandPage() {
       try {
         const fetchedBrand = await getBrandById(brandId);
         if (fetchedBrand) {
-          setBrand(fetchedBrand);
           form.reset(fetchedBrand);
         } else {
           toast({ title: "خطأ", description: "لم يتم العثور على العلامة التجارية.", variant: "destructive" });
@@ -95,10 +93,6 @@ export default function EditBrandPage() {
             </CardFooter>
         </Card>
     );
-  }
-
-  if (!brand) {
-      return null;
   }
 
   return (

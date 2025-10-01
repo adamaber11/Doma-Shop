@@ -9,15 +9,15 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Star, StarHalf, UserCircle } from 'lucide-react';
+import { Star, UserCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-import type { Product, Review } from '@/lib/types';
+import type { Product } from '@/lib/types';
 import { addReview } from '@/services/product-service';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { formatDistanceToNow } from 'date-fns';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 
 interface ProductReviewsProps {
@@ -137,7 +137,7 @@ export function ProductReviews({ product, onReviewSubmit }: ProductReviewsProps)
         <h3 className="text-xl font-bold mb-4">أحدث التقييمات</h3>
         <div className="space-y-6 max-h-[600px] overflow-y-auto pr-4">
           {reviews.length > 0 ? (
-             [...reviews].sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime()).map(review => (
+             [...reviews].sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map(review => (
                 <div key={review.id} className="flex items-start gap-4">
                     <Avatar>
                         <AvatarFallback><UserCircle /></AvatarFallback>
@@ -145,7 +145,7 @@ export function ProductReviews({ product, onReviewSubmit }: ProductReviewsProps)
                     <div>
                         <div className="flex items-center justify-between">
                            <p className="font-semibold">{review.author}</p>
-                           <span className="text-xs text-muted-foreground">{formatDistanceToNow(new Date(review.createdAt), { addSuffix: true, locale: ar })}</span>
+                           <span className="text-xs text-muted-foreground">{format(new Date(review.createdAt), "d MMMM yyyy", { locale: ar })}</span>
                         </div>
                         <div className="flex items-center my-1">
                             {[1,2,3,4,5].map(star => (

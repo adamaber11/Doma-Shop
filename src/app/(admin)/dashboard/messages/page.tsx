@@ -12,7 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Skeleton } from '@/components/ui/skeleton';
-import { formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 
 export default function DashboardMessagesPage() {
@@ -97,7 +97,7 @@ export default function DashboardMessagesPage() {
                   <TableCell className="font-medium">{message.name}</TableCell>
                   <TableCell>{message.email}</TableCell>
                   <TableCell className="max-w-sm truncate" title={message.message}>{message.message}</TableCell>
-                  <TableCell className="hidden md:table-cell">{formatDistanceToNow(new Date(message.createdAt), { addSuffix: true, locale: ar })}</TableCell>
+                  <TableCell className="hidden md:table-cell">{format(new Date(message.createdAt), "d MMMM yyyy", { locale: ar })}</TableCell>
                   <TableCell>
                     <AlertDialog>
                       <DropdownMenu>

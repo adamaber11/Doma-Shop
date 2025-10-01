@@ -23,6 +23,7 @@ const promoCardSchema = z.object({
   imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
   linkUrl: z.string().url("يجب أن يكون رابط الانتقال صالحًا"),
   linkText: z.string().min(2, "نص الرابط قصير جدًا"),
+  isActive: z.boolean().default(true),
 });
 
 export default function EditPromoCardPage() {

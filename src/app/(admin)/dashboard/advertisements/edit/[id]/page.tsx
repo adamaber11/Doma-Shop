@@ -35,7 +35,6 @@ export default function EditAdPage() {
   const adId = Array.isArray(id) ? id[0] : id;
 
   const { toast } = useToast();
-  const [ad, setAd] = useState<Ad | null>(null);
   const [loading, setLoading] = useState(true);
 
   const form = useForm<z.infer<typeof adSchema>>({
@@ -51,7 +50,6 @@ export default function EditAdPage() {
         const fetchedAd = await getAdById(adId);
 
         if (fetchedAd) {
-          setAd(fetchedAd);
           form.reset(fetchedAd);
         } else {
             toast({ title: "خطأ", description: "لم يتم العثور على البنر.", variant: "destructive" });
@@ -102,10 +100,6 @@ export default function EditAdPage() {
             </CardFooter>
         </Card>
     );
-  }
-
-  if (!ad) {
-      return null;
   }
 
   return (
