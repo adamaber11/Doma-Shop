@@ -9,7 +9,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-export default function BrandPage({ params }: { params: { brandId: string } }) {
+type Props = {
+  params: {
+    brandId: string;
+  };
+};
+
+export default function BrandPage({ params }: Props) {
   const [brand, setBrand] = useState<Brand | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
