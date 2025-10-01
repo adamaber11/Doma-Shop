@@ -75,6 +75,7 @@ export default function AboutPage() {
           alt="فريقنا"
           fill
           className="object-cover"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-black/30" />
       </div>
