@@ -15,6 +15,7 @@ import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { ClientOnly } from "./ClientOnly";
 
 const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -102,28 +103,30 @@ export function Footer() {
             <p className="mt-4 text-sm max-w-md text-gray-400">
               متجرك الشامل لكل ما تحتاجه. منتجات عالية الجودة وأسعار مذهلة وشحن سريع.
             </p>
-            <div className="mt-6">
-              <h3 className="font-semibold mb-2">اشترك في نشرتنا الإخبارية</h3>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onNewsletterSubmit)} className="flex gap-2">
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormControl>
-                          <Input type="email" placeholder="عنوان بريدك الإلكتروني" className="bg-gray-800 border-gray-700 text-white" {...field} />
-                        </FormControl>
-                        <FormMessage className="text-red-400 text-xs mt-1" />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" disabled={form.formState.isSubmitting}>
-                    {form.formState.isSubmitting ? '...' : 'اشترك'}
-                  </Button>
-                </form>
-              </Form>
-            </div>
+            <ClientOnly>
+              <div className="mt-6">
+                <h3 className="font-semibold mb-2">اشترك في نشرتنا الإخبارية</h3>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onNewsletterSubmit)} className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <FormControl>
+                            <Input type="email" placeholder="عنوان بريدك الإلكتروني" className="bg-gray-800 border-gray-700 text-white" {...field} />
+                          </FormControl>
+                          <FormMessage className="text-red-400 text-xs mt-1" />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" disabled={form.formState.isSubmitting}>
+                      {form.formState.isSubmitting ? '...' : 'اشترك'}
+                    </Button>
+                  </form>
+                </Form>
+              </div>
+            </ClientOnly>
           </div>
           <div className="col-span-1">
             <h3 className="font-semibold mb-4">تسوق</h3>
