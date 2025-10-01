@@ -4,7 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ShoppingBag, X } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import { getProducts, getAds, getPopupAds, getBrands, getPromoCards } from "@/services/product-service";
 import { getHomepageSettings } from "@/services/settings-service";
@@ -31,7 +31,7 @@ export default function Home() {
   const [canCloseAd, setCanCloseAd] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-   const plugin = useRef(
+  const plugin = useRef(
     Autoplay({ delay: 1500, stopOnInteraction: true })
   );
 
@@ -39,8 +39,9 @@ export default function Home() {
     setIsMounted(true);
   }, []);
 
-
   useEffect(() => {
+    if (!isMounted) return;
+
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -62,11 +63,10 @@ export default function Home() {
         setFeaturedProducts(featProducts);
         setBrands(fetchedBrands);
         
-        if (isMounted) {
+        const adShown = sessionStorage.getItem('adShown');
+        if (!adShown) {
             const activePopupAds = popupAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('home')));
-            const adShown = sessionStorage.getItem('adShown');
-
-            if (!adShown && activePopupAds.length > 0) {
+            if (activePopupAds.length > 0) {
                 const randomAd = activePopupAds[Math.floor(Math.random() * activePopupAds.length)];
                 setPopupAd(randomAd);
                 setIsAdModalOpen(true);
@@ -86,9 +86,8 @@ export default function Home() {
         setLoading(false);
       }
     };
-    if (isMounted) {
-      fetchData();
-    }
+    
+    fetchData();
   }, [isMounted]);
 
   const heroPlaceholder = getPlaceholderImage("hero-1");

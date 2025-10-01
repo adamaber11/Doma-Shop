@@ -56,10 +56,11 @@ export default function EditCategoryPage() {
       try {
         const [fetchedCategory, allCategories] = await Promise.all([
             getCategoryById(categoryId),
-            getCategories()
+            getCategories(true, true) // fetch flat list
         ]);
         
-        setMainCategories(allCategories.filter(c => !c.parentId && c.id !== categoryId));
+        const mainCats = allCategories.filter(c => !c.parentId && c.id !== categoryId);
+        setMainCategories(mainCats);
 
         if (fetchedCategory) {
           form.reset({

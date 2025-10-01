@@ -8,13 +8,11 @@ import { Menu, ShoppingCart, User } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
-import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { UserAuth } from "./UserAuth";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
 import { MobileCategories } from "./MobileCategories";
-import { useState } from "react";
 import { ClientOnly } from "./ClientOnly";
 
 const navLinks = [
@@ -28,7 +26,6 @@ const navLinks = [
 export function Header() {
   const { cartCount } = useCart();
   const { user } = useAuth();
-  const pathname = usePathname();
   
   const headerClasses = cn(
     "sticky top-0 z-50 w-full transition-colors duration-300 border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60"
@@ -60,11 +57,13 @@ export function Header() {
                         <Button variant="ghost" size="icon" className="relative">
                         <ShoppingCart className="h-5 w-5" />
                         <span className="sr-only">عربة التسوق</span>
-                        {cartCount > 0 && (
-                            <span className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                            {cartCount}
-                            </span>
-                        )}
+                        <ClientOnly>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                                {cartCount}
+                                </span>
+                            )}
+                        </ClientOnly>
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="w-full max-w-md">

@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { formatCurrency, cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -32,8 +32,7 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
     return variant?.imageUrls || [getPlaceholderImage('product-1').imageUrl];
   }, [selectedColor, product.variants]);
   
-  // Reset active image index when images change
-  useState(() => {
+  useEffect(() => {
     setActiveImageIndex(0);
   }, [productImages]);
 
@@ -125,7 +124,7 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
               </Button>
             </div>
             <SheetClose asChild>
-                <Button size="lg" onClick={handleAddToCart} className="flex-1" disabled={!selectedColor && product.variants.length > 0}>
+                <Button size="lg" onClick={handleAddToCart} className="flex-1" disabled={product.variants.length > 0 && !selectedColor}>
                 أضف إلى السلة
                 </Button>
             </SheetClose>
@@ -141,7 +140,7 @@ export function ProductDetailSheetContent({ product }: ProductDetailSheetContent
           <div>
             <h3 className="text-lg font-semibold mb-2">تفاصيل المنتج</h3>
             <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>الفئة: {product.categoryId}</li>
+              {product.categoryId && <li>الفئة: {product.categoryId}</li>}
               <li>معرف المنتج: {product.id}</li>
             </ul>
           </div>

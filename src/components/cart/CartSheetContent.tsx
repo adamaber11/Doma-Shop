@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
-import { Trash2, Plus, Minus, ShoppingBag, X } from "lucide-react";
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Trash2, Plus, Minus, ShoppingBag } from "lucide-react";
+import { SheetClose, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { ScrollArea } from "../ui/scroll-area";
 
 
@@ -42,7 +42,7 @@ export function CartSheetContent() {
                     {cartItems.map(item => {
                     const variant = item.product.variants.find(v => v.color === item.selectedColor);
                     const placeholder = getPlaceholderImage('product-1');
-                    const itemImage = variant?.imageUrls[0] || placeholder.imageUrl;
+                    const itemImage = variant?.imageUrls[0] || item.product.variants?.[0]?.imageUrls?.[0] || placeholder.imageUrl;
                     const price = item.product.salePrice ?? item.product.price;
                     
                     return (

@@ -35,8 +35,8 @@ export function ProductCard({ product }: ProductCardProps) {
                     src={imageUrl}
                     alt={product.name}
                     fill
-                    className="object-contain"
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                    className="object-contain"
                 />
             </div>
             <div className="p-3 flex-grow flex flex-col bg-white">

@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useRouter, useParams } from 'next/navigation';
@@ -14,7 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowRight, PlusCircle, Trash2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -47,6 +46,45 @@ const productSchema = z.object({
 
 type ProductFormValues = z.infer<typeof productSchema>;
 
+function ImageUrlsFieldArray({ variantIndex, control }: { variantIndex: number; control: Control<ProductFormValues> }) {
+    const { fields, append, remove } = useFieldArray({
+      control,
+      name: `variants.${variantIndex}.imageUrls`,
+    });
+  
+    return (
+      <div className="space-y-2">
+        <FormLabel>روابط صور المتغير</FormLabel>
+        {fields.map((field, index) => (
+          <FormField
+            key={field.id}
+            control={control}
+            name={`variants.${variantIndex}.imageUrls.${index}.value`}
+            render={({ field: formField }) => (
+              <FormItem>
+                <div className="flex items-center gap-2">
+                  <FormControl>
+                    <Input placeholder="https://example.com/image.png" {...formField} />
+                  </FormControl>
+                  {fields.length > 1 && (
+                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        ))}
+        <Button type="button" variant="outline" size="sm" onClick={() => append({ value: "" })}>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          إضافة رابط صورة
+        </Button>
+      </div>
+    );
+  }
+
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
@@ -58,6 +96,7 @@ export default function EditProductPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [allCategories, setAllCategories] = useState<Category[]>([]);
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -77,20 +116,31 @@ export default function EditProductPage() {
   
   const selectedCategoryId = form.watch('categoryId');
 
+  const fetchAndSetSubcategories = useCallback((categoryId?: string) => {
+    if (categoryId && allCategories.length > 0) {
+      const subs = allCategories.filter(c => c.parentId === categoryId);
+      setSubcategories(subs);
+    } else {
+      setSubcategories([]);
+    }
+  }, [allCategories]);
+
+
   useEffect(() => {
     const fetchInitialData = async () => {
         setLoading(true);
         try {
-            const [fetchedProduct, allCategories, fetchedBrands] = await Promise.all([
+            const [fetchedProduct, allCats, fetchedBrands] = await Promise.all([
                 getProductById(productId),
                 getCategories(true, true),
                 getBrands(true),
             ]);
 
+            setAllCategories(allCats);
             setBrands(fetchedBrands);
 
             if (fetchedProduct) {
-                const mainCategories = allCategories.filter(c => !c.parentId);
+                const mainCategories = allCats.filter(c => !c.parentId);
                 setCategories(mainCategories);
 
                 const defaultValues: Partial<ProductFormValues> = {
@@ -107,16 +157,25 @@ export default function EditProductPage() {
                     madeIn: fetchedProduct.madeIn || "",
                 };
 
-                // Find parent category if subcategory is selected
+                let parentId: string | undefined = undefined;
                 if(fetchedProduct.subcategoryId) {
-                     const subCat = allCategories.find(c => c.id === fetchedProduct.subcategoryId);
+                     const subCat = allCats.find(c => c.id === fetchedProduct.subcategoryId);
                      if(subCat && subCat.parentId) {
-                        defaultValues.categoryId = subCat.parentId;
-                        const subs = allCategories.filter(c => c.parentId === subCat.parentId);
-                        setSubcategories(subs);
+                        parentId = subCat.parentId;
                      }
+                } else if (fetchedProduct.categoryId) {
+                    const cat = allCats.find(c => c.id === fetchedProduct.categoryId);
+                    if (!cat?.parentId) { // It's a main category
+                        parentId = cat.id;
+                    }
                 }
                 
+                if (parentId) {
+                    defaultValues.categoryId = parentId;
+                    const subs = allCats.filter(c => c.parentId === parentId);
+                    setSubcategories(subs);
+                }
+
                 form.reset(defaultValues);
                 
             } else {
@@ -133,20 +192,11 @@ export default function EditProductPage() {
     if (productId) {
         fetchInitialData();
     }
-}, [productId, form, router, toast]);
+}, [productId, router, toast, form]);
 
 useEffect(() => {
-    const fetchAllCats = async () => {
-        const allCats = await getCategories(true, true);
-        if (selectedCategoryId) {
-            const subs = allCats.filter(c => c.parentId === selectedCategoryId);
-            setSubcategories(subs);
-        } else {
-            setSubcategories([]);
-        }
-    }
-    fetchAllCats();
-}, [selectedCategoryId]);
+    fetchAndSetSubcategories(selectedCategoryId);
+}, [selectedCategoryId, fetchAndSetSubcategories]);
 
   const onSubmit = async (values: ProductFormValues) => {
      const productData: Partial<Product> = {
@@ -255,7 +305,7 @@ useEffect(() => {
                                 <FormMessage />
                             </FormItem>
                         )} />
-                        {selectedCategoryId && subcategories.length > 0 && (
+                        {subcategories.length > 0 && (
                             <FormField control={form.control} name="subcategoryId" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>الفئة الفرعية</FormLabel>
@@ -492,44 +542,3 @@ useEffect(() => {
     </Card>
   );
 }
-
-function ImageUrlsFieldArray({ variantIndex, control }: { variantIndex: number; control: Control<ProductFormValues> }) {
-    const { fields, append, remove } = useFieldArray({
-      control,
-      name: `variants.${variantIndex}.imageUrls`,
-    });
-  
-    return (
-      <div className="space-y-2">
-        <FormLabel>روابط صور المتغير</FormLabel>
-        {fields.map((field, index) => (
-          <FormField
-            key={field.id}
-            control={control}
-            name={`variants.${variantIndex}.imageUrls.${index}.value`}
-            render={({ field: formField }) => (
-              <FormItem>
-                <div className="flex items-center gap-2">
-                  <FormControl>
-                    <Input placeholder="https://example.com/image.png" {...formField} />
-                  </FormControl>
-                  {fields.length > 1 && (
-                    <Button type="button" variant="destructive" size="icon" onClick={() => remove(index)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
-        <Button type="button" variant="outline" size="sm" onClick={() => append({ value: "" })}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          إضافة رابط صورة
-        </Button>
-      </div>
-    );
-  }
-
-    

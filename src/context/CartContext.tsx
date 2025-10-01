@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import type { CartItem, Product } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
@@ -28,7 +28,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setIsMounted(true);
-    const savedCart = localStorage.getItem('cartItems');
+    const savedCart = typeof window !== 'undefined' ? localStorage.getItem('cartItems') : null;
     if (savedCart) {
       setCartItems(JSON.parse(savedCart));
     }
@@ -40,7 +40,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [cartItems, isMounted]);
 
-  const addToCart = (product: Product, quantity: number, selectedColor?: string, selectedSize?: string) => {
+  const addToCart = useCallback((product: Product, quantity: number, selectedColor?: string, selectedSize?: string) => {
     if (!user) {
         toast({
             title: "يرجى تسجيل الدخول أولاً",
@@ -86,6 +86,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             });
             return prevItems;
         }
+        toast({
+            title: "تم تحديث الكمية",
+            description: `تم تحديث كمية ${product.name} في السلة.`,
+        });
         return prevItems.map(item =>
           item.id === cartItemId
             ? { ...item, quantity: newQuantity }
@@ -113,17 +117,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
       return [...prevItems, newItem];
     });
-  };
+  }, [user, router, toast]);
 
-  const removeFromCart = (cartItemId: string) => {
+  const removeFromCart = useCallback((cartItemId: string) => {
     setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
     toast({
       title: "تمت إزالة العنصر",
       description: "تمت إزالة العنصر من سلة التسوق الخاصة بك.",
     });
-  };
+  }, [toast]);
 
-  const updateQuantity = (cartItemId: string, quantity: number) => {
+  const updateQuantity = useCallback((cartItemId: string, quantity: number) => {
     const itemToUpdate = cartItems.find(item => item.id === cartItemId);
     if (!itemToUpdate) return;
 
@@ -146,11 +150,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         item.id === cartItemId ? { ...item, quantity } : item
       )
     );
-  };
+  }, [cartItems, removeFromCart, toast]);
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCartItems([]);
-  };
+  }, []);
 
   const cartTotal = cartItems.reduce((total, item) => {
     const price = item.product.salePrice ?? item.product.price;
@@ -159,18 +163,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
+  const contextValue = useMemo(() => ({
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    cartTotal,
+    cartCount,
+  }), [cartItems, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount]);
+
+
   return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-        cartTotal,
-        cartCount,
-      }}
-    >
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );

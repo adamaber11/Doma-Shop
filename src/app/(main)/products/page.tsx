@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ProductCard } from "@/components/products/ProductCard";
 import { getProducts, getPopupAds } from "@/services/product-service";
@@ -15,8 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { Input } from "@/components/ui/input";
 
-
-export default function ProductsPage() {
+function ProductsPageComponent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -33,6 +32,8 @@ export default function ProductsPage() {
   }, []);
 
   useEffect(() => {
+    if (!isMounted) return;
+
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -42,11 +43,10 @@ export default function ProductsPage() {
         ]);
         setProducts(fetchedProducts);
         
-        if (isMounted) {
+        const adShown = sessionStorage.getItem('adShown');
+        if (!adShown) {
             const activeAds = fetchedAds.filter(ad => ad.isActive && (ad.displayPages?.includes('all') || ad.displayPages?.includes('products')));
-            const adShown = sessionStorage.getItem('adShown');
-
-            if (!adShown && activeAds.length > 0) {
+            if (activeAds.length > 0) {
                 const randomAd = activeAds[Math.floor(Math.random() * activeAds.length)];
                 setPopupAd(randomAd);
                 setIsAdModalOpen(true);
@@ -59,26 +59,24 @@ export default function ProductsPage() {
                 }
             }
         }
-
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
         setLoading(false);
       }
     };
-    if(isMounted) {
-        fetchData();
-    }
+    
+    fetchData();
   }, [isMounted]);
 
   const filteredProducts = useMemo(() => {
+    let tempProducts = [...products];
+
     const categoryId = searchParams.get('category');
     const subcategoryId = searchParams.get('subcategory');
     const searchQuery = searchParams.get('q');
     const filter = searchParams.get('filter');
 
-    let tempProducts = products;
-    
     if (searchQuery) {
       tempProducts = tempProducts.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -93,23 +91,15 @@ export default function ProductsPage() {
         tempProducts = tempProducts.filter(p => p.isFeatured);
     }
 
-    if (!categoryId) {
-        return tempProducts;
-    }
-    
-    // Find all subcategories for the given main category
-    const mainCategory = products.find(p => p.categoryId === categoryId);
-
     if (subcategoryId) {
         return tempProducts.filter(p => p.subcategoryId === subcategoryId);
     }
     
-    // Filter by main category ID, which also includes products that have this category as parent.
-    // This logic needs to be careful. Let's assume a product can have a categoryId and a subcategoryId.
-    // If only categoryId is provided, we should show all products in that category, including all its subcategories.
-    const allCategoryProducts = tempProducts.filter(p => p.categoryId === categoryId);
-
-    return allCategoryProducts;
+    if (categoryId) {
+        return tempProducts.filter(p => p.categoryId === categoryId || p.subcategoryId && products.find(prod => prod.id === p.subcategoryId)?.categoryId === categoryId);
+    }
+    
+    return tempProducts;
 
   }, [products, searchParams]);
 
@@ -124,10 +114,8 @@ export default function ProductsPage() {
     router.push(`${pathname}?${params.toString()}`);
   }
 
-
   return (
       <div className="container mx-auto px-4 py-8">
-
         {popupAd && (
             <Dialog open={isAdModalOpen} onOpenChange={setIsAdModalOpen}>
                 <DialogContent className="p-0 border-0 max-w-lg" hideCloseButton={!canCloseAd}>
@@ -198,4 +186,12 @@ export default function ProductsPage() {
         </div>
       </div>
   );
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ProductsPageComponent />
+        </Suspense>
+    )
 }
