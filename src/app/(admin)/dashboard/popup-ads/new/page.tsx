@@ -21,7 +21,7 @@ const adSchema = z.object({
   imageUrl: z.string().url("يجب أن يكون رابط الصورة صالحًا"),
   linkUrl: z.string().url("يجب أن يكون رابط الانتقال صالحًا"),
   isActive: z.boolean().default(true),
-  displayPages: z.array(z.string()).min(1, "الرجاء اختيار صفحة واحدة على الأقل"),
+  displayPages: z.array(z.enum(['all', 'home', 'products'])).min(1, "الرجاء اختيار صفحة واحدة على الأقل"),
   duration: z.coerce.number().min(0, "المدة يجب أن تكون رقمًا موجبًا").default(0),
 });
 
@@ -96,7 +96,7 @@ export default function NewPopupAdPage() {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>عرض في الصفحات</FormLabel>
-                                <Select onValueChange={(value) => field.onChange(value === 'all' ? ['all'] : [value])} defaultValue={field.value[0]}>
+                                <Select onValueChange={(value) => field.onChange([value as 'all' | 'home' | 'products'])} defaultValue={field.value[0]}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="اختر مكان ظهور الإعلان" />
