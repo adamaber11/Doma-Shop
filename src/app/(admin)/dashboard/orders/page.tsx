@@ -151,9 +151,9 @@ export default function DashboardOrdersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orders.map((order) => (
+              {orders.map((order, index) => (
                 <TableRow key={order.id}>
-                  <TableCell className="font-mono hidden md:table-cell">{order.id}</TableCell>
+                  <TableCell className="font-mono hidden md:table-cell">{orders.length - index}</TableCell>
                   <TableCell>
                       <div className="font-medium">{order.customerName}</div>
                       <div className="text-sm text-muted-foreground">{order.customerEmail}</div>
@@ -298,3 +298,4 @@ export default function DashboardOrdersPage() {
   );
 }
 
+    
