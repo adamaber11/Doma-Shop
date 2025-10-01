@@ -95,3 +95,4 @@ export default function BrandPage({ params }: { params: { brandId: string } }) {
     </div>
   );
 }
+
