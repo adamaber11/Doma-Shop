@@ -165,7 +165,7 @@ export default function EditProductPage() {
                      }
                 } else if (fetchedProduct.categoryId) {
                     const cat = allCats.find(c => c.id === fetchedProduct.categoryId);
-                    if (!cat?.parentId) { // It's a main category
+                    if (cat && !cat.parentId) { // It's a main category
                         parentId = cat.id;
                     }
                 }
@@ -542,3 +542,5 @@ useEffect(() => {
     </Card>
   );
 }
+
+    
