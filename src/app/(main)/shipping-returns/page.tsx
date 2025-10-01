@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Truck, PackageReturn } from "lucide-react";
+import { Truck, Undo2 } from "lucide-react";
 
 export default function ShippingReturnsPage() {
   return (
@@ -39,7 +39,7 @@ export default function ShippingReturnsPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <PackageReturn className="h-6 w-6" />
+                <Undo2 className="h-6 w-6" />
                 <span>سياسة الإرجاع</span>
               </CardTitle>
             </CardHeader>
