@@ -4,16 +4,20 @@
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, ShoppingCart, User } from "lucide-react";
+import { Menu, ShoppingCart, User, LayoutDashboard } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useCart } from "@/hooks/use-cart";
 import { CartSheetContent } from "@/components/cart/CartSheetContent";
 import { cn } from "@/lib/utils";
-import { UserAuth } from "./UserAuth";
 import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
 import { MobileCategories } from "./MobileCategories";
 import { ClientOnly } from "./ClientOnly";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -25,7 +29,23 @@ const navLinks = [
 
 export function Header() {
   const { cartCount } = useCart();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast({ title: "تم تسجيل الخروج بنجاح" });
+      router.push('/login');
+    } catch (error) {
+      console.error("Logout error", error);
+      toast({
+        title: "حدث خطأ أثناء تسجيل الخروج",
+        variant: "destructive",
+      });
+    }
+  };
   
   const headerClasses = cn(
     "sticky top-0 z-50 w-full transition-colors duration-300 border-b bg-background/95 text-foreground backdrop-blur supports-[backdrop-filter]:bg-background/60"
@@ -49,7 +69,49 @@ export function Header() {
             <div className="flex items-center gap-2 md:gap-4">
 
                 <ClientOnly>
-                  <UserAuth />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <User className="h-5 w-5" />
+                        <span className="sr-only">قائمة المستخدم</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {user ? (
+                        <>
+                          <DropdownMenuLabel>{user.displayName || user.email}</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          {user.email === 'adamaber50@gmail.com' && (
+                            <DropdownMenuItem asChild>
+                              <Link href="/dashboard">
+                                <LayoutDashboard className="ml-2 h-4 w-4" />
+                                <span>لوحه التحكم</span>
+                              </Link>
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem asChild>
+                            <Link href="/profile">الملف الشخصي</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href="/orders">الطلبات</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={handleLogout}>
+                            تسجيل الخروج
+                          </DropdownMenuItem>
+                        </>
+                      ) : (
+                        <>
+                          <DropdownMenuItem asChild>
+                            <Link href="/login">تسجيل الدخول</Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href="/signup">إنشاء حساب</Link>
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </ClientOnly>
                 
                 <ClientOnly>
