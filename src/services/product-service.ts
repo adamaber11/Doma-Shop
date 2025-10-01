@@ -2,7 +2,7 @@
 "use server";
 import { db } from "@/lib/firebase";
 import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo, Brand, PromoCard } from "@/lib/types";
-import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where, QueryConstraint } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc, writeBatch, setDoc, arrayUnion, Timestamp, orderBy, query, runTransaction, where, QueryConstraint, deleteField } from "firebase/firestore";
 import type { User as FirebaseUser } from 'firebase/auth';
 
 const productsCollection = collection(db, 'products');
@@ -257,7 +257,7 @@ export async function updateCategory(categoryId: string, categoryUpdate: Partial
     const categoryRef = doc(db, 'categories', categoryId);
     
     const updateData: any = { ...categoryUpdate };
-     if (updateData.parentId === undefined) {
+     if (updateData.parentId === null) {
         updateData.parentId = deleteField();
     }
 
@@ -278,12 +278,6 @@ export async function deleteCategory(categoryId: string): Promise<void> {
         });
     });
 
-    await fetchDataIfNeeded('categories', true);
-}
-
-export async function deleteSubCategory(parentId: string, subCategoryId: string): Promise<void> {
-    const subCategoryRef = doc(db, 'categories', subCategoryId);
-    await deleteDoc(subCategoryRef);
     await fetchDataIfNeeded('categories', true);
 }
 
@@ -545,7 +539,3 @@ export async function deleteSubscriber(subscriberId: string): Promise<void> {
     await deleteDoc(subscriberRef);
     await fetchDataIfNeeded('subscribers', true);
 }
-
-
-// Helper to remove a field from a document
-import { deleteField } from 'firebase/firestore';
