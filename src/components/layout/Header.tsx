@@ -102,25 +102,27 @@ export function Header() {
                             </nav>
                         </div>
                         <Separator />
-                        <div className="p-4">
-                            {user ? (
-                                 <SheetClose asChild>
-                                    <Link href="/profile" className="flex items-center gap-3">
-                                        <User className="h-6 w-6 text-muted-foreground" />
-                                        <div className="flex flex-col">
-                                            <span className="font-semibold">{user.displayName || user.email}</span>
-                                            <span className="text-xs text-muted-foreground">عرض الملف الشخصي</span>
-                                        </div>
-                                    </Link>
-                                 </SheetClose>
-                            ) : (
-                                <SheetClose asChild>
-                                    <Link href="/login">
-                                        <Button className="w-full">تسجيل الدخول</Button>
-                                    </Link>
-                                </SheetClose>
-                            )}
-                        </div>
+                        <ClientOnly>
+                            <div className="p-4">
+                                {user ? (
+                                    <SheetClose asChild>
+                                        <Link href="/profile" className="flex items-center gap-3">
+                                            <User className="h-6 w-6 text-muted-foreground" />
+                                            <div className="flex flex-col">
+                                                <span className="font-semibold">{user.displayName || user.email}</span>
+                                                <span className="text-xs text-muted-foreground">عرض الملف الشخصي</span>
+                                            </div>
+                                        </Link>
+                                    </SheetClose>
+                                ) : (
+                                    <SheetClose asChild>
+                                        <Link href="/login">
+                                            <Button className="w-full">تسجيل الدخول</Button>
+                                        </Link>
+                                    </SheetClose>
+                                )}
+                            </div>
+                        </ClientOnly>
                     </SheetContent>
                 </Sheet>
             </div>
