@@ -1,5 +1,4 @@
 
-
 "use server";
 import { db } from "@/lib/firebase";
 import type { Product, Category, Review, Ad, ContactMessage, Order, Customer, Subscriber, UserRoleInfo, Brand, PromoCard } from "@/lib/types";
@@ -520,11 +519,6 @@ export async function findOrCreateCustomerFromUser(user: FirebaseUser): Promise<
 
 
 // Subscriber Functions
-export async function getSubscribers(forceRefresh: boolean = false): Promise<Subscriber[]> {
-    await fetchDataIfNeeded('subscribers', forceRefresh);
-    return allSubscribers || [];
-}
-
 export async function addSubscriber(email: string): Promise<Subscriber | { error: string, code: string }> {
     const q = query(subscribersCollection, where("email", "==", email));
     const querySnapshot = await getDocs(q);
