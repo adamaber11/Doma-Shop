@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
@@ -67,7 +66,9 @@ export default function ProductsPage() {
         setLoading(false);
       }
     };
-    fetchData();
+    if(isMounted) {
+        fetchData();
+    }
   }, [isMounted]);
 
   const filteredProducts = useMemo(() => {

@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { Separator } from "../ui/separator";
 import { MobileCategories } from "./MobileCategories";
 import { useState } from "react";
+import { ClientOnly } from "./ClientOnly";
 
 const navLinks = [
   { href: "/", label: "الرئيسيه" },
@@ -50,7 +51,9 @@ export function Header() {
             </nav>
             <div className="flex items-center gap-2 md:gap-4">
 
-                <UserAuth />
+                <ClientOnly>
+                  <UserAuth />
+                </ClientOnly>
                 
                 <Sheet>
                     <SheetTrigger asChild>

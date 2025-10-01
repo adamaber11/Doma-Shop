@@ -86,7 +86,9 @@ export default function Home() {
         setLoading(false);
       }
     };
-    fetchData();
+    if (isMounted) {
+      fetchData();
+    }
   }, [isMounted]);
 
   const heroPlaceholder = getPlaceholderImage("hero-1");
