@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from '@/lib/firebase';
 import { findOrCreateCustomerFromUser } from '@/services/product-service';
 import { useAuth } from "@/hooks/use-auth";
+import { FirebaseError } from "firebase/app";
 
 
 const signupSchema = z.object({
@@ -47,7 +48,7 @@ export default function SignupPage() {
         await updateProfile(userCredential.user, { displayName });
     }
     await findOrCreateCustomerFromUser(userCredential.user);
-    toast({ title: "أهلاً بك!", description: "تم إنشاء حسابك وتسجيل دخولك بنجاح." });
+    toast({ title: "أهلاً بك!", description: "تم تسجيل الدخول بنجاح." });
     router.push('/');
   }
 
@@ -57,11 +58,19 @@ export default function SignupPage() {
       await handleSuccessfulSignup(userCredential, values.name);
     } catch (error) {
       console.error("Signup error", error);
-      toast({
-        title: "حدث خطأ",
-        description: "هذا البريد الإلكتروني مستخدم بالفعل.",
-        variant: "destructive",
-      });
+      if (error instanceof FirebaseError && error.code === 'auth/email-already-in-use') {
+        toast({
+            title: "فشل إنشاء الحساب",
+            description: "هذا البريد الإلكتروني مسجل بالفعل. حاول تسجيل الدخول بدلاً من ذلك.",
+            variant: "destructive",
+        });
+      } else {
+        toast({
+            title: "حدث خطأ",
+            description: "فشل في إنشاء الحساب. يرجى المحاولة مرة أخرى.",
+            variant: "destructive",
+        });
+      }
     }
   };
 
