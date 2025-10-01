@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, UserCredential } from 'firebase/auth';
 import { useToast } from "@/hooks/use-toast";
 import { GoogleIcon } from "@/components/icons/GoogleIcon";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { auth } from '@/lib/firebase';
 import { findOrCreateCustomerFromUser } from '@/services/product-service';
@@ -78,29 +78,27 @@ export default function LoginPage() {
 
   if (loading || user) {
     return (
-        <div className="flex flex-col min-h-screen items-center justify-center p-4">
-             <Card className="w-full max-w-sm">
-                <CardHeader>
-                    <Skeleton className="h-8 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                </CardHeader>
-                <CardContent className="space-y-6">
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-10 w-full" />
-                    </div>
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-1/4" />
-                        <Skeleton className="h-10 w-full" />
-                    </div>
+        <Card className="w-full max-w-sm">
+            <CardHeader>
+                <Skeleton className="h-8 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <div className="space-y-2">
+                    <Skeleton className="h-4 w-1/4" />
                     <Skeleton className="h-10 w-full" />
-                </CardContent>
-                <CardFooter className="flex flex-col gap-4">
+                </div>
+                <div className="space-y-2">
+                    <Skeleton className="h-4 w-1/4" />
                     <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-5 w-full" />
-                </CardFooter>
-            </Card>
-        </div>
+                </div>
+                <Skeleton className="h-10 w-full" />
+            </CardContent>
+            <CardFooter className="flex flex-col gap-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-5 w-full" />
+            </CardFooter>
+        </Card>
     )
   }
 
