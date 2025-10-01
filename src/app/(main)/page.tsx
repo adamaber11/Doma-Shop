@@ -12,7 +12,7 @@ import type { Product, HomepageSettings, Ad, Brand, PromoCard } from "@/lib/type
 import { Skeleton } from "@/components/ui/skeleton";
 import { getPlaceholderImage } from "@/lib/placeholder-images";
 import { ProductCard } from "@/components/products/ProductCard";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Autoplay from "embla-carousel-autoplay";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
@@ -100,6 +100,9 @@ export default function Home() {
                 <DialogContent className="p-0 border-0 max-w-lg" hideCloseButton={!canCloseAd}>
                      <DialogHeader className="p-4 flex flex-row items-center justify-between">
                         <DialogTitle>عرض خاص!</DialogTitle>
+                         <DialogDescription className="sr-only">
+                            {popupAd.description || "إعلان عن عرض خاص"}
+                        </DialogDescription>
                     </DialogHeader>
                     <div className="relative group">
                          <Link href={popupAd.linkUrl} target="_blank" rel="noopener noreferrer" onClick={() => setIsAdModalOpen(false)}>
@@ -126,6 +129,7 @@ export default function Home() {
             fill
             className="object-cover"
             priority
+            sizes="100vw"
           />
         )}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full z-10">
@@ -140,7 +144,7 @@ export default function Home() {
                       <h3 className="text-xl font-bold mb-2">{card.title}</h3>
                       <Link href={card.linkUrl} className="block flex-grow mb-4">
                         <div className="relative aspect-[0.9] w-full">
-                           <Image src={card.imageUrl} alt={card.title} fill className="object-cover rounded-md" />
+                           <Image src={card.imageUrl} alt={card.title} fill className="object-cover rounded-md" sizes="(max-width: 768px) 50vw, 256px"/>
                         </div>
                       </Link>
                       <Link href={card.linkUrl} className="text-sm text-primary hover:underline font-semibold">
